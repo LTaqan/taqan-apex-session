@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Episode 4: Eyes in the Sky — Live Lesson | Can</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#040c14;--bg2:#0a1526;--bg3:#11223d;--bg4:#1e3a5f;
+  --cyan:#06b6d4;--cyan2:#22d3ee;--cyan-dim:#0891b2;--cyan-lt:rgba(6,182,212,0.1);--cyan-border:rgba(6,182,212,0.3);
+  --amber:#fbbf24;--amber-lt:rgba(251,191,36,0.1);--amber-border:rgba(251,191,36,0.3);
+  --green:#10b981;--green-lt:rgba(16,185,129,0.1);--green-border:rgba(16,185,129,0.3);
+  --red:#f43f5e;--red-lt:rgba(244,63,94,0.1);--red-border:rgba(244,63,94,0.3);
+  --text:#f8fafc;--text2:#94a3b8;--text3:#64748b;
+  --r-md:8px;--r-lg:14px;--r-xl:20px;
+  --font:'Nunito',sans-serif;--font-display:'Bebas Neue',sans-serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(6,182,212,0.05) 0%,transparent 70%);pointer-events:none;z-index:0}
+
+#mode-bar{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(4,12,20,0.96);backdrop-filter:blur(8px);border-bottom:1px solid var(--cyan-dim);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.logo{font-family:var(--font-display);font-size:16px;color:var(--cyan);letter-spacing:.06em;white-space:nowrap}
+.mode-btns{display:flex;gap:6px}
+.mode-btn{padding:8px 14px;border-radius:6px;border:1px solid var(--bg4);background:var(--bg3);color:var(--text2);font-family:var(--font);font-size:12px;font-weight:800;cursor:pointer;transition:all .2s}
+.mode-btn.active{background:var(--cyan);color:#000;border-color:var(--cyan)}
+.mode-btn:hover:not(.active){border-color:var(--cyan-dim);color:var(--text)}
+
+#student-view,#teacher-view{display:none;padding-top:70px}
+#student-view.active,#teacher-view.active{display:block}
+
+.s-wrap{max-width:680px;margin:0 auto;padding:24px 16px 48px;display:flex;flex-direction:column;gap:16px;position:relative;z-index:1}
+.s-hero{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--cyan-dim);border-radius:var(--r-xl);padding:24px;display:flex;align-items:center;gap:16px;position:relative;overflow:hidden}
+.s-hero-icon{width:52px;height:52px;background:var(--cyan-lt);border:1px solid var(--cyan-border);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.s-hero-title{font-family:var(--font-display);font-size:22px;color:var(--cyan2);letter-spacing:.04em;line-height:1.2}
+.s-series-badge{display:inline-block; background:var(--cyan-dim); color:#fff; font-size:11px; font-weight:800; padding:3px 8px; border-radius:4px; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.05em;}
+
+.s-progress{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--r-md);padding:12px 16px;display:flex;align-items:center;gap:12px}
+.s-prog-label{font-size:12px;color:var(--text2);font-weight:800;}
+.s-prog-bar{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden}
+.s-prog-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--cyan2));border-radius:3px;transition:width .6s ease}
+.s-xp{font-size:13px;font-weight:800;color:var(--cyan);}
+
+.s-scene{display:none;flex-direction:column;gap:14px;animation:fadeUp .4s ease}
+.s-scene.active{display:flex}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.s-card{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--r-lg);padding:20px}
+.s-scene-tag{font-family:var(--font-display);font-size:15px;letter-spacing:.08em;color:var(--cyan);margin-bottom:10px;text-transform:uppercase;}
+.s-scene-tag.grammar{color:var(--green2);}
+.s-story{font-size:15px;line-height:1.85;color:var(--text)}
+.s-story strong{color:var(--cyan2)}
+.s-logic{background:var(--bg3);border:1px solid var(--bg4);border-radius:var(--r-md);padding:14px 16px;margin-top:12px}
+.s-logic-title{font-size:11px;font-weight:800;color:var(--text2);text-transform:uppercase;margin-bottom:10px}
+.s-rule{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--bg4);font-size:14px}
+.s-rule:last-child{border-bottom:none}
+.s-tag{background:var(--cyan-lt);color:var(--cyan2);border:1px solid var(--cyan-border);border-radius:4px;padding:2px 8px;font-size:11px;font-weight:800;white-space:nowrap;}
+.s-tag.gram{background:var(--green-lt);color:var(--green);border-color:var(--green-border);}
+
+.s-quiz-tag{font-size:11px;font-weight:800;letter-spacing:.09em;color:var(--amber);text-transform:uppercase;margin-bottom:6px;margin-top:14px}
+.s-quiz-tag.grammar{color:var(--green);}
+.s-quiz-q{font-size:15px;font-weight:700;line-height:1.5;margin-bottom:12px}
+.s-choices{display:flex;flex-direction:column;gap:8px}
+.s-choice{background:var(--bg3);border:1px solid var(--bg4);border-radius:var(--r-md);padding:13px 16px;font-family:var(--font);font-size:14px;color:var(--text);cursor:pointer;display:flex;align-items:flex-start;gap:10px;transition:all .15s}
+.s-choice:hover{background:var(--bg4);border-color:var(--cyan-dim)}
+.s-choice .cl{width:26px;height:26px;border-radius:50%;background:var(--amber-lt);border:1px solid var(--amber-border);color:var(--amber);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.s-choice.grammar .cl{background:var(--green-lt);border-color:var(--green-border);color:var(--green);}
+.s-choice.correct{border-color:var(--green-border);background:var(--green-lt)}
+.s-choice.wrong{border-color:var(--red-border);background:var(--red-lt)}
+
+.tf-row{display:flex;gap:10px;margin-bottom:10px}
+.tf-btn{flex:1;padding:14px;font-family:var(--font-display);font-size:18px;letter-spacing:.06em;border-radius:var(--r-md);border:1px solid var(--bg4);background:var(--bg3);color:var(--text);cursor:pointer;transition:all .15s;text-align:center}
+.tf-btn:hover{background:var(--bg4)}
+.tf-btn.correct{background:var(--green-lt);color:var(--green);border-color:var(--green);}
+.tf-btn.wrong{background:var(--red-lt);color:var(--red);border-color:var(--red);}
+
+.s-fb{border-radius:var(--r-md);padding:13px 16px;font-size:14px;line-height:1.6;border:1px solid;display:none;margin-top:12px}
+.s-fb.ok{background:var(--green-lt);border-color:var(--green-border);color:var(--green)}
+.s-fb.err{background:var(--red-lt);border-color:var(--red-border);color:var(--red)}
+.s-fb.show{display:block;animation:fadeUp .3s ease}
+.s-hint{background:var(--amber-lt);border:1px solid var(--amber-border);border-radius:var(--r-md);padding:11px 15px;font-size:13px;color:var(--amber);display:none;margin-bottom:12px}
+.s-hint.show{display:block;}
+.ipill{display:inline-block;background:var(--amber-lt);border:1px solid var(--amber-border);color:var(--amber);border-radius:20px;padding:2px 10px;font-size:13px;font-weight:700;cursor:pointer;}
+
+.s-nav{display:flex;justify-content:flex-end;margin-top:10px}
+.s-next{background:var(--cyan-dim);border:none;border-radius:var(--r-md);padding:11px 22px;font-family:var(--font);font-size:14px;font-weight:800;color:#fff;cursor:pointer;display:none}
+.s-next.show{display:inline-block}
+
+.s-reward{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:1px solid var(--cyan-dim);border-radius:var(--r-xl);padding:32px 24px;text-align:center}
+.s-reward-icon{font-size:52px;margin-bottom:14px}
+.s-reward-title{font-family:var(--font-display);font-size:24px;color:var(--cyan2);margin-bottom:8px;letter-spacing:.04em}
+.s-reward-xp{font-size:28px;font-weight:800;color:var(--cyan);margin:12px 0}
+.cliffhanger{background:var(--red-lt); border:1px solid var(--red-border); border-radius:var(--r-md); padding:16px; margin-top:20px; text-align:left;}
+
+/* TEACHER VIEW */
+.t-wrap{max-width:900px;margin:0 auto;padding:24px 20px 48px;display:flex;flex-direction:column;gap:18px}
+.t-header{background:var(--bg2);border:1px solid var(--cyan-dim);border-radius:var(--r-xl);padding:20px 24px;display:flex;justify-content:space-between;flex-wrap:wrap}
+.t-stats{display:flex;gap:10px}.t-stat{background:var(--bg3);border:1px solid var(--bg4);border-radius:var(--r-md);padding:10px 16px;text-align:center}
+.t-stat-val{font-size:22px;font-weight:800;color:var(--cyan)}.t-stat-lbl{font-size:11px;color:var(--text2)}
+.t-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.t-card{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--r-lg);padding:18px}
+.t-card-title{font-size:12px;font-weight:800;color:var(--text2);text-transform:uppercase;margin-bottom:14px;border-bottom:1px solid var(--bg4);padding-bottom:8px}
+.t-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bg4);font-size:13px}
+.t-badge{padding:3px 10px;border-radius:12px;font-size:11px;font-weight:800}.t-badge.correct{background:var(--green-lt);color:var(--green)}.t-badge.wrong{background:var(--red-lt);color:var(--red)}.t-badge.pending{background:var(--bg4);color:var(--text3)}
+.t-hint-btn{background:var(--bg3);border:1px solid var(--amber-border);border-radius:var(--r-md);padding:10px 14px;color:var(--amber);cursor:pointer;width:100%;text-align:left;margin-bottom:8px}
+.t-print-btn{background:var(--cyan-lt);border:1px solid var(--cyan-border);border-radius:var(--r-md);padding:11px 22px;color:var(--cyan2);cursor:pointer;font-weight:800;}
+@media print{ #mode-bar,.mode-btns,#teacher-view,.s-next,#student-view{display:none!important} #print-summary{display:block!important; padding:0; margin:0; background:#fff;} }
+#print-summary{display:none;padding:80px 32px 32px;font-family:var(--font);color:#111;background:#fff;min-height:100vh;}
+#print-summary.active{display:block;}
+#print-summary h1{font-family:var(--font-display);font-size:26px;color:#0891b2;letter-spacing:.04em}
+#print-summary table{width:100%;border-collapse:collapse;font-size:13px;margin-top:12px}
+#print-summary td,#print-summary th{border:1px solid #ddd;padding:10px;text-align:left}
+</style>
+</head>
+<body>
+
+<div id="mode-bar">
+  <div class="logo">🚁 ESL Detective: Episode 4/5</div>
+  <div class="mode-btns">
+    <button class="mode-btn active" onclick="setMode('student')">Student View</button>
+    <button class="mode-btn" onclick="setMode('teacher')">Teacher Dashboard</button>
+    <button class="mode-btn" onclick="showSummary()">Print Summary</button>
+  </div>
+</div>
+
+<!-- STUDENT VIEW -->
+<div id="student-view" class="active">
+<div class="s-wrap">
+
+  <div class="s-hero">
+    <div class="s-hero-icon">🚁</div>
+    <div>
+      <span class="s-series-badge">Mystery Series: Episode 4 of 5</span>
+      <div class="s-hero-title">Eyes in the Sky</div>
+      <div class="s-hero-sub">B2 ESL · Passive Voice & Logic · Detective Can</div>
+    </div>
+  </div>
+
+  <div class="s-progress">
+    <span class="s-prog-label" id="s-prog-label">Scene 1 of 5</span>
+    <div class="s-prog-bar"><div class="s-prog-fill" id="s-prog-fill" style="width:20%"></div></div>
+    <span class="s-xp" id="s-xp">0 XP</span>
+  </div>
+
+  <div class="s-scene active" id="s-scene-1">
+    <div class="s-card">
+      <div class="s-scene-tag">Scene 1 — The Escape</div>
+      <div class="s-story">
+        Cenk's helicopter flies away from the VIP box, carrying the stolen playbook data into the night sky over Istanbul.<br><br>
+        Coach Demir is panicking. <em>"He's gone, Can! We've lost him. He's going to sell our strategies to the rival team!"</em><br><br>
+        You run to the arena's security room. <em>"Not yet,"</em> you say, pulling up the city's air traffic radar on the main screen. <em>"He can't just <span class="ipill" onclick="showIdiom('vanish')">vanish into thin air</span>. He's still <span class="ipill" onclick="showIdiom('radar')">on our radar</span>."</em>
+      </div>
+    </div>
+    <div class="s-card">
+      <div class="s-quiz-tag">Quick Vocabulary Check</div>
+      <div class="s-quiz-q">You tell the coach that Cenk cannot "vanish into thin air." What does this idiom mean?</div>
+      <div class="s-hint" id="hint-q1" style="display:none">💡 <strong>Hint:</strong> Think about magic tricks. When a magician makes a coin "vanish into thin air," where does it go?</div>
+      <div class="s-choices" id="q1-choices">
+        <button class="s-choice" onclick="checkQ1(this,'A')"><span class="cl">A</span> To fly an airplane very high where the air is thin.</button>
+        <button class="s-choice" onclick="checkQ1(this,'B')"><span class="cl">B</span> To disappear completely and suddenly, leaving no trace.</button>
+        <button class="s-choice" onclick="checkQ1(this,'C')"><span class="cl">C</span> To turn into a ghost.</button>
+      </div>
+      <div class="s-fb" id="q1-fb"></div>
+    </div>
+    <div class="s-fb info" id="idiom-vanish" style="display:none">💨 <strong>Idiom — "vanish into thin air":</strong> To disappear completely, without leaving any clues behind!</div>
+    <div class="s-fb info" id="idiom-radar" style="display:none">📡 <strong>Idiom — "on the radar":</strong> Being noticed or tracked; something you are aware of.</div>
+    <div class="s-nav"><button class="s-next" id="s-next-1" onclick="goScene(2)">Check the radar grid →</button></div>
+  </div>
+
+  <div class="s-scene" id="s-scene-2">
+    <div class="s-card">
+      <div class="s-scene-tag">Scene 2 — The Radar Grid</div>
+      <div class="s-story">
+        The radar shows Istanbul divided into a 3x3 grid. The Arena is exactly in the center.<br><br>
+        The air traffic controller gives you Cenk's flight path: <em>"The helicopter took off from the Center. It flew <strong>North</strong> one sector. Then it turned <strong>East</strong> for one sector. Finally, it flew <strong>South</strong> for two sectors and landed."</em>
+      </div>
+      <div class="s-logic">
+        <div class="s-logic-title">Istanbul Radar Map (3x3 Grid)</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:4px; text-align:center; font-size:12px; font-weight:800; color:var(--cyan);">
+          <div style="border:1px solid var(--bg4); padding:10px;">Forest<br>(NW)</div>
+          <div style="border:1px solid var(--bg4); padding:10px;">Mountains<br>(N)</div>
+          <div style="border:1px solid var(--bg4); padding:10px;">Bosphorus<br>(NE)</div>
+          <div style="border:1px solid var(--bg4); padding:10px;">Old City<br>(W)</div>
+          <div style="border:1px solid var(--cyan); background:var(--cyan-lt); padding:10px;">The Arena<br>(Center)</div>
+          <div style="border:1px solid var(--bg4); padding:10px;">Business Dist<br>(E)</div>
+          <div style="border:1px solid var(--bg4); padding:10px;">Airport<br>(SW)</div>
+          <div style="border:1px solid var(--bg4); padding:10px;">The Docks<br>(S)</div>
+          <div style="border:1px solid var(--bg4); padding:10px;">Abandoned Factory<br>(SE)</div>
+        </div>
+      </div>
+    </div>
+    <div class="s-card">
+      <div class="s-quiz-tag">Directional Logic Challenge</div>
+      <div class="s-quiz-q">Trace the flight path carefully. Start at the Center. Go North 1, East 1, South 2. Where did Cenk land?</div>
+      <div class="s-hint" id="hint-q2" style="display:none">💡 <strong>Hint:</strong> <br>Center + North = Mountains.<br>Mountains + East = Bosphorus.<br>From Bosphorus, go South twice!</div>
+      <div class="s-choices" id="q2-choices">
+        <button class="s-choice" onclick="checkQ2(this,'A')"><span class="cl">A</span> The Docks (South)</button>
+        <button class="s-choice" onclick="checkQ2(this,'B')"><span class="cl">B</span> The Abandoned Factory (South-East)</button>
+        <button class="s-choice" onclick="checkQ2(this,'C')"><span class="cl">C</span> The Business District (East)</button>
+      </div>
+      <div class="s-fb" id="q2-fb"></div>
+    </div>
+    <div class="s-nav"><button class="s-next" id="s-next-2" onclick="goScene(3)">Update the Coach →</button></div>
+  </div>
+
+  <div class="s-scene" id="s-scene-3">
+    <div class="s-card">
+      <div class="s-scene-tag grammar">Scene 3 — Grammar Timeout: The Passive Voice</div>
+      <div class="s-story">
+        You find the location! You need to report this to Coach Demir, but police and detectives often speak in a very specific way. Instead of saying <em>"The radar tracked the helicopter,"</em> they focus on the *object* of the action. This is called the <strong>Passive Voice</strong>.
+      </div>
+      <div class="s-logic">
+        <div class="s-logic-title" style="color:var(--green);">Passive Voice Rules</div>
+        <div class="s-rule"><span class="s-tag gram">Rule</span> Use <strong>Verb 'to be' + Past Participle (V3)</strong>.</div>
+        <div class="s-rule"><span class="s-tag gram">Active</span> The radar (subject) tracked the helicopter (object).</div>
+        <div class="s-rule"><span class="s-tag gram">Passive</span> The helicopter (object) <strong>was tracked</strong> by the radar.</div>
+      </div>
+    </div>
+    <div class="s-card">
+      <div class="s-quiz-tag grammar">Grammar Challenge</div>
+      <div class="s-quiz-q">Coach Demir asks: "Are they downloading the playbook data right now?" How do you reply correctly using the <em>Present Continuous Passive</em>?</div>
+      <div class="s-hint" id="hint-qGrammar" style="display:none">💡 <strong>Hint:</strong> The action is happening *right now*. We need "is being" + V3.</div>
+      <div class="s-choices" id="qGrammar-choices">
+        <button class="s-choice grammar" onclick="checkQGrammar(this,'A')"><span class="cl">A</span> Yes, the data is being downloaded at the factory.</button>
+        <button class="s-choice grammar" onclick="checkQGrammar(this,'B')"><span class="cl">B</span> Yes, the data was downloaded at the factory.</button>
+        <button class="s-choice grammar" onclick="checkQGrammar(this,'C')"><span class="cl">C</span> Yes, the data is download at the factory.</button>
+      </div>
+      <div class="s-fb" id="qGrammar-fb"></div>
+    </div>
+    <div class="s-nav"><button class="s-next" id="s-next-3" onclick="goScene(4)">Intercept the signal →</button></div>
+  </div>
+
+  <div class="s-scene" id="s-scene-4">
+    <div class="s-card">
+      <div class="s-scene-tag">Scene 4 — The Intercept</div>
+      <div class="s-story">
+        "The data is being downloaded right now!" you yell. You and the police rush to the Abandoned Factory in the South-East sector.<br><br>
+        On the way, the police radio intercepts a call from Cenk to his hackers: <em>"Upload the playbook to our servers in 10 minutes. If Detective Can arrives, send him on a <span class="ipill" onclick="showIdiom('goose')">wild goose chase</span>."</em>
+      </div>
+    </div>
+    <div class="s-card">
+      <div style="font-size:11px;font-weight:800;color:var(--text2);text-transform:uppercase;margin-bottom:10px;border-bottom:1px solid var(--bg4)">True or False — Quick Fire Round</div>
+      
+      <div class="s-quiz-q" style="margin-top:4px">Statement: Cenk wants his hackers to give you false clues so you waste your time looking in the wrong places.</div>
+      <div class="s-hint" id="hint-tf" style="display:none">💡 <strong>Hint:</strong> "A wild goose chase" is an idiom that means a hopeless search for something that doesn't exist or is impossible to catch!</div>
+      <div class="tf-row" id="tf-row">
+        <button class="tf-btn t-btn" onclick="checkTF(this,'TRUE')">TRUE</button>
+        <button class="tf-btn f-btn" onclick="checkTF(this,'FALSE')">FALSE</button>
+      </div>
+      <div class="s-fb" id="tf-fb"></div>
+    </div>
+    <div class="s-fb info" id="idiom-goose" style="display:none">🦆 <strong>Idiom — "wild goose chase":</strong> A foolish and hopeless search for something that cannot be found.</div>
+    <div class="s-nav"><button class="s-next" id="s-next-4" onclick="goScene(5)">Arrive at the factory →</button></div>
+  </div>
+
+  <div class="s-scene" id="s-scene-5">
+    <div class="s-card">
+      <div class="s-scene-tag">Scene 5 — The Warehouse Doors</div>
+      <div class="s-story">
+        You arrive at the Abandoned Factory. You are <span class="ipill" onclick="showIdiom('close')">closing in on</span> Cenk. <br><br>
+        The police kick down the heavy metal doors. Inside, you see a massive server room glowing with red lights. A giant screen on the wall says: <strong>UPLOAD: 95%</strong>.
+      </div>
+    </div>
+    <div class="s-reward">
+      <div class="s-reward-icon">📡</div>
+      <div class="s-reward-title">Location Secured, Can!</div>
+      <div class="s-reward-xp" id="s-final-xp">0 XP Earned</div>
+      <div class="s-reward-sub">
+        Today you mastered <strong>Grid Logic</strong> and the <strong>Passive Voice</strong> (is being downloaded).<br><br>
+        Idioms learned: <em>vanish into thin air, on the radar, wild goose chase, close in on.</em>
+      </div>
+      
+      <div class="cliffhanger">
+        <div class="cliffhanger-title">Next Time: The Grand Finale!</div>
+        <div style="font-size:14px; color:#fff; line-height:1.6;">
+          Cenk is cornered, but the upload is at 95%... 96%... 97%...<br>
+          The only way to stop it is to hack the 3-digit cancellation code on the master computer before it hits 100%.<br><br>
+          Can you defuse the upload in time? Find out in the final episode: <strong>Episode 5: The Final Whistle!</strong>
+        </div>
+      </div>
+    </div>
+    <div class="s-fb info show" id="idiom-close">
+      <strong>Close in on</strong> = to get nearer to someone or something you are chasing!
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- TEACHER VIEW -->
+<div id="teacher-view">
+<div class="t-wrap">
+  <div class="t-header">
+    <div><h1>Teacher Dashboard</h1><p><span class="live-dot"></span>Ep 4: Eyes in the Sky</p></div>
+    <div class="t-stats">
+      <div class="t-stat"><div class="t-stat-val" id="t-xp">0</div><div class="t-stat-lbl">XP</div></div>
+      <div class="t-stat"><div class="t-stat-val" id="t-correct">0</div><div class="t-stat-lbl">Correct</div></div>
+      <div class="t-stat"><div class="t-stat-val" id="t-attempts">0</div><div class="t-stat-lbl">Attempts</div></div>
+    </div>
+  </div>
+  <div class="t-grid">
+    <div class="t-card">
+      <div class="t-card-title">Answer Log</div>
+      <div class="t-row"><span class="t-row-q">Q1 — Vocab: "vanish"</span><span class="t-badge pending" id="tlog-q1">Pending</span></div>
+      <div class="t-row"><span class="t-row-q">Q2 — Logic: Radar Grid</span><span class="t-badge pending" id="tlog-q2">Pending</span></div>
+      <div class="t-row"><span class="t-row-q" style="color:var(--green);">Q3 — Grammar: Passive Voice</span><span class="t-badge pending" id="tlog-qGrammar">Pending</span></div>
+      <div class="t-row"><span class="t-row-q">TF — Comprehension: Goose Chase</span><span class="t-badge pending" id="tlog-tf">Pending</span></div>
+    </div>
+    <div class="t-card">
+      <div class="t-card-title">Hint Controls</div>
+      <button class="t-hint-btn" id="thint-q1" onclick="fireHint('q1')">💡 Hint: Q1 Idiom</button>
+      <button class="t-hint-btn" id="thint-q2" onclick="fireHint('q2')">💡 Hint: Q2 Map Logic</button>
+      <button class="t-hint-btn" id="thint-qGrammar" onclick="fireHint('qGrammar')">💡 Hint: Q3 Grammar</button>
+      <button class="t-hint-btn" id="thint-tf" onclick="fireHint('tf')">💡 Hint: TF Idiom</button>
+    </div>
+  </div>
+  <button class="t-print-btn" onclick="showSummary()">🖨 Print / Save Summary</button>
+</div>
+</div>
+
+<!-- PRINT SUMMARY -->
+<div id="print-summary">
+  <button onclick="window.print()" style="padding:10px 20px; margin-bottom:20px; background:var(--cyan); color:#000; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:16px;">🖨 Print Document</button>
+  <h1>Lesson Summary — Ep 4: Eyes in the Sky</h1>
+  <p><strong>Student:</strong> Can &nbsp;|&nbsp; <strong>Level:</strong> B2 ESL &nbsp;|&nbsp; <strong>Date:</strong> <span id="print-date"></span></p>
+  <table>
+    <tr><th>Task</th><th>Topic</th><th>Result</th><th>XP</th></tr>
+    <tr><td>Q1</td><td>Idiom: "vanish into thin air"</td><td id="pr-q1">—</td><td id="pr-q1-xp">—</td></tr>
+    <tr><td>Q2</td><td>Logic: Directional Mapping</td><td id="pr-q2">—</td><td id="pr-q2-xp">—</td></tr>
+    <tr><td>Q3</td><td>Grammar: Passive Voice (Continuous)</td><td id="pr-qGrammar">—</td><td id="pr-qGrammar-xp">—</td></tr>
+    <tr><td>TF</td><td>Idiom: "wild goose chase"</td><td id="pr-tf">—</td><td id="pr-tf-xp">—</td></tr>
+  </table>
+  <h2>Total XP: <span id="pr-total-xp">0</span></h2>
+</div>
+
+<script>
+var xp=0,correctCount=0,totalAttempts=0,currentScene=1;
+var attempts={q1:0,q2:0,qGrammar:0,tf:0};
+var idiomsSeen=[];
+
+function setMode(m){
+  document.getElementById('student-view').classList.toggle('active',m==='student');
+  document.getElementById('teacher-view').classList.toggle('active',m==='teacher');
+  document.getElementById('print-summary').classList.toggle('active',m==='summary');
+  document.querySelectorAll('.mode-btn').forEach(function(b){b.classList.remove('active')});
+  if(m==='student') document.querySelectorAll('.mode-btn')[0].classList.add('active');
+  if(m==='teacher') document.querySelectorAll('.mode-btn')[1].classList.add('active');
+  if(m==='summary') document.querySelectorAll('.mode-btn')[2].classList.add('active');
+}
+function addXP(pts){
+  xp+=pts; document.getElementById('s-xp').textContent=xp+' XP'; document.getElementById('t-xp').textContent=xp;
+  document.getElementById('s-final-xp').textContent=xp+' XP Earned'; document.getElementById('pr-total-xp').textContent=xp;
+}
+function recordAnswer(key,result,pts){
+  if(result==='correct')correctCount++; totalAttempts++;
+  document.getElementById('t-correct').textContent=correctCount; document.getElementById('t-attempts').textContent=totalAttempts;
+  var badge=document.getElementById('tlog-'+key);
+  if(badge){badge.className='t-badge '+(result==='correct'?'correct':'wrong');badge.textContent=result==='correct'?'✓ Correct':'✗ Wrong'}
+  var pr=document.getElementById('pr-'+key);var prXP=document.getElementById('pr-'+key+'-xp');
+  if(pr)pr.textContent=result==='correct'?'Correct':'Incorrect'; if(prXP)prXP.textContent=pts>0?pts+' XP':'0 XP';
+}
+function trackIdiom(id){
+  if(idiomsSeen.indexOf(id)<0){
+    idiomsSeen.push(id);
+    var el=document.getElementById('idiom-'+id); if(el){el.style.display='block';el.classList.add('show');}
+  }
+}
+function goScene(n){
+  document.querySelectorAll('.s-scene').forEach(function(s){s.classList.remove('active')});
+  document.getElementById('s-scene-'+n).classList.add('active');
+  document.getElementById('s-prog-fill').style.width=[0,20,40,60,80,100][n]+'%';
+  document.getElementById('s-prog-label').textContent='Scene '+n+' of 5';
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(n===5) trackIdiom('close');
+}
+function showIdiom(id){ trackIdiom(id); }
+function fireHint(q){
+  var el=document.getElementById('hint-'+q); if(el){el.style.display='block';el.classList.add('show')}
+  var btn=document.getElementById('thint-'+q); if(btn){btn.classList.add('fired');btn.innerHTML='✓ Hint sent';btn.onclick=null}
+}
+function lockChoices(sel){document.querySelectorAll(sel).forEach(function(b){b.onclick=null;b.style.opacity='.6'})}
+
+function checkQ1(btn,ans){
+  attempts.q1++; var fb=document.getElementById('q1-fb'); trackIdiom('vanish'); trackIdiom('radar');
+  if(ans==='B'){
+    lockChoices('#q1-choices .s-choice'); btn.classList.add('correct');btn.style.opacity='1';
+    var pts=attempts.q1===1?20:10;addXP(pts);recordAnswer('q1','correct',pts);
+    fb.className='s-fb ok show';fb.innerHTML='<strong>Correct!</strong> ✓ To vanish into thin air means to disappear without a trace. +'+pts+' XP!';
+    document.getElementById('s-next-1').classList.add('show');
+  } else {
+    btn.classList.add('wrong');btn.style.opacity='.6';btn.onclick=null; recordAnswer('q1','wrong',0);
+    fb.className='s-fb err show'; fb.innerHTML='<strong>Try again!</strong> It is an idiom, so it has nothing to do with real airplanes or ghosts.';
+  }
+}
+
+function checkQ2(btn,ans){
+  attempts.q2++; var fb=document.getElementById('q2-fb');
+  if(ans==='B'){
+    lockChoices('#q2-choices .s-choice'); btn.classList.add('correct');btn.style.opacity='1';
+    var pts=attempts.q2===1?30:15;addXP(pts);recordAnswer('q2','correct',pts);
+    fb.className='s-fb ok show';fb.innerHTML='<strong>Perfect Mapping!</strong> ✓ Center -> North (Mountains). Mountains -> East (Bosphorus). Bosphorus -> South twice (Business Dist -> Abandoned Factory). +'+pts+' XP!';
+    document.getElementById('s-next-2').classList.add('show');
+  } else {
+    btn.classList.add('wrong');btn.style.opacity='.6';btn.onclick=null; recordAnswer('q2','wrong',0);
+    fb.className='s-fb err show'; fb.innerHTML='<strong>Check the map again!</strong> Follow the steps exactly. Center -> North -> East -> South -> South.';
+  }
+}
+
+function checkQGrammar(btn,ans){
+  attempts.qGrammar++; var fb=document.getElementById('qGrammar-fb');
+  if(ans==='A'){
+    lockChoices('#qGrammar-choices .s-choice'); btn.classList.add('correct');btn.style.opacity='1';
+    var pts=attempts.qGrammar===1?25:12;addXP(pts);recordAnswer('qGrammar','correct',pts);
+    fb.className='s-fb ok show';fb.innerHTML='<strong>Perfect Grammar!</strong> ✓ "Is being downloaded" is the correct Present Continuous Passive form. +'+pts+' XP!';
+    document.getElementById('s-next-3').classList.add('show');
+  } else {
+    btn.classList.add('wrong');btn.style.opacity='.6';btn.onclick=null; recordAnswer('qGrammar','wrong',0);
+    fb.className='s-fb err show'; fb.innerHTML=ans==='B'?'<strong>Grammar Foul!</strong> "Was downloaded" is PAST tense. The coach asked what is happening *right now*.':'<strong>Grammar Foul!</strong> You need the past participle (V3) at the end. Download -> Downloaded.';
+  }
+}
+
+function checkTF(btn,ans){
+  attempts.tf++; var fb=document.getElementById('tf-fb'); trackIdiom('goose');
+  if(ans==='TRUE'){
+    document.querySelectorAll('.tf-btn').forEach(function(b){b.onclick=null;b.style.opacity='.65'});
+    btn.classList.add('correct');btn.style.opacity='1';
+    var pts=attempts.tf===1?20:10;addXP(pts);recordAnswer('tf','correct',pts);
+    fb.className='s-fb ok show';fb.innerHTML='<strong>Spot on!</strong> ✓ A wild goose chase is a hopeless hunt based on false clues. +'+pts+' XP!';
+    document.getElementById('s-next-4').classList.add('show');
+  } else {
+    btn.classList.add('wrong');btn.style.opacity='.65';btn.onclick=null; recordAnswer('tf','wrong',0);
+    fb.className='s-fb err show'; fb.innerHTML='<strong>Incorrect!</strong> Re-read the definition of "wild goose chase" in the hint!';
+  }
+}
+
+function showSummary(){
+  document.getElementById('print-date').textContent=new Date().toLocaleDateString();
+  setMode('summary');
+}
+</script>
+</body>
+</html>

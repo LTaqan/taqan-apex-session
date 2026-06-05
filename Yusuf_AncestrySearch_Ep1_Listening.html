@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yusuf | Ancestry Search – Listening Lesson Ep.1</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#FFD700;--gold2:#FFA500;--gold-dim:#7a5c00;
+  --bg:#0d1117;--bg2:#161b22;--bg3:#1c2128;--bg4:#2d333b;
+  --text:#f0f4ff;--text2:#8b949e;--text3:#6e7681;
+  --blue-pill:#1a7fd4;
+  --green:#4ade80;--red:#f87171;
+  --r:12px;--r2:20px;--r3:50px;
+  font-family:'Nunito',sans-serif;
+}
+body{background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{
+  content:'';
+  position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 10% 30%, rgba(13,148,136,0.10) 0%, transparent 60%),
+    radial-gradient(ellipse at 90% 70%, rgba(241,196,15,0.08) 0%, transparent 60%);
+}
+body.light-mode{
+  --bg:#f5f7fa;--bg2:#ffffff;--bg3:#eef1f5;--bg4:#dde3ea;
+  --text:#1a1a2e;--text2:#4a5568;--text3:#718096;
+  --gold-dim:#b8860b;
+}
+body.light-mode #mode-bar{background:rgba(245,247,250,0.96);border-bottom-color:#dde3ea;}
+body.light-mode #pen-strip{background:rgba(245,247,250,0.97);border-top-color:#dde3ea;}
+body.light-mode .grammar-box{background:#e8f5fe;border-color:#60a5fa;}
+body.light-mode #cinema-subtitle{background:#1a7fd4;}
+body.light-mode body::before{opacity:0.4;}
+#mode-bar{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(10,10,8,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--gold-dim);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+#mode-bar .logo{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--gold);letter-spacing:.1em;white-space:nowrap}
+.mode-btns{display:flex;gap:6px}
+.mode-btn{padding:6px 14px;border-radius:6px;border:1px solid var(--bg4);background:var(--bg3);color:var(--text2);font-family:'Nunito',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all .2s}
+.mode-btn.active{background:var(--gold);color:#000;border-color:var(--gold)}
+.mode-btn:hover:not(.active){border-color:var(--gold-dim);color:var(--text)}
+#listen-xp{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold);white-space:nowrap}
+#student-view,#teacher-view{display:none;padding-top:58px}
+#print-summary{display:none;background:#fff;color:#000}
+#student-view.active,#teacher-view.active{display:block}
+#cinema-wrap{position:relative;width:100%;max-width:860px;margin:20px auto;border-radius:var(--r2);overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.8);aspect-ratio:16/9;background:#000}
+#cinema-scene-img{position:absolute;inset:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;transition:background .6s}
+#cinema-subtitle{position:absolute;bottom:8%;left:50%;transform:translateX(-50%);background:var(--blue-pill);border-radius:var(--r3);padding:14px 32px;font-family:'Nunito',sans-serif;font-size:clamp(18px,3.2vw,30px);font-weight:900;color:#fff;text-align:center;line-height:1.3;max-width:88%;box-shadow:0 6px 30px rgba(0,0,0,.5);transition:opacity .3s ease;text-shadow:0 2px 8px rgba(0,0,0,.4)}
+#cinema-subtitle.hide{opacity:0}
+#cinema-play-btn{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;cursor:pointer;background:rgba(0,0,0,.25);transition:background .2s}
+#cinema-play-btn:hover{background:rgba(0,0,0,.4)}
+#cinema-play-icon{width:72px;height:72px;border-radius:50%;background:rgba(255,215,0,.9);display:flex;align-items:center;justify-content:center;font-size:28px;transition:transform .15s}
+#cinema-play-btn.hidden{display:none}
+#cinema-progress-wrap{max-width:860px;margin:0 auto 8px;padding:0 4px;display:flex;align-items:center;gap:10px}
+#cinema-progress-bar{flex:1;height:6px;background:var(--bg4);border-radius:3px;overflow:hidden;cursor:pointer}
+#cinema-progress-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:3px;transition:width .3s ease;width:0%}
+#cinema-play-btn.playing{align-items:flex-end;justify-content:flex-end;padding:0 10px 10px 0;background:transparent !important;}
+#cinema-play-btn.playing #cinema-play-icon{width:36px;height:36px;font-size:14px;background:rgba(0,0,0,0.45);border:1px solid rgba(255,215,0,0.4);}
+#cinema-play-btn.playing:hover #cinema-play-icon{background:rgba(255,215,0,0.2);}
+.speed-btn{background:var(--bg3);border:1px solid var(--bg4);border-radius:6px;padding:3px 10px;font-size:11px;font-weight:800;color:var(--text2);cursor:pointer;transition:all .15s;}
+.speed-btn.active{background:var(--gold);color:#000;border-color:var(--gold)}
+.speed-btn:hover:not(.active){color:var(--text);border-color:var(--gold-dim)}
+#cinema-time{font-size:12px;color:var(--text2);white-space:nowrap;min-width:80px;text-align:right}
+#scene-strip{max-width:860px;margin:0 auto 16px;display:flex;gap:8px;padding:0 4px;flex-wrap:wrap;align-items:center}
+.scene-chip{background:var(--bg3);border:1px solid var(--bg4);border-radius:20px;padding:4px 12px;font-size:11px;font-weight:800;color:var(--text2);cursor:pointer;transition:all .2s;text-transform:uppercase;letter-spacing:.06em}
+.scene-chip.active{background:var(--gold);color:#000;border-color:var(--gold)}
+.scene-chip.done{background:var(--bg4);border-color:var(--green);color:var(--green)}
+.s-wrap{max-width:860px;margin:0 auto;padding:0 16px 140px}
+.q-card{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--r2);padding:24px;margin-bottom:16px;animation:fadeUp .4s ease}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.q-tag{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--gold);text-transform:uppercase;margin-bottom:8px}
+.q-tag.grammar{color:#a78bfa}.q-tag.vocab{color:#38bdf8}.q-tag.phrase{color:#fb923c}
+.q-text{font-size:15px;font-weight:700;line-height:1.5;margin-bottom:14px}
+.choices{display:flex;flex-direction:column;gap:8px}
+.choice-btn{background:var(--bg3);border:1px solid var(--bg4);border-radius:var(--r);padding:12px 16px;text-align:left;color:var(--text);font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:all .15s;display:flex;align-items:flex-start;gap:10px}
+.choice-btn:hover{background:var(--bg4);border-color:var(--gold-dim)}
+.choice-btn .cl{width:26px;height:26px;min-width:26px;border-radius:50%;background:rgba(255,215,0,.15);border:1px solid var(--gold-dim);color:var(--gold);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.choice-btn.correct{border-color:#4ade80;background:rgba(74,222,128,.08)}
+.choice-btn.correct .cl{background:#4ade80;color:#000;border-color:#4ade80}
+.choice-btn.wrong{border-color:#f87171;background:rgba(248,113,113,.08)}
+.choice-btn.wrong .cl{background:#f87171;color:#fff;border-color:#f87171}
+.fb{border-radius:var(--r);padding:12px 16px;font-size:14px;line-height:1.6;border:1px solid;display:none;margin-top:10px}
+.fb.ok{background:rgba(74,222,128,.1);border-color:rgba(74,222,128,.3);color:#4ade80;display:block}
+.fb.err{background:rgba(248,113,113,.1);border-color:rgba(248,113,113,.3);color:#f87171;display:block}
+.fb.info{background:rgba(56,189,248,.1);border-color:rgba(56,189,248,.3);color:#38bdf8;display:block}
+.fill-wrap{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.blank-input{background:var(--bg3);border:2px solid var(--bg4);border-radius:8px;padding:8px 14px;color:var(--text);font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;min-width:140px;flex:1;outline:none;transition:border-color .2s}
+.blank-input:focus{border-color:var(--gold)}
+.blank-input.correct{border-color:#4ade80;background:rgba(74,222,128,.08)}
+.blank-input.wrong{border-color:#f87171;background:rgba(248,113,113,.08)}
+.check-btn{background:var(--bg3);border:1px solid var(--gold-dim);border-radius:8px;padding:8px 18px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--gold);cursor:pointer;transition:all .15s;white-space:nowrap}
+.check-btn:hover{background:var(--gold);color:#000}
+#draw-canvas{position:fixed;inset:0;z-index:500;pointer-events:none}
+#draw-canvas.active{pointer-events:all;cursor:crosshair;touch-action:none}
+.pswatch{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .15s;flex-shrink:0}
+.pswatch.active,.pswatch:hover{transform:scale(1.25);border-color:#fff}
+.nav-row{max-width:860px;margin:0 auto 12px;padding:0 4px;display:flex;gap:8px;align-items:center}
+.nav-btn{background:var(--bg3);border:1px solid var(--bg4);border-radius:8px;padding:7px 16px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:var(--text2);cursor:pointer;transition:all .15s}
+.nav-btn:hover:not(:disabled){color:var(--gold);border-color:var(--gold-dim)}
+.nav-btn:disabled{opacity:.3;cursor:default}
+.nav-label{font-size:12px;color:var(--text2);flex:1;text-align:center}
+#xp-burst{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(.5);font-family:'Bebas Neue',sans-serif;font-size:2.8rem;color:var(--gold);text-shadow:0 0 30px rgba(255,215,0,.8);z-index:9999;pointer-events:none;display:none;letter-spacing:2px}
+#xp-burst.pop{display:block;transform:translate(-50%,-50%) scale(1);transition:all .4s cubic-bezier(.17,.88,.32,1.28)}
+#xp-burst.fade{opacity:0;transform:translate(-50%,-70%) scale(1.2)}
+.vpill{display:inline-block;background:rgba(255,215,0,.12);border:1.5px solid rgba(255,215,0,.4);border-radius:4px;padding:1px 7px;font-weight:800;cursor:pointer;position:relative;color:inherit;transition:background .15s}
+.vpill:hover{background:rgba(255,215,0,.25)}
+.vpill-def{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--bg);border:2px solid var(--gold);border-radius:12px;padding:10px 14px;font-size:12px;line-height:1.5;width:220px;color:var(--text);font-weight:600;z-index:100;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,.6);white-space:normal}
+.vpill.open .vpill-def{display:block}
+.grammar-box{background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.3);border-radius:var(--r);padding:14px 18px;margin:12px 0}
+.grammar-label{font-size:11px;font-weight:800;letter-spacing:.08em;color:#a78bfa;text-transform:uppercase;margin-bottom:8px}
+.grammar-box p{font-size:14px;line-height:1.7}
+.grammar-box code{background:rgba(255,215,0,.12);border-radius:4px;padding:1px 6px;font-family:'Nunito',sans-serif;font-weight:800;color:var(--gold);font-size:14px}
+.section-hdr{display:flex;align-items:center;gap:12px;margin:20px 0 10px}
+.section-hdr-line{flex:1;height:1px;background:var(--bg4)}
+.section-hdr-text{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--text3);text-transform:uppercase;white-space:nowrap}
+.scene-meta{max-width:860px;margin:0 auto 16px;padding:0 4px;display:flex;align-items:center;gap:12px}
+.scene-badge{background:var(--gold);color:#000;border-radius:20px;padding:4px 14px;font-size:11px;font-weight:900;letter-spacing:.06em;text-transform:uppercase}
+.scene-title-text{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--gold);letter-spacing:.04em;flex:1}
+.scene-xp-tag{font-size:12px;font-weight:800;color:var(--text2)}
+.hint-banner{
+  display:none;position:fixed;top:68px;left:50%;
+  transform:translateX(-50%);z-index:300;
+  background:rgba(14,30,60,0.97);
+  border:1.5px solid #38bdf8;
+  border-radius:var(--r3);
+  padding:12px 24px;font-size:14px;
+  color:#38bdf8;font-weight:800;
+  white-space:normal;text-align:center;
+  max-width:90vw;
+  box-shadow:0 4px 24px rgba(56,189,248,.25);
+  pointer-events:none;
+}
+.hint-banner.show{display:block;animation:fadeUp .3s ease}
+.t-wrap{max-width:860px;margin:0 auto;padding:20px 16px 60px}
+.t-header{background:var(--bg2);border:1px solid var(--gold-dim);border-radius:var(--r2);padding:18px 22px;margin-bottom:16px}
+.t-header h1{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--gold2);letter-spacing:.04em}
+.t-header p{font-size:13px;color:var(--text2);margin-top:4px}
+.t-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.t-stat{background:var(--bg3);border:1px solid var(--bg4);border-radius:var(--r);padding:12px 14px;text-align:center}
+.t-stat .tv{font-family:'Bebas Neue',sans-serif;font-size:2rem;color:var(--gold);line-height:1}
+.t-stat .tk{font-size:11px;font-weight:800;letter-spacing:1px;color:var(--text2);text-transform:uppercase;margin-top:2px}
+.t-log{background:var(--bg3);border:1px solid var(--bg4);border-radius:var(--r);padding:12px;max-height:150px;overflow-y:auto;font-size:12px;color:var(--text2);line-height:1.8;margin-bottom:12px}
+.log-ok{color:#4ade80}.log-err{color:#f87171}
+.t-hint-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.t-hint-btn{background:rgba(56,189,248,.1);border:1px solid rgba(56,189,248,.4);border-radius:8px;padding:6px 12px;font-size:12px;font-weight:700;color:#38bdf8;cursor:pointer;transition:all .15s}
+.t-hint-btn:hover{background:rgba(56,189,248,.2)}
+.print-btn{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.4);border-radius:var(--r);padding:10px 20px;font-family:'Nunito',sans-serif;font-size:13px;font-weight:800;color:#4ade80;cursor:pointer;transition:opacity .15s}
+#print-summary{padding:72px 32px 32px;background:#fff;color:#000}
+#print-summary h1{font-size:22px;font-weight:800;margin-bottom:6px;color:#111}
+#print-summary p{font-size:15px;line-height:1.7;color:#444;margin-bottom:6px}
+#print-summary table{width:100%;border-collapse:collapse;font-size:14px;line-height:1.6;margin-top:10px}
+#print-summary td,#print-summary th{border:1px solid #ccc;padding:7px 10px;text-align:left}
+#print-summary th{background:#e8f5e9;font-weight:700;color:#1a1a1a}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.8)}}
+@media print{
+  body{background:#fff!important;color:#000!important}
+  #mode-bar,#teacher-view,#student-view,#pen-strip,#draw-canvas,#xp-burst,.hint-banner{display:none!important}
+  #print-summary{display:block!important;padding-top:20px!important}
+}
+/* === RESPONSIVE === */
+@media(max-width:600px){
+  #mode-bar .logo{display:none}
+  .mode-btn{font-size:11px;padding:5px 8px}
+  #cinema-subtitle{font-size:clamp(14px,3.5vw,22px);padding:10px 18px;bottom:6%;max-width:92%}
+  #cinema-wrap{border-radius:12px}
+  .scene-chip{font-size:10px;padding:3px 8px}
+}
+@media(max-width:480px){
+  .q-card{padding:clamp(14px,3vw,24px)}
+  .q-text{font-size:clamp(13px,2.5vw,15px)}
+  .t-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:360px){
+  .t-grid{grid-template-columns:1fr}
+}
+@media(min-width:601px){
+  #mode-bar .logo{display:block}
+}
+.next-glow{display:block;width:100%;margin-top:14px;background:var(--gold);color:#000;border:none;border-radius:12px;padding:13px 0;font-family:'Nunito',sans-serif;font-size:16px;font-weight:900;cursor:pointer;letter-spacing:.04em;animation:goldPulse .6s ease 3;transition:opacity .15s;}
+.next-glow:hover{opacity:.88}
+@keyframes goldPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,215,0,.6)}50%{box-shadow:0 0 0 10px rgba(255,215,0,0)}}
+</style>
+</head>
+<body>
+<div id="mode-bar">
+  <div class="logo">🔍 Ancestry Search · Ep.1 · Yusuf</div>
+  <div class="mode-btns">
+    <button class="mode-btn active" onclick="setMode('student')">Student View</button>
+    <button class="mode-btn" onclick="setMode('teacher')">Teacher Dashboard</button>
+    <button class="mode-btn" onclick="setMode('print')">Print Summary</button>
+  </div>
+  <button id="theme-toggle" onclick="toggleTheme()" style="background:transparent;border:none;font-size:18px;cursor:pointer;padding:4px 8px;line-height:1;transition:transform .2s;" title="Toggle light/dark mode">🌙</button>
+  <div id="listen-xp">⭐ <span id="xp-display">0</span> XP</div>
+</div>
+<div id="xp-burst"></div>
+<div class="hint-banner" id="hint-banner"><span id="hint-text"></span></div>
+
+<!-- STUDENT VIEW -->
+<div id="student-view" class="active">
+  <div class="scene-meta" id="scene-meta">
+    <div class="scene-badge" id="scene-badge">Scene 1</div>
+    <div class="scene-title-text" id="scene-title-text">The Letter From the Archive</div>
+    <div class="scene-xp-tag"><span id="scene-xp-amt" style="display:none">20</span></div>
+  </div>
+  <div id="cinema-wrap">
+    <div id="cinema-scene-img" style="background:linear-gradient(135deg,#1a0a00 0%,#3a1800 40%,#1a0a00 100%);display:flex;align-items:center;justify-content:center;"><div style="font-size:80px;opacity:.4">🗺️</div></div>
+    <div id="cinema-subtitle" class="hide">—</div>
+    <div id="cinema-play-btn" onclick="togglePlay()"><div id="cinema-play-icon">▶</div></div>
+  </div>
+  <div id="cinema-progress-wrap">
+    <button id="replay-btn" onclick="replayScene()" style="width:28px;height:28px;border-radius:50%;flex-shrink:0;background:rgba(255,215,0,.15);border:1px solid var(--gold-dim);color:var(--gold);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .15s;" title="Replay">↺</button>
+    <div id="cinema-progress-bar" onclick="seekProgress(event)"><div id="cinema-progress-fill"></div></div>
+    <div id="cinema-time">0:00 / 0:00</div>
+  </div>
+  <div id="speed-row" style="max-width:860px;margin:4px auto 0;padding:0 4px;display:flex;gap:6px;justify-content:flex-end;">
+    <button class="speed-btn active" onclick="setSpeed(1,this)">1×</button>
+    <button class="speed-btn" onclick="setSpeed(0.75,this)">0.75×</button>
+    <button class="speed-btn" onclick="setSpeed(1.25,this)">1.25×</button>
+  </div>
+  <div id="scene-strip">
+    <div class="scene-chip active" onclick="jumpScene(0)" id="chip-0">S1</div>
+    <div class="scene-chip" onclick="jumpScene(1)" id="chip-1">S2</div>
+    <div class="scene-chip" onclick="jumpScene(2)" id="chip-2">S3</div>
+    <div class="scene-chip" onclick="jumpScene(3)" id="chip-3">S4</div>
+    <div class="scene-chip" onclick="jumpScene(4)" id="chip-4">S5</div>
+    <div class="scene-chip" onclick="jumpScene(5)" id="chip-5">S6</div>
+    <div class="scene-chip" onclick="jumpScene(6)" id="chip-6">S7</div>
+  </div>
+  <div class="nav-row">
+    <button class="nav-btn" id="prev-btn" onclick="goScene(-1)" disabled>◄ Back</button>
+    <div class="nav-label" id="nav-label">Scene 1 of 7</div>
+    <button class="nav-btn" id="next-btn" onclick="goScene(1)">Next ►</button>
+  </div>
+  <div class="s-wrap" id="s-wrap"></div>
+</div>
+
+<!-- TEACHER VIEW -->
+<div id="teacher-view">
+  <div class="t-wrap">
+    <div class="t-header">
+      <h1>Teacher Dashboard · Yusuf — Ancestry Search Ep.1</h1>
+      <p><span style="width:8px;height:8px;background:#ef4444;display:inline-block;border-radius:50%;margin-right:6px;animation:pulse 1.4s infinite"></span>Live session · Phase 2.1 Listening · B2→C1 · ~10 min</p>
+    </div>
+    <div class="t-grid">
+      <div class="t-stat"><div class="tv" id="t-xp">0</div><div class="tk">Total XP</div></div>
+      <div class="t-stat"><div class="tv" id="t-correct">0</div><div class="tk">Correct</div></div>
+      <div class="t-stat"><div class="tv" id="t-attempts">0</div><div class="tk">Attempts</div></div>
+      <div class="t-stat"><div class="tv" id="t-scene">1</div><div class="tk">Scene</div></div>
+    </div>
+    <div class="t-log" id="t-log">Answer log will appear here...</div>
+    <div style="font-size:11px;font-weight:800;letter-spacing:1px;color:var(--text2);text-transform:uppercase;margin-bottom:8px">💡 Fire a Hint</div>
+    <div class="t-hint-row">
+      <button class="t-hint-btn" onclick="fireHint('Listen again — pay attention to the VERB form.')">Verb hint</button>
+      <button class="t-hint-btn" onclick="fireHint('Think about WHEN this happened — past or present?')">Tense hint</button>
+      <button class="t-hint-btn" onclick="fireHint('Re-read the subtitle — the answer is right there!')">Re-read hint</button>
+      <button class="t-hint-btn" onclick="fireHint('The phrase means something similar to... try another angle!')">Meaning hint</button>
+      <button class="t-hint-btn" onclick="fireHint('You got this, Yusuf! Take your time. 💪')">Encouragement</button>
+    </div>
+    <div style="font-size:11px;font-weight:800;letter-spacing:1px;color:var(--text2);text-transform:uppercase;margin-bottom:6px">Vocabulary Explored</div>
+    <div class="t-log" id="t-idiom-log" style="max-height:60px">None yet</div>
+    <div id="pdf-status" style="font-size:12px;color:var(--text2);margin-bottom:8px;min-height:16px;"></div>
+    <button class="print-btn" onclick="generatePDF()">🖨️ Download Session Summary</button>
+  </div>
+</div>
+
+<!-- PRINT SUMMARY -->
+<div id="print-summary">
+  <h1>📋 Lesson Summary — Yusuf · Ancestry Search Ep.1</h1>
+  <p><strong>Student:</strong> Yusuf &nbsp;|&nbsp; <strong>Episode:</strong> 1 — The Letter From the Archive &nbsp;|&nbsp; <strong>Date:</strong> <span id="ps-date"></span></p>
+  <table>
+    <tr><th>Metric</th><th>Result</th></tr>
+    <tr><td>Total XP Earned</td><td id="ps-xp">—</td></tr>
+    <tr><td>Correct Answers</td><td id="ps-correct">—</td></tr>
+    <tr><td>Wrong Attempts</td><td id="ps-wrong">—</td></tr>
+    <tr><td>Scenes Completed</td><td id="ps-scenes">—</td></tr>
+    <tr><td>Vocabulary Explored</td><td id="ps-vocab">—</td></tr>
+    <tr><td>Grammar 1: Past Tense</td><td>Simple Past (went, found, discovered, searched)</td></tr>
+    <tr><td>Grammar 2: Present Tense</td><td>Present Simple for facts (is, comes from, traces, lives)</td></tr>
+    <tr><td>Phrases</td><td>trace your roots · turn up · piece together</td></tr>
+    <tr><td>Vocabulary</td><td>archive, descendant</td></tr>
+    <tr><td>Homework</td><td>Write 3 sentences about something your family did in the past using Simple Past. Use: went, found, or discovered.</td></tr>
+  </table>
+</div>
+
+<!-- DRAWING CANVAS -->
+<canvas id="draw-canvas"></canvas>
+
+<script>
+(function(){try{if(localStorage.getItem('yusuf_theme')==='light'){document.body.classList.add('light-mode');document.addEventListener('DOMContentLoaded',function(){const btn=document.getElementById('theme-toggle');if(btn)btn.textContent='☀️';});}}catch(e){}}());
+const state={xp:0,correct:0,wrong:0,currentScene:0,scenesDone:[],vocabSeen:[],answerLog:[],questionStates:{},confettiFired:false};
+
+const SCENES=[
+  {id:0,label:'S1',title:'The Letter From the Archive',bg:'linear-gradient(135deg,#0a1628 0%,#1a2d4a 50%,#0a1628 100%)',emoji:'📜🗺️',
+    subtitles:[{t:0,text:"Istanbul in October. The kind of morning where the city feels ancient."},{t:4,text:"I'd been clearing out my grandmother's storage room — boxes, old fabric, dust."},{t:9,text:"Then, underneath everything, a wooden chest I'd never seen before."},{t:13,text:"Inside it — a letter. Folded carefully. Sealed with wax."},{t:17,text:"The paper was the colour of weak tea. The ink had faded to brown."},{t:22,text:"I couldn't read most of it. The handwriting was old — formal, precise."},{t:27,text:"But three words near the bottom stopped me completely."},{t:31,text:"Three countries. Three different origins. One family."},{t:35,text:"My grandmother watched from the doorway. She wasn't surprised."},{t:39,text:"'Your grandfather always said there was more to the story,' she told me."},{t:44,text:"I held the letter up to the light. Watermarks. Stamps. A date — 1887."},{t:49,text:"Something had been hidden here for over a hundred years."},{t:53,text:"And somehow, without really planning it — I decided to find out what."},{t:58,text:"That decision changed everything that came after."},{t:62,text:"My name is Yusuf. And this is where the search begins."}],totalTime:65,img:'assets/images/s1_istanbul.jpg',
+    vocab:[{word:'archive',def:'📁 A place where historical records and documents are stored.'},{word:'ancestry',def:'🌳 Your family history — the people you are descended from.'}],questions:[
+  {type:'dragbank',tag:'WORD BANK',tagClass:'vocab',text:'Drag each word into the correct blank.',
+   sentence:['Last month, Yusuf found something','extraordinary','. A letter from an','archive','said his family had gone','missing','.'],
+   blanks:[{id:'blank-0',answer:'extraordinary'},{id:'blank-1',answer:'archive'},{id:'blank-2',answer:'missing'}],
+   bank:['extraordinary','archive','missing'],
+   xp:20,correctMsg:'✅ All three words placed correctly. Well done.',wrongMsg:'Not quite — try again.'}
+]},
+  {id:1,label:'S2',title:'Grammar: Simple Past Tense',bg:'linear-gradient(135deg,#1a0028 0%,#2d0052 50%,#1a0028 100%)',emoji:'⏪📖',
+    subtitles:[{t:0,text:"The morning after I found the letter, I couldn't sleep past five."},{t:4,text:"I photographed every line before I touched anything else."},{t:8,text:"Then I went to the Beyazıt archive — the one near the old university."},{t:13,text:"I walked in nervous. I left three hours later with more questions than answers."},{t:18,text:"The archivist pulled four folders from a shelf without even checking a computer."},{t:23,text:"She just knew. Forty years of working there, I suppose."},{t:27,text:"I sat at a long wooden table under fluorescent lights and read."},{t:31,text:"A merchant. A trade route. A family that moved — and kept moving."},{t:36,text:"My great-great-grandfather left Aleppo in 1891 and arrived in Thessaloniki by 1893."},{t:41,text:"Two years. A sea crossing. A new language. A new name, almost."},{t:46,text:"By 1901 the records placed him in Istanbul — married, with three children."},{t:51,text:"One of those children was my great-grandfather. I stared at that line for a long time."},{t:57,text:"Outside, the city carried on. Trams. Traffic. Someone arguing over a parking space."},{t:62,text:"But inside that room, something had quietly shifted."},{t:66,text:"History had stopped being abstract. It had a face. A route. A reason."}],totalTime:69,img:'assets/images/s2_archive.jpg',
+    isGrammar:true,grammarType:'past',
+    questions:[{type:'mc',tag:'PAST TENSE',tagClass:'grammar',text:'Which sentence uses the Simple Past CORRECTLY?',choices:['She founds the document yesterday.','They discover the truth last week.','He went to the library and searched for clues.','We are going to the archive in 1890.'],correct:2,xp:20,correctMsg:'✅ Perfect! "Went" and "searched" are both Simple Past — finished actions in the past.',wrongMsg:'Simple Past uses verb forms like went, searched, found — not "is going" or "founds".'}]},
+  {id:2,label:'S3',title:'Grammar: Present Simple for Facts',bg:'linear-gradient(135deg,#002814 0%,#004d28 50%,#002814 100%)',emoji:'✅🌍',
+    subtitles:[{t:0,text:"My family comes from Türkiye — that part I always knew."},{t:4,text:"But the letter suggested something older, something layered underneath."},{t:8,text:"The archivist explained it simply. Borders change. People stay."},{t:13,text:"What is Syria today was part of the Ottoman Empire when my ancestor was born."},{t:18,text:"Thessaloniki, where he settled briefly, is now in Greece."},{t:22,text:"The family crosses three modern borders without ever leaving the same empire."},{t:27,text:"His descendants still live along that same corridor — Istanbul to the Aegean coast."},{t:32,text:"My grandmother traces the female line differently. Mothers, aunts, grandmothers."},{t:37,text:"She keeps names in a notebook — not dates, just names and the places they cooked."},{t:42,text:"I asked her once what she remembered about her mother's mother."},{t:46,text:"'She made börek with a very thin hand,' she said. 'The thinnest I ever saw.'"},{t:51,text:"That was her record. Not a date. Not a document. A texture."},{t:55,text:"History lives in the strangest places when you start to look for it."},{t:60,text:"Every family carries something forward without knowing it's carrying it at all."}],totalTime:63,img:'assets/images/s3_map.jpg',
+    isGrammar:true,grammarType:'present',
+    questions:[{type:'sort',tag:'SENTENCE SORT',tagClass:'grammar',text:'Drag each sentence into the correct column.',cards:[{text:'The archive is located in the old city.',col:'present'},{text:'She found the document last Tuesday.',col:'past'},{text:'He was living in Istanbul yesterday.',col:'past'},{text:'His family comes from three countries.',col:'present'}],xp:20,correctMsg:'✅ All four sentences sorted correctly.',wrongMsg:'One or more are in the wrong column. Try again.'}]},
+  {id:3,label:'S4',title:'Key Phrases',bg:'linear-gradient(135deg,#1a1000 0%,#3a2800 50%,#1a1000 100%)',emoji:'🌳🔍',
+    subtitles:[{t:0,text:"I'd been searching for three weeks before I admitted I needed help."},{t:4,text:"The archivist introduced me to a genealogist — a quiet man named Haluk."},{t:9,text:"He listened to everything I told him. Then he asked one question."},{t:13,text:"'Do you want to trace your roots, or do you just want to confirm what you already believe?'"},{t:19,text:"It's a fair question. Most people, he said, already have a story in their head."},{t:24,text:"The records either confirm it or complicate it. Both can be uncomfortable."},{t:29,text:"I told him I wanted the truth, whatever it was."},{t:33,text:"He nodded slowly. 'Then we go where the documents take us.'"},{t:37,text:"Two days later something unexpected turned up — a second letter."},{t:41,text:"Different handwriting. Different paper. Same wax seal."},{t:45,text:"It had been filed under a different surname — a name no one in my family recognised."},{t:50,text:"Haluk spread both letters on the table and looked at them side by side."},{t:55,text:"'Someone changed a name at some point,' he said quietly. 'Deliberately.'"},{t:60,text:"It took us another week to piece together why — and when — and who decided."},{t:65,text:"The answer was not what either of us expected."},{t:69,text:"Some doors, once you open them, open three more behind them."}],totalTime:72,img:'assets/images/s4_phrases.jpg',
+    vocab:[{word:'trace your roots',def:'🌳 To research and discover your family history and origins.'},{word:'turn up',def:'🔍 To appear or be found unexpectedly.'},{word:'piece together',def:'🧩 To combine separate pieces of information to understand something.'}],
+    questions:[{type:'match',tag:'MATCH THE PHRASE',tagClass:'phrase',text:'Click a phrase, then click its meaning.',pairs:[{phrase:'trace your roots',def:'Research where your family originally came from.'},{phrase:'turn up',def:'Appear or be found when least expected.'},{phrase:'piece together',def:'Combine clues until the full picture forms.'}],xp:25,correctMsg:'✅ All three phrases matched correctly.',wrongMsg:'Not all matched. Try again.'}]},
+  {id:4,label:'S5',title:'Key Vocabulary',bg:'linear-gradient(135deg,#001428 0%,#001e3c 50%,#001428 100%)',emoji:'📚🔤',
+    subtitles:[{t:0,text:"The second letter mentioned a building. A specific address in Thessaloniki."},{t:5,text:"Haluk found the property records. The building still exists."},{t:9,text:"It's an apartment block now. But in 1898 it was a merchant's warehouse."},{t:14,text:"The deed listed my ancestor as a descendant of a textile trader from Damascus."},{t:19,text:"That was new. Damascus hadn't come up in anything before."},{t:23,text:"I went to the national archive to cross-reference. Took most of a Tuesday."},{t:28,text:"The files there are kept in long grey boxes, each one labelled by year and district."},{t:33,text:"You wear cotton gloves. You can't use a pen — only pencil."},{t:37,text:"I found one entry that matched. A single line in a ledger from 1895."},{t:41,text:"His full name. His place of origin. His trade. His destination."},{t:46,text:"Four pieces of information that had survived a hundred and thirty years in a box."},{t:51,text:"I photographed it six times from different angles, just to be sure."},{t:55,text:"Then I sat in the car for twenty minutes before I could drive home."}],totalTime:58,img:'assets/images/s5_vocabulary.jpg',
+    vocab:[{word:'descendant',def:'👶 A person related to someone from an earlier generation — like a grandchild or great-grandchild.'}],
+    questions:[{type:'fill',tag:'VOCABULARY',tagClass:'vocab',text:'Complete the sentence: "Yusuf went to the _______ to find old family documents."',answer:'archive',hint:'📁 A place where historical records are kept.',xp:20,correctMsg:'✅ Archive — a place where historical records and documents are stored.',wrongMsg:'The word starts with "a" — it\'s where old records and documents are kept.'}]},
+  {id:5,label:'S6',title:'Comprehension Check',bg:'linear-gradient(135deg,#280a00 0%,#4a1400 50%,#280a00 100%)',emoji:'🎯❓',
+    subtitles:[{t:0,text:"By the end of the second month I had a rough map on my wall."},{t:5,text:"Strings connecting cities. Dates in different colours. Names in circles."},{t:10,text:"It looked like something from a detective film. My sister called it alarming."},{t:14,text:"But it was starting to make sense — the kind of sense that arrives slowly."},{t:19,text:"Yusuf found the original letter in October. He went to the archive in November."},{t:24,text:"He discovered that the family came from three different countries."},{t:28,text:"He is a direct descendant of a merchant who left Syria over a century ago."},{t:33,text:"He searched the archive for weeks before the second letter turned up."},{t:38,text:"Three countries. Two letters. One name that changed somewhere along the way."},{t:43,text:"None of it was dramatic. No great scandal. No hidden fortune."},{t:47,text:"Just people — moving, adapting, carrying what they could and leaving the rest."},{t:52,text:"Which is, when you think about it, exactly what people have always done."},{t:57,text:"The question now was what happened after Thessaloniki."},{t:61,text:"There was a gap — twelve years with no records at all."},{t:65,text:"Twelve years is a long time to disappear from the paper trail."},{t:69,text:"Haluk said those gaps are usually the most interesting part."}],totalTime:72,img:'assets/images/s6_comprehension.jpg',
+    questions:[{type:'decrypt',tag:'DECRYPT THE CLUE',tagClass:'',text:'Two words have been removed. Select the correct tiles to spell each missing word, then click Check.',sentence1:'He is a ________ of a merchant from the Ottoman Empire.',answer1:'DESCENDANT',sentence2:'He searched the ________ for proof.',answer2:'ARCHIVE',tiles1:['D','E','S','C','E','N','D','A','N','T','R','L'],tiles2:['A','R','C','H','I','V','E','K','S','M'],xp:25,correctMsg:'✅ Both words decoded. DESCENDANT and ARCHIVE.',wrongMsg:'One or both words incorrect. Clear and try again.'}]},
+  {id:6,label:'S7',title:'Mission Complete!',bg:'linear-gradient(135deg,#1a0a00 0%,#3d2000 30%,#5a3800 100%)',emoji:'🏆🌟',
+    subtitles:[{t:0,text:"You got through it. The whole first episode — and it wasn't simple."},{t:4,text:"A letter. An archive. A second name. A hundred-year-old trail."},{t:9,text:"And you followed every step of it."},{t:12,text:"Episode two takes the search to Thessaloniki — the city where it all changed."},{t:17,text:"There's a building. A deed. And a name that doesn't quite match."},{t:22,text:"The gap in the records is twelve years long. Something happened in those twelve years."},{t:28,text:"We'll find out what."},{t:31,text:"Good work today, Yusuf. Seriously."}],totalTime:37,img:'assets/images/s7_reward.jpg',audio:'assets/audio/yusuf_ancestry_ep1_s7.mp3',isLast:true,questions:[]}
+];
+
+let playInterval=null,playTime=0,isPlaying=false,currentSubIdx=-1,playbackRate=1;
+
+function launchConfetti(){
+  const canvas=document.createElement('canvas');
+  canvas.style.cssText='position:fixed;inset:0;z-index:9998;pointer-events:none;';
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+  document.body.appendChild(canvas);
+  const ctx=canvas.getContext('2d');
+  const colors=['#FFD700','#FFA500','#fff','#FFD700','#FFD700','#fffbe6'];
+  const pieces=[];
+  for(let i=0;i<120;i++){
+    pieces.push({x:Math.random()*canvas.width,y:-20-Math.random()*canvas.height*0.5,w:6+Math.random()*6,h:10+Math.random()*8,color:colors[Math.floor(Math.random()*colors.length)],rot:Math.random()*360,vx:(Math.random()-0.5)*3,vy:2+Math.random()*4,vr:(Math.random()-0.5)*8,opacity:1});
+  }
+  let frame=0;const maxFrames=180;
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    pieces.forEach(p=>{
+      p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;
+      if(frame>120)p.opacity=Math.max(0,p.opacity-0.02);
+      ctx.save();ctx.globalAlpha=p.opacity;
+      ctx.translate(p.x,p.y);ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillStyle=p.color;ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+      ctx.restore();
+    });
+    frame++;
+    if(frame<maxFrames)requestAnimationFrame(draw);
+    else canvas.remove();
+  }
+  draw();
+}
+function renderScene(){
+  const scene=SCENES[state.currentScene];
+  document.getElementById('scene-badge').textContent=scene.label;
+  document.getElementById('scene-title-text').textContent=scene.title;
+  document.getElementById('nav-label').textContent=`Scene ${state.currentScene+1} of ${SCENES.length}`;
+  document.getElementById('prev-btn').disabled=state.currentScene===0;
+  document.getElementById('next-btn').disabled=state.currentScene===SCENES.length-1;
+  document.getElementById('t-scene').textContent=state.currentScene+1;
+  SCENES.forEach((_,i)=>{
+    const c=document.getElementById('chip-'+i);
+    c.className='scene-chip'+(i===state.currentScene?' active':'')+(state.scenesDone.includes(i)?' done':'');
+  });
+  const img=document.getElementById('cinema-scene-img');
+  if(scene.img){
+    img.style.background=scene.bg;
+    img.style.backgroundImage=`url('${scene.img}')`;
+    img.style.backgroundSize='cover';
+    img.style.backgroundPosition='center';
+    img.innerHTML='';
+  } else {
+    img.style.background=scene.bg;
+    img.style.backgroundImage='none';
+    img.innerHTML=`<div style="font-size:80px;opacity:.35;user-select:none">${scene.emoji}</div>`;
+  }
+  stopPlay();playTime=0;currentSubIdx=-1;
+  updateProgressUI(0,scene.totalTime||20);
+  const sub=document.getElementById('cinema-subtitle');
+  sub.textContent='';sub.classList.add('hide');
+  document.getElementById('cinema-play-btn').classList.remove('hidden');
+  document.getElementById('cinema-play-icon').textContent='▶';
+  let html='';
+  if(scene.isGrammar) html+=buildGrammarBox(scene.grammarType);
+  if(scene.vocab&&scene.vocab.length){
+    html+=`<div class="section-hdr"><div class="section-hdr-line"></div><div class="section-hdr-text">Tap to explore vocabulary</div><div class="section-hdr-line"></div></div><div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px">`;
+    scene.vocab.forEach(v=>{html+=`<span class="vpill" onclick="toggleVocab(this)" data-word="${escStr(v.word)}">${escStr(v.word)}<span class="vpill-def">${v.def}</span></span>`});
+    html+=`</div>`;
+  }
+  if(scene.questions&&scene.questions.length){
+    html+=`<div class="section-hdr"><div class="section-hdr-line"></div><div class="section-hdr-text">Check your understanding</div><div class="section-hdr-line"></div></div>`;
+    scene.questions.forEach((q,qi)=>{
+      const qKey=`scene_${scene.id}_q${qi}`;
+      const answered=state.questionStates[qKey]||null;
+      html+=`<div class="q-card">`;
+      html+=`<div class="q-tag ${q.tagClass||''}">${q.tag}</div><div class="q-text">${q.text}</div>`;
+      if(q.type==='mc'){
+        html+=`<div class="choices">`;
+        const letters=['A','B','C','D'];
+        q.choices.forEach((c,ci)=>{
+          let cls='';if(answered){if(ci===q.correct)cls='correct';else if(answered.pickedIdx===ci&&ci!==q.correct)cls='wrong';}
+          html+=`<button class="choice-btn ${cls}" ${answered?'disabled':''} onclick="checkMC('${qKey}',${ci},${scene.id},${qi})"><span class="cl">${letters[ci]}</span>${escStr(c)}</button>`;
+        });
+        html+=`</div>`;
+        if(answered){
+          html+=`<div class="fb ${answered.correct?'ok':'err'}">${answered.correct?q.correctMsg:q.wrongMsg}</div>`;
+          if(answered.correct) html+=`<button class="next-glow" onclick="goScene(1);window.scrollTo({top:58,behavior:'smooth'})">Next Scene →</button>`;
+          if(!answered.correct) html+=`<button class="check-btn" style="margin-top:8px" onclick="resetQ('${qKey}')">🔄 Try Again</button>`;
+        }
+      } else if(q.type==='fill'){
+        if(q.hint) html+=`<div class="fb info" style="margin-bottom:8px;display:block">${q.hint}</div>`;
+        html+=`<div class="fill-wrap"><input class="blank-input ${answered?(answered.correct?'correct':'wrong'):''}" id="inp-${qKey}" type="text" placeholder="Type your answer..." ${answered?'disabled':''} value="${answered?answered.value:''}">`;
+        if(!answered) html+=`<button class="check-btn" onclick="checkFill('${qKey}',${scene.id},${qi})">Check ✓</button>`;
+        html+=`</div>`;
+        if(answered){
+          html+=`<div class="fb ${answered.correct?'ok':'err'}">${answered.correct?q.correctMsg:q.wrongMsg}</div>`;
+          if(answered.correct) html+=`<button class="next-glow" onclick="goScene(1);window.scrollTo({top:58,behavior:'smooth'})">Next Scene →</button>`;
+          if(!answered.correct) html+=`<button class="check-btn" style="margin-top:8px" onclick="resetQ('${qKey}')">🔄 Try Again</button>`;
+        }
+      } else if(q.type==='dragbank'){
+        html+=`<div class="drag-sentence" style="font-size:15px;font-weight:700;line-height:2.2;margin-bottom:16px;">`;
+        let si=0;
+        q.sentence.forEach((part,pi)=>{
+          if(pi%2===0){html+=`<span>${escStr(part)} </span>`;}
+          else{
+            const bid=q.blanks[si].id;
+            const filled=answered?answered.fills[bid]:'';
+            const correct=answered&&filled===q.blanks[si].answer;
+            const wrong=answered&&filled&&!correct;
+            html+=`<span class="drop-slot ${correct?'slot-correct':wrong?'slot-wrong':''}" id="${bid}" data-answer="${q.blanks[si].answer}" ondragover="event.preventDefault()" ondrop="dropWord(event,'${qKey}')" style="display:inline-block;min-width:110px;border-bottom:2px solid var(--gold);padding:2px 8px;margin:0 4px;border-radius:4px;text-align:center;background:${correct?'rgba(74,222,128,.15)':wrong?'rgba(248,113,113,.15)':'rgba(255,215,0,.08)'};color:${correct?'#4ade80':wrong?'#f87171':'var(--gold)'};">${filled||'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'}</span>`;
+            si++;
+          }
+        });
+        html+=`</div>`;
+        if(!answered){
+          html+=`<div class="drag-bank" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;">`;
+          q.bank.forEach(w=>{html+=`<span draggable="true" class="drag-chip" ondragstart="event.dataTransfer.setData('text',this.getAttribute('data-word'))" data-word="${w}" style="background:var(--bg3);border:1.5px solid var(--gold-dim);border-radius:20px;padding:6px 16px;font-size:13px;font-weight:800;color:var(--gold);cursor:grab;">${w}</span>`;});
+          html+=`</div>`;
+          html+=`<button class="check-btn" onclick="checkDragBank('${qKey}',${scene.id},${qi})">Check ✓</button>`;
+        }
+        if(answered){
+          html+=`<div class="fb ${answered.correct?'ok':'err'}">${answered.correct?q.correctMsg:q.wrongMsg}</div>`;
+          if(answered.correct) html+=`<button class="next-glow" onclick="goScene(1);window.scrollTo({top:58,behavior:'smooth'})">Next Scene →</button>`;
+          if(!answered.correct) html+=`<button class="check-btn" style="margin-top:8px" onclick="resetQ('${qKey}')">🔄 Try Again</button>`;
+        }
+      } else if(q.type==='sort'){
+        const pastCards=answered?answered.placements.filter(p=>p.col==='past').map(p=>p.text):[];
+        const presentCards=answered?answered.placements.filter(p=>p.col==='present').map(p=>p.text):[];
+        const placed=answered?answered.placements.map(p=>p.text):[];
+        html+=`<div style="display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap;">`;
+        if(!answered){
+          html+=`<div style="flex:1;min-width:180px;"><div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:var(--text2);text-transform:uppercase;margin-bottom:8px;">Cards</div><div id="sort-pool-${qKey}" style="display:flex;flex-direction:column;gap:8px;min-height:60px;">`;
+          q.cards.forEach(c=>{html+=`<div draggable="true" class="drag-chip" ondragstart="event.dataTransfer.setData('text','${escStr(c.text)}')" data-word="${escStr(c.text)}" style="background:var(--bg3);border:1.5px solid var(--gold-dim);border-radius:8px;padding:8px 12px;font-size:13px;font-weight:700;color:var(--text);cursor:grab;">${escStr(c.text)}</div>`;});
+          html+=`</div></div>`;
+        }
+        html+=`<div style="flex:1;min-width:160px;"><div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#f87171;text-transform:uppercase;margin-bottom:8px;">Past Action</div><div id="sort-past-${qKey}" ondragover="event.preventDefault()" ondrop="dropSort(event,'${qKey}','past',${scene.id},${qi})" style="min-height:80px;border:1.5px dashed rgba(248,113,113,.4);border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:6px;">`;
+        pastCards.forEach(t=>{const correct=q.cards.find(c=>c.text===t&&c.col==='past');html+=`<div style="background:${correct?'rgba(74,222,128,.12)':'rgba(248,113,113,.12)'};border:1px solid ${correct?'#4ade80':'#f87171'};border-radius:6px;padding:6px 10px;font-size:13px;font-weight:700;color:var(--text);">${escStr(t)}</div>`;});
+        html+=`</div></div>`;
+        html+=`<div style="flex:1;min-width:160px;"><div style="font-size:11px;font-weight:800;letter-spacing:.08em;color:#38bdf8;text-transform:uppercase;margin-bottom:8px;">Present Fact</div><div id="sort-present-${qKey}" ondragover="event.preventDefault()" ondrop="dropSort(event,'${qKey}','present',${scene.id},${qi})" style="min-height:80px;border:1.5px dashed rgba(56,189,248,.4);border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:6px;">`;
+        presentCards.forEach(t=>{const correct=q.cards.find(c=>c.text===t&&c.col==='present');html+=`<div style="background:${correct?'rgba(74,222,128,.12)':'rgba(56,189,248,.12)'};border:1px solid ${correct?'#4ade80':'#38bdf8'};border-radius:6px;padding:6px 10px;font-size:13px;font-weight:700;color:var(--text);">${escStr(t)}</div>`;});
+        html+=`</div></div>`;
+        html+=`</div>`;
+        if(!answered) html+=`<button class="check-btn" onclick="checkSort('${qKey}',${scene.id},${qi})">Check ✓</button>`;
+        if(answered){
+          html+=`<div class="fb ${answered.correct?'ok':'err'}">${answered.correct?q.correctMsg:q.wrongMsg}</div>`;
+          if(answered.correct) html+=`<button class="next-glow" onclick="goScene(1);window.scrollTo({top:58,behavior:'smooth'})">Next Scene →</button>`;
+          if(!answered.correct) html+=`<button class="check-btn" style="margin-top:8px" onclick="resetQ('${qKey}')">🔄 Try Again</button>`;
+        }
+      } else if(q.type==='match'){
+        const qs=state.questionStates[qKey]||null;
+        const done=qs?qs.matched||[]:[];
+        const sel=window._matchSel&&window._matchSel[qKey]?window._matchSel[qKey]:{};
+        html+=`<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px;">`;
+        html+=`<div style="flex:1;min-width:140px;display:flex;flex-direction:column;gap:8px;">`;
+        q.pairs.forEach((p,pi)=>{
+          const matched=done.includes(p.phrase);
+          const isSelected=sel.phrase===p.phrase;
+          html+=`<div onclick="matchClick('${qKey}','phrase','${escStr(p.phrase)}',${scene.id},${qi})" style="padding:10px 14px;border-radius:8px;font-size:13px;font-weight:800;cursor:${qs?'default':'pointer'};border:1.5px solid ${matched?'#1D9E75':isSelected?'var(--gold)':'var(--bg4)'};background:${matched?'rgba(29,158,117,.15)':isSelected?'var(--gold-dim)':'var(--bg3)'};color:${matched?'#4ade80':isSelected?'var(--gold)':'var(--text)'};">${matched?'✓ ':''} ${escStr(p.phrase)}</div>`;
+        });
+        html+=`</div>`;
+        html+=`<div style="flex:1;min-width:160px;display:flex;flex-direction:column;gap:8px;">`;
+        const defOrder=[1,2,0];
+        defOrder.forEach(pi=>{
+          const p=q.pairs[pi];
+          const matched=done.includes(p.phrase);
+          const isSelected=sel.def===p.def;
+          html+=`<div onclick="matchClick('${qKey}','def','${escStr(p.def)}',${scene.id},${qi})" style="padding:10px 14px;border-radius:8px;font-size:13px;font-weight:700;cursor:${qs?'default':'pointer'};border:1.5px solid ${matched?'#1D9E75':isSelected?'var(--gold)':'var(--bg4)'};background:${matched?'rgba(29,158,117,.15)':isSelected?'var(--gold-dim)':'var(--bg3)'};color:${matched?'#4ade80':isSelected?'var(--gold)':'var(--text2)'};">${matched?'✓ ':''} ${escStr(p.def)}</div>`;
+        });
+        html+=`</div></div>`;
+        if(qs){
+          html+=`<div class="fb ${qs.correct?'ok':'err'}">${qs.correct?q.correctMsg:q.wrongMsg}</div>`;
+          if(qs.correct) html+=`<button class="next-glow" onclick="goScene(1);window.scrollTo({top:58,behavior:'smooth'})">Next Scene →</button>`;
+          if(!qs.correct) html+=`<button class="check-btn" style="margin-top:8px" onclick="resetMatch('${qKey}')">🔄 Try Again</button>`;
+        }
+      } else if(q.type==='decrypt'){
+        const qs=state.questionStates[qKey]||null;
+        if(!window._decryptSel)window._decryptSel={};
+        if(!window._decryptSel[qKey])window._decryptSel[qKey]={t1:[],t2:[]};
+        const sel=qs?null:window._decryptSel[qKey];
+        const w1=qs?q.answer1:(sel.t1.map(k=>k.split('_')[0]).join(''));
+        const w2=qs?q.answer2:(sel.t2.map(k=>k.split('_')[0]).join(''));
+        html+=`<div style="margin-bottom:18px;">`;
+        html+=`<div style="font-size:14px;font-weight:700;color:var(--text2);margin-bottom:10px;">${q.sentence1.replace('________','<span style=\\"color:var(--gold);border-bottom:2px solid var(--gold);padding:0 8px;\\">'+(w1||'________')+'</span>')}</div>`;
+        if(!qs){
+          html+=`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;">`;
+          q.tiles1.forEach((t,ti)=>{const key=t+'_'+ti;const picked=sel.t1.includes(key);html+=`<div onclick="decryptTile('${qKey}',1,${ti},'${t}')" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:6px;font-family:'Bebas Neue',sans-serif;font-size:18px;cursor:pointer;border:1.5px solid ${picked?'var(--gold)':'var(--bg4)'};background:${picked?'var(--gold-dim)':'var(--bg3)'};color:${picked?'var(--gold)':'var(--text)'};">${t}</div>`;});
+          html+=`</div>`;
+          html+=`<div style="min-height:32px;padding:6px 10px;background:var(--bg3);border-radius:6px;font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold);letter-spacing:.1em;margin-bottom:6px;">${w1||'&nbsp;'}</div>`;
+          html+=`<button class="check-btn" onclick="decryptClear('${qKey}',1)" style="font-size:11px;padding:4px 10px;">Clear</button>`;
+        }
+        html+=`</div>`;
+        html+=`<div style="margin-bottom:18px;">`;
+        html+=`<div style="font-size:14px;font-weight:700;color:var(--text2);margin-bottom:10px;">${q.sentence2.replace('________','<span style=\\"color:var(--gold);border-bottom:2px solid var(--gold);padding:0 8px;\\">'+(w2||'________')+'</span>')}</div>`;
+        if(!qs){
+          html+=`<div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;">`;
+          q.tiles2.forEach((t,ti)=>{const key=t+'_'+ti;const picked=sel.t2.includes(key);html+=`<div onclick="decryptTile('${qKey}',2,${ti},'${t}')" style="width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:6px;font-family:'Bebas Neue',sans-serif;font-size:18px;cursor:pointer;border:1.5px solid ${picked?'var(--gold)':'var(--bg4)'};background:${picked?'var(--gold-dim)':'var(--bg3)'};color:${picked?'var(--gold)':'var(--text)'};">${t}</div>`;});
+          html+=`</div>`;
+          html+=`<div style="min-height:32px;padding:6px 10px;background:var(--bg3);border-radius:6px;font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--gold);letter-spacing:.1em;margin-bottom:6px;">${w2||'&nbsp;'}</div>`;
+          html+=`<button class="check-btn" onclick="decryptClear('${qKey}',2)" style="font-size:11px;padding:4px 10px;">Clear</button>`;
+        }
+        html+=`</div>`;
+        if(!qs) html+=`<button class="check-btn" onclick="checkDecrypt('${qKey}',${scene.id},${qi})">Check ✓</button>`;
+        if(qs){
+          html+=`<div class="fb ${qs.correct?'ok':'err'}">${qs.correct?q.correctMsg:q.wrongMsg}</div>`;
+          if(qs.correct) html+=`<button class="next-glow" onclick="goScene(1);window.scrollTo({top:58,behavior:'smooth'})">Next Scene →</button>`;
+          if(!qs.correct) html+=`<button class="check-btn" style="margin-top:8px" onclick="resetDecrypt('${qKey}')">🔄 Try Again</button>`;
+        }
+      }
+      html+=`</div>`;
+    });
+  }
+  if(scene.isLast){
+    html+=`<div class="q-card" style="text-align:center;padding:30px"><div style="font-size:52px;margin-bottom:12px">🏆</div><div style="font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--gold);letter-spacing:.04em;margin-bottom:8px">Episode 1 Complete!</div><div style="font-size:14px;color:var(--text2);line-height:1.7">Total XP: <strong style="color:var(--gold)">${state.xp} XP</strong><br>Correct: <strong style="color:#4ade80">${state.correct}</strong> · Attempts: <strong style="color:var(--text)">${state.correct+state.wrong}</strong><br><br><em>Episode 2: The Greek Connection — coming soon!</em><div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,215,0,.2);font-size:13px;font-style:italic;color:var(--text2);line-height:1.7;letter-spacing:.01em;">31 months. A1 to C1.<br>This is Episode 1 of the next chapter.</div></div></div>`;
+  }
+  if(!html) html=`<div style="text-align:center;padding:30px;color:var(--text2);font-size:14px">▶ Press play to begin, then answer the questions below.</div>`;
+  document.getElementById('s-wrap').innerHTML=html;
+  const hasCorrect=scene.questions&&scene.questions.some((_,qi)=>{
+    const k=`scene_${scene.id}_q${qi}`;
+    return state.questionStates[k]&&state.questionStates[k].correct;
+  });
+  const nb=document.getElementById('next-btn');
+  if(nb){
+    nb.style.border=hasCorrect?'2px solid #FFD700':'';
+    nb.style.boxShadow=hasCorrect?'0 0 12px rgba(255,215,0,0.5)':'';
+  }
+  if(scene.isLast&&!state.confettiFired){
+    state.confettiFired=true;
+    setTimeout(launchConfetti,400);
+  }
+}
+
+function buildGrammarBox(type){
+  if(type==='past') return `<div class="grammar-box"><div class="grammar-label">🎯 Grammar Focus: Simple Past Tense</div><p>Use Simple Past for <strong>finished actions</strong> in the past.<br><br>✅ <code>I <strong>found</strong> the letter yesterday.</code><br>✅ <code>He <strong>went</strong> to the archive.</code><br>✅ <code>She <strong>discovered</strong> a photograph.</code><br><br>❌ <code>She <strong>founds</strong> it.</code> (wrong!)<br>❌ <code>He <strong>is go</strong> there.</code> (wrong!)</p></div>`;
+  if(type==='present') return `<div class="grammar-box"><div class="grammar-label">🎯 Grammar Focus: Present Simple for Facts</div><p>Use Present Simple for <strong>permanent facts</strong> — things always true.<br><br>✅ <code>The archive <strong>is</strong> in the old city.</code><br>✅ <code>His family <strong>comes from</strong> Türkiye.</code><br>✅ <code>She <strong>traces</strong> the family tree every year.</code></p></div>`;
+  return '';
+}
+
+function checkMC(qKey,pickedIdx,sceneId,qIdx){
+  const scene=SCENES.find(s=>s.id===sceneId);const q=scene.questions[qIdx];
+  if(state.questionStates[qKey])return;
+  const correct=pickedIdx===q.correct;
+  state.questionStates[qKey]={correct,pickedIdx};
+  if(correct){state.correct++;state.xp+=q.xp;if(!state.scenesDone.includes(state.currentScene))state.scenesDone.push(state.currentScene);logAnswer(`✅ ${q.tag}: "${q.choices[pickedIdx]}" +${q.xp}XP`,true);showXPBurst('+'+q.xp+' XP');}
+  else{state.wrong++;logAnswer(`❌ ${q.tag}: "${q.choices[pickedIdx]}"`,false);}
+  updateDashboard();renderScene();
+}
+
+function checkFill(qKey,sceneId,qIdx){
+  const scene=SCENES.find(s=>s.id===sceneId);const q=scene.questions[qIdx];
+  if(state.questionStates[qKey])return;
+  const inp=document.getElementById('inp-'+qKey);
+  const val=inp?inp.value.trim().toLowerCase():'';
+  const ans=q.answer.toLowerCase();
+  const correct=val===ans||val.includes(ans)||ans.includes(val);
+  state.questionStates[qKey]={correct,value:inp?inp.value:''};
+  if(correct){state.correct++;state.xp+=q.xp;if(!state.scenesDone.includes(state.currentScene))state.scenesDone.push(state.currentScene);logAnswer(`✅ Fill: "${inp?inp.value:''}" +${q.xp}XP`,true);showXPBurst('+'+q.xp+' XP');}
+  else{state.wrong++;logAnswer(`❌ Fill: "${inp?inp.value:''}"`,false);}
+  updateDashboard();renderScene();
+}
+
+function resetQ(qKey){delete state.questionStates[qKey];renderScene();}
+
+function togglePlay(){if(isPlaying){stopPlay();}else{startPlay();}}
+function startPlay(){
+  if(isPlaying)return;
+  isPlaying=true;
+  const pb=document.getElementById('cinema-play-btn');if(pb){pb.classList.remove('hidden');pb.classList.add('playing');pb.style.background='rgba(0,0,0,0)';}
+  const pi=document.getElementById('cinema-play-icon');if(pi)pi.textContent='⏸';
+  const scene=SCENES[state.currentScene];const total=scene.totalTime||20;
+  const tick=Math.round(100/playbackRate);
+  playInterval=setInterval(()=>{
+    playTime+=0.1*playbackRate;updateProgressUI(playTime,total);updateSubtitle(scene);
+    if(playTime>=total){stopPlay();setTimeout(()=>{const sub=document.getElementById('cinema-subtitle');if(sub)sub.classList.add('hide');},2000);}
+  },tick);
+  if(scene.audio){
+    let audioEl=document.getElementById('scene-audio');
+    if(!audioEl){audioEl=document.createElement('audio');audioEl.id='scene-audio';audioEl.style.display='none';document.body.appendChild(audioEl);}
+    audioEl.src=scene.audio;audioEl.playbackRate=playbackRate;
+    audioEl.play().catch(e=>console.warn('Audio play failed:',e));
+  }
+}
+function stopPlay(){if(playInterval){clearInterval(playInterval);playInterval=null;}isPlaying=false;const pb=document.getElementById('cinema-play-btn');if(pb){pb.classList.remove('hidden');pb.classList.remove('playing');pb.style.background='';}const pi=document.getElementById('cinema-play-icon');if(pi)pi.textContent='▶';const audioEl=document.getElementById('scene-audio');if(audioEl){audioEl.pause();}}
+function replayScene(){
+  stopPlay();playTime=0;currentSubIdx=-1;
+  const audioEl=document.getElementById('scene-audio');if(audioEl){audioEl.currentTime=0;}
+  const scene=SCENES[state.currentScene];
+  updateProgressUI(0,scene.totalTime||20);
+  const sub=document.getElementById('cinema-subtitle');if(sub){sub.textContent='';sub.classList.add('hide');}
+  startPlay();
+}
+function setSpeed(rate,btn){
+  playbackRate=rate;
+  document.querySelectorAll('.speed-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  if(isPlaying){stopPlay();startPlay();}
+}
+function updateSubtitle(scene){
+  if(!scene.subtitles)return;
+  const sub=document.getElementById('cinema-subtitle');
+  let activeIdx=-1;
+  for(let i=scene.subtitles.length-1;i>=0;i--){if(playTime>=scene.subtitles[i].t){activeIdx=i;break;}}
+  if(activeIdx!==currentSubIdx){
+    currentSubIdx=activeIdx;
+    if(activeIdx>=0){sub.textContent=scene.subtitles[activeIdx].text;sub.classList.remove('hide');}
+    else sub.classList.add('hide');
+  }
+}
+function updateProgressUI(cur,total){
+  const pct=total>0?Math.min(100,(cur/total)*100):0;
+  const fill=document.getElementById('cinema-progress-fill');if(fill)fill.style.width=pct+'%';
+  const t=document.getElementById('cinema-time');if(t)t.textContent=fmtTime(cur)+' / '+fmtTime(total);
+}
+function fmtTime(s){const m=Math.floor(s/60),sec=Math.floor(s%60);return m+':'+(sec<10?'0':'')+sec;}
+function seekProgress(e){const bar=document.getElementById('cinema-progress-bar');const rect=bar.getBoundingClientRect();const pct=Math.max(0,Math.min(1,(e.clientX-rect.left)/rect.width));playTime=pct*(SCENES[state.currentScene].totalTime||20);currentSubIdx=-1;updateProgressUI(playTime,SCENES[state.currentScene].totalTime||20);}
+
+function goScene(dir){const next=state.currentScene+dir;if(next>=0&&next<SCENES.length){state.currentScene=next;renderScene();window.scrollTo({top:58,behavior:'smooth'});}}
+function jumpScene(idx){state.currentScene=idx;renderScene();window.scrollTo({top:58,behavior:'smooth'});}
+
+function toggleVocab(el){
+  const isOpen=el.classList.contains('open');
+  document.querySelectorAll('.vpill').forEach(p=>p.classList.remove('open'));
+  if(!isOpen){el.classList.add('open');const word=el.getAttribute('data-word');if(word&&!state.vocabSeen.includes(word)){state.vocabSeen.push(word);updateVocabLog();}}
+}
+function updateVocabLog(){const el=document.getElementById('t-idiom-log');if(el)el.textContent=state.vocabSeen.length?state.vocabSeen.join(', '):'None yet';}
+
+function fireHint(msg){
+  setMode('student');
+  const b=document.getElementById('hint-banner');
+  document.getElementById('hint-text').textContent=msg;
+  b.classList.add('show');
+  setTimeout(()=>b.classList.remove('show'),6000);
+}
+
+function updateDashboard(){
+  document.getElementById('xp-display').textContent=state.xp;
+  document.getElementById('t-xp').textContent=state.xp;
+  document.getElementById('t-correct').textContent=state.correct;
+  document.getElementById('t-attempts').textContent=state.correct+state.wrong;
+  const s=document.getElementById('pdf-status');
+  if(s&&s.textContent==='No session data recorded yet.')s.textContent='';
+}
+function logAnswer(msg,correct){
+  state.answerLog.push(msg);const log=document.getElementById('t-log');if(!log)return;
+  if(log.textContent==='Answer log will appear here...')log.innerHTML='';
+  const d=document.createElement('div');d.className=correct?'log-ok':'log-err';d.textContent=msg;log.appendChild(d);log.scrollTop=log.scrollHeight;
+}
+function showXPBurst(msg){const el=document.getElementById('xp-burst');el.textContent=msg;el.className='xp-burst pop';setTimeout(()=>el.classList.add('fade'),700);setTimeout(()=>el.className='xp-burst',1200);}
+
+function setMode(m){
+  document.getElementById('student-view').classList.toggle('active',m==='student');
+  document.getElementById('teacher-view').classList.toggle('active',m==='teacher');
+  document.getElementById('print-summary').style.display=m==='print'?'block':'none';
+  document.querySelectorAll('.mode-btn').forEach((b,i)=>b.classList.toggle('active',['student','teacher','print'][i]===m));
+  if(m==='print'){
+    document.getElementById('ps-date').textContent=new Date().toLocaleDateString('en-GB');
+    document.getElementById('ps-xp').textContent=state.xp;
+    document.getElementById('ps-correct').textContent=state.correct;
+    document.getElementById('ps-wrong').textContent=state.wrong;
+    document.getElementById('ps-scenes').textContent=state.scenesDone.length+' / '+SCENES.length;
+    document.getElementById('ps-vocab').textContent=state.vocabSeen.length>0?state.vocabSeen.join(', '):'None explored';
+  }
+}
+
+const canvas=document.getElementById('draw-canvas');
+const ctx=canvas.getContext('2d');
+let penActive=false,drawing=false,penColor='#FFD700',penSize=6;
+function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}
+window.addEventListener('resize',resizeCanvas);resizeCanvas();
+canvas.addEventListener('mousedown',e=>{if(!penActive)return;drawing=true;ctx.beginPath();ctx.moveTo(e.clientX,e.clientY);});
+canvas.addEventListener('mousemove',e=>{if(!drawing||!penActive)return;ctx.lineWidth=penSize;ctx.lineCap='round';ctx.strokeStyle=penColor;ctx.lineTo(e.clientX,e.clientY);ctx.stroke();ctx.beginPath();ctx.moveTo(e.clientX,e.clientY);});
+canvas.addEventListener('mouseup',()=>drawing=false);
+canvas.addEventListener('touchstart',e=>{if(!penActive)return;e.preventDefault();drawing=true;const t=e.touches[0];ctx.beginPath();ctx.moveTo(t.clientX,t.clientY);},{passive:false});
+canvas.addEventListener('touchmove',e=>{if(!drawing||!penActive)return;e.preventDefault();const t=e.touches[0];ctx.lineWidth=penSize;ctx.lineCap='round';ctx.strokeStyle=penColor;ctx.lineTo(t.clientX,t.clientY);ctx.stroke();ctx.beginPath();ctx.moveTo(t.clientX,t.clientY);},{passive:false});
+canvas.addEventListener('touchend',()=>drawing=false);
+document.addEventListener('touchstart',function(e){
+  const chip=e.target.closest('.drag-chip');
+  if(!chip)return;
+  chip._touchClone=chip.cloneNode(true);
+  chip._touchClone.style.cssText='position:fixed;opacity:0.8;pointer-events:none;z-index:9999;background:var(--bg3);border:1.5px solid var(--gold-dim);border-radius:20px;padding:6px 16px;font-size:13px;font-weight:800;color:#FFD700;';
+  document.body.appendChild(chip._touchClone);
+},{passive:true});
+document.addEventListener('touchmove',function(e){
+  const chip=e.target.closest('.drag-chip');
+  if(!chip||!chip._touchClone)return;
+  const t=e.touches[0];
+  chip._touchClone.style.left=(t.clientX-40)+'px';
+  chip._touchClone.style.top=(t.clientY-20)+'px';
+},{passive:true});
+document.addEventListener('touchend',function(e){
+  const chip=e.target.closest('.drag-chip');
+  if(!chip||!chip._touchClone)return;
+  const t=e.changedTouches[0];
+  const el=document.elementFromPoint(t.clientX,t.clientY);
+  const slot=el?el.closest('.drop-slot'):null;
+  if(slot){slot.textContent=chip.getAttribute('data-word');slot.setAttribute('data-filled',chip.getAttribute('data-word'));}
+  chip._touchClone.remove();
+  delete chip._touchClone;
+},{passive:true});
+let penTapTimer=null;
+function handlePenTap(){
+  if(penTapTimer){
+    clearTimeout(penTapTimer);
+    penTapTimer=null;
+    clearCanvas();
+    const btn=document.getElementById('pen-toggle');
+    if(btn){
+      btn.textContent='✏️ Cleared';
+      setTimeout(()=>{btn.textContent=penActive?'✏️ ON':'✏️ Pen';},800);
+    }
+  } else {
+    penTapTimer=setTimeout(()=>{penTapTimer=null;togglePen();},280);
+  }
+}
+function togglePen(){
+  penActive=!penActive;
+  canvas.classList.toggle('active',penActive);
+  const btn=document.getElementById('pen-toggle');
+  btn.style.background=penActive?'var(--gold)':'var(--bg3)';
+  btn.style.color=penActive?'#000':'var(--gold)';
+  btn.textContent=penActive?'✏️ ON':'✏️ Pen';
+  const opacity=penActive?'1':'0.4';
+  const pe=penActive?'all':'none';
+  document.getElementById('pen-colors').style.opacity=opacity;
+  document.getElementById('pen-colors').style.pointerEvents=pe;
+  document.getElementById('pen-slider').style.opacity=opacity;
+  document.getElementById('pen-slider').style.pointerEvents=pe;
+}
+function setPenColor(c,el){penColor=c;document.querySelectorAll('.pswatch').forEach(s=>s.classList.remove('active'));el.classList.add('active');}
+function setPenSize(v){penSize=parseInt(v);}
+function clearCanvas(){ctx.clearRect(0,0,canvas.width,canvas.height);}
+
+function toggleTheme(){
+  const isLight=document.body.classList.toggle('light-mode');
+  document.getElementById('theme-toggle').textContent=isLight?'☀️':'🌙';
+  try{localStorage.setItem('yusuf_theme',isLight?'light':'dark');}catch(e){}
+}
+
+function dropWord(event,qKey){
+  const word=event.dataTransfer.getData('text');
+  const slot=event.target.closest('.drop-slot');
+  if(!slot)return;
+  slot.textContent=word;
+  slot.setAttribute('data-filled',word);
+}
+
+function checkDragBank(qKey,sceneId,qIdx){
+  const scene=SCENES.find(s=>s.id===sceneId);
+  const q=scene.questions[qIdx];
+  if(state.questionStates[qKey])return;
+  const fills={};let allCorrect=true;
+  q.blanks.forEach(b=>{
+    const slot=document.getElementById(b.id);
+    const val=slot?slot.getAttribute('data-filled')||'':'';
+    fills[b.id]=val;
+    if(val!==b.answer)allCorrect=false;
+  });
+  state.questionStates[qKey]={correct:allCorrect,fills};
+  if(allCorrect){state.correct++;state.xp+=q.xp;if(!state.scenesDone.includes(state.currentScene))state.scenesDone.push(state.currentScene);logAnswer(`✅ Word Bank: all correct +${q.xp}XP`,true);showXPBurst('+'+q.xp+' XP');}
+  else{state.wrong++;logAnswer(`❌ Word Bank: incorrect placement`,false);}
+  updateDashboard();renderScene();
+}
+
+function dropSort(event,qKey,col,sceneId,qIdx){
+  const text=event.dataTransfer.getData('text');
+  if(!text)return;
+  if(state.questionStates[qKey])return;
+  if(!window._sortTemp)window._sortTemp={};
+  if(!window._sortTemp[qKey])window._sortTemp[qKey]=[];
+  window._sortTemp[qKey]=window._sortTemp[qKey].filter(p=>p.text!==text);
+  window._sortTemp[qKey].push({text,col});
+  const pool=document.getElementById('sort-pool-'+qKey);
+  if(pool){const chip=[...pool.children].find(c=>c.getAttribute('data-word')===text);if(chip)chip.remove();}
+  const zone=document.getElementById('sort-'+col+'-'+qKey);
+  if(zone){const d=document.createElement('div');d.style.cssText='background:rgba(56,189,248,.12);border:1px solid #38bdf8;border-radius:6px;padding:6px 10px;font-size:13px;font-weight:700;color:var(--text2);';d.textContent=text;zone.appendChild(d);}
+}
+
+function checkSort(qKey,sceneId,qIdx){
+  const scene=SCENES.find(s=>s.id===sceneId);
+  const q=scene.questions[qIdx];
+  if(state.questionStates[qKey])return;
+  const placements=window._sortTemp&&window._sortTemp[qKey]?window._sortTemp[qKey]:[];
+  if(placements.length<q.cards.length){alert('Place all cards before checking.');return;}
+  let allCorrect=true;
+  placements.forEach(p=>{const card=q.cards.find(c=>c.text===p.text);if(!card||card.col!==p.col)allCorrect=false;});
+  state.questionStates[qKey]={correct:allCorrect,placements};
+  if(allCorrect){state.correct++;state.xp+=q.xp;if(!state.scenesDone.includes(state.currentScene))state.scenesDone.push(state.currentScene);logAnswer(`✅ Sentence Sort: all correct +${q.xp}XP`,true);showXPBurst('+'+q.xp+' XP');}
+  else{state.wrong++;logAnswer(`❌ Sentence Sort: incorrect`,false);}
+  if(window._sortTemp)delete window._sortTemp[qKey];
+  updateDashboard();renderScene();
+}
+
+function matchClick(qKey,type,value,sceneId,qIdx){
+  const scene=SCENES.find(s=>s.id===sceneId);
+  const q=scene.questions[qIdx];
+  if(state.questionStates[qKey])return;
+  if(!window._matchSel)window._matchSel={};
+  if(!window._matchDone)window._matchDone={};
+  if(!window._matchDone[qKey])window._matchDone[qKey]=[];
+  const sel=window._matchSel[qKey]||{};
+  if(type==='phrase'){window._matchSel[qKey]={...sel,phrase:value};renderScene();return;}
+  if(type==='def'){
+    window._matchSel[qKey]={...sel,def:value};
+    const cur=window._matchSel[qKey];
+    if(cur.phrase&&cur.def){
+      const pair=q.pairs.find(p=>p.phrase===cur.phrase&&p.def===cur.def);
+      if(pair){
+        window._matchDone[qKey].push(cur.phrase);
+        window._matchSel[qKey]={};
+        if(window._matchDone[qKey].length===q.pairs.length){
+          state.questionStates[qKey]={correct:true,matched:window._matchDone[qKey]};
+          state.correct++;state.xp+=q.xp;
+          if(!state.scenesDone.includes(state.currentScene))state.scenesDone.push(state.currentScene);
+          logAnswer(`✅ Match: all correct +${q.xp}XP`,true);showXPBurst('+'+q.xp+' XP');
+          updateDashboard();
+        }
+      } else {
+        window._matchSel[qKey]={};
+        state.wrong++;logAnswer(`❌ Match: wrong pair`,false);updateDashboard();
+      }
+      renderScene();
+    } else renderScene();
+  }
+}
+
+function resetMatch(qKey){
+  delete state.questionStates[qKey];
+  if(window._matchSel)delete window._matchSel[qKey];
+  if(window._matchDone)delete window._matchDone[qKey];
+  renderScene();
+}
+
+function decryptTile(qKey,grid,idx,letter){
+  if(!window._decryptSel)window._decryptSel={};
+  if(!window._decryptSel[qKey])window._decryptSel[qKey]={t1:[],t2:[]};
+  const key=letter+'_'+idx;
+  const arr=grid===1?window._decryptSel[qKey].t1:window._decryptSel[qKey].t2;
+  const pos=arr.indexOf(key);
+  if(pos>=0)arr.splice(pos,1);else arr.push(key);
+  renderScene();
+}
+
+function decryptClear(qKey,grid){
+  if(!window._decryptSel||!window._decryptSel[qKey])return;
+  if(grid===1)window._decryptSel[qKey].t1=[];
+  else window._decryptSel[qKey].t2=[];
+  renderScene();
+}
+
+function checkDecrypt(qKey,sceneId,qIdx){
+  const scene=SCENES.find(s=>s.id===sceneId);
+  const q=scene.questions[qIdx];
+  if(state.questionStates[qKey])return;
+  const sel=window._decryptSel&&window._decryptSel[qKey]?window._decryptSel[qKey]:{t1:[],t2:[]};
+  const w1=sel.t1.map(k=>k.split('_')[0]).join('').toUpperCase();
+  const w2=sel.t2.map(k=>k.split('_')[0]).join('').toUpperCase();
+  const correct=w1===q.answer1.toUpperCase()&&w2===q.answer2.toUpperCase();
+  state.questionStates[qKey]={correct,w1,w2};
+  if(correct){state.correct++;state.xp+=q.xp;if(!state.scenesDone.includes(state.currentScene))state.scenesDone.push(state.currentScene);logAnswer(`✅ Decrypt: ${w1} + ${w2} +${q.xp}XP`,true);showXPBurst('+'+q.xp+' XP');}
+  else{state.wrong++;logAnswer(`❌ Decrypt: ${w1||'?'} / ${w2||'?'}`,false);}
+  updateDashboard();renderScene();
+}
+
+function resetDecrypt(qKey){
+  delete state.questionStates[qKey];
+  if(window._decryptSel)delete window._decryptSel[qKey];
+  renderScene();
+}
+
+function escStr(s){return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;');}
+
+function generatePDF(){
+  const status=document.getElementById('pdf-status');
+  if(state.correct===0&&state.wrong===0){
+    if(status)status.textContent='No session data recorded yet.';
+    return;
+  }
+  if(status)status.textContent='Opening PDF...';
+  const today=new Date().toLocaleDateString('en-GB');
+  const vocabText=state.vocabSeen.length>0?state.vocabSeen.join(', '):'None explored';
+  const scenesText=state.scenesDone.length+' / '+SCENES.length;
+  const rows=[
+    ['Total XP Earned',String(state.xp)],
+    ['Correct Answers',String(state.correct)],
+    ['Wrong Attempts',String(state.wrong)],
+    ['Scenes Completed',scenesText],
+    ['Vocabulary Explored',vocabText],
+    ['Grammar 1','Simple Past (went, found, discovered, searched)'],
+    ['Grammar 2','Present Simple for facts (is, comes from, traces, lives)'],
+    ['Phrases','trace your roots · turn up · piece together'],
+    ['Vocabulary','archive, descendant'],
+    ['Homework','Write 3 sentences about something your family did in the past using Simple Past.']
+  ];
+  const tableRows=rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('');
+  const html=`<!DOCTYPE html>
+<html><head><meta charset="UTF-8">
+<title>Yusuf | Ancestry Search Ep.1 | ${today}</title>
+<style>
+  body{font-family:Arial,sans-serif;padding:32px;color:#111;max-width:700px;margin:0 auto}
+  h1{font-size:18px;font-weight:800;color:#005a1e;margin-bottom:6px}
+  .meta{font-size:13px;color:#444;margin-bottom:20px}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}
+  td,th{border:1px solid #ccc;padding:8px 12px;text-align:left;vertical-align:top}
+  th{background:#e8f5e9;font-weight:700;width:40%}
+  tr:nth-child(even) td{background:#f9fafb}
+  .footer{margin-top:24px;font-size:11px;color:#888;border-top:1px solid #eee;padding-top:12px}
+  @media print{body{padding:16px}.no-print{display:none}button{display:none}}
+</style></head>
+<body>
+<h1>Lesson Summary — Yusuf | Ancestry Search Ep.1</h1>
+<div class="meta"><strong>Student:</strong> Yusuf &nbsp;|&nbsp; <strong>Date:</strong> ${today} &nbsp;|&nbsp; <strong>Series:</strong> Ancestry Search · Episode 1</div>
+<table><tr><th>Metric</th><th>Result</th></tr>${tableRows}</table>
+<div class="footer">TAQAN Apex Curriculum &nbsp;·&nbsp; Confidential &nbsp;·&nbsp; ${today}</div>
+<br>
+<button class="no-print" onclick="window.print()" style="background:#005a1e;color:#fff;border:none;padding:10px 24px;font-size:14px;font-weight:700;border-radius:6px;cursor:pointer;margin-top:8px">Save as PDF</button>
+<script>setTimeout(function(){window.print();},400);<\/script>
+</body></html>`;
+  const win=window.open('','_blank');
+  if(!win){
+    if(status)status.textContent='Pop-up blocked. Allow pop-ups and try again.';
+    return;
+  }
+  win.document.write(html);
+  win.document.close();
+  if(status)status.textContent='PDF ready — use Save as PDF in the print dialog.';
+}
+
+
+renderScene();
+</script>
+<div id="pen-strip" style="position:fixed;bottom:0;left:0;right:0;z-index:600;background:rgba(13,17,23,0.97);border-top:1px solid var(--bg4);display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 16px;padding-bottom:max(8px, env(safe-area-inset-bottom));transition:transform .3s ease;">
+  <button id="pen-toggle" onclick="handlePenTap()" title="Tap to toggle · Double-tap to clear" style="background:var(--bg3);border:1px solid var(--gold-dim);border-radius:8px;padding:5px 12px;font-family:'Nunito',sans-serif;font-size:11px;font-weight:800;color:var(--gold);cursor:pointer;white-space:nowrap;transition:all .15s;">✏️ Pen</button>
+  <div id="pen-colors" style="display:flex;gap:6px;opacity:0.4;pointer-events:none;transition:opacity .2s;">
+    <div class="pswatch active" style="background:#FFD700" onclick="setPenColor('#FFD700',this)"></div>
+    <div class="pswatch" style="background:#fff" onclick="setPenColor('#fff',this)"></div>
+    <div class="pswatch" style="background:#f87171" onclick="setPenColor('#f87171',this)"></div>
+    <div class="pswatch" style="background:#4ade80" onclick="setPenColor('#4ade80',this)"></div>
+    <div class="pswatch" style="background:#38bdf8" onclick="setPenColor('#38bdf8',this)"></div>
+  </div>
+  <input id="pen-slider" type="range" min="2" max="20" value="6" oninput="setPenSize(this.value)" style="width:80px;opacity:0.4;pointer-events:none;accent-color:var(--gold);transition:opacity .2s;">
+
+</div>
+</body>
+</html>

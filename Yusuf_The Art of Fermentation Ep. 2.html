@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Yusuf | Lesson 2: The Art of Fermentation</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --spice-red: #c0392b;
+    --spice-orange: #e67e22;
+    --saffron: #f1c40f;
+    --navy: #0d1117;
+    --navy-light: #161b22;
+    --card-bg: #1c2128;
+    --card-border: #2d333b;
+    --text: #f0f4ff;
+    --muted: #8b949e;
+    --correct: #22c55e;
+    --wrong: #ef4444;
+    --accent: #f1c40f;
+    --xp-color: #f59e0b;
+    --hint-color: #38bdf8;
+    --teal: #0d9488;
+    --radius: 14px;
+    --shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+ 
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--navy);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+ 
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 10% 30%, rgba(13,148,136,0.10) 0%, transparent 55%),
+      radial-gradient(ellipse at 90% 70%, rgba(241,196,15,0.08) 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 10%, rgba(192,57,43,0.07) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+ 
+  #app {
+    position: relative;
+    z-index: 1;
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 20px 16px 60px;
+  }
+ 
+  /* ── INTRO BANNER ── */
+  .intro-banner {
+    background: linear-gradient(135deg, rgba(13,148,136,0.2), rgba(241,196,15,0.12));
+    border: 2px solid rgba(13,148,136,0.5);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    margin-bottom: 20px;
+    animation: fadeUp 0.5s ease;
+  }
+  .intro-banner .intro-title {
+    font-family: 'Bangers', cursive;
+    font-size: 1.3rem;
+    color: #5eead4;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .intro-banner p { font-size: 0.95rem; line-height: 1.7; color: var(--text); }
+  .intro-banner strong { color: var(--saffron); }
+ 
+  /* ── HEADER ── */
+  .ep-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 14px 20px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .ep-title {
+    font-family: 'Bangers', cursive;
+    font-size: 1.6rem;
+    letter-spacing: 1px;
+    color: #5eead4;
+    line-height: 1;
+  }
+  .ep-sub {
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin-top: 2px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+  .xp-badge {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    border-radius: 50px;
+    padding: 6px 16px;
+    font-family: 'Bangers', cursive;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    color: #1a0a00;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(245,158,11,0.4);
+  }
+ 
+  /* ── SERIES TRACKER ── */
+  .series-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--card-bg);
+    border: 1.5px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 10px 16px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+  }
+  .series-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-right: 6px;
+  }
+  .series-pip {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 2px solid var(--card-border);
+    background: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.6rem;
+    font-weight: 800;
+    color: var(--muted);
+  }
+  .series-pip.done    { border-color: var(--correct); background: var(--correct); color: #fff; }
+  .series-pip.current { border-color: #5eead4; background: #5eead4; color: #0d1117; }
+ 
+  /* ── SCENE NAV ── */
+  .scene-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .scene-dot {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: 2px solid var(--card-border);
+    background: var(--card-bg);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.65rem;
+    font-weight: 800;
+    color: var(--muted);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .scene-dot.active { border-color: #5eead4; background: #5eead4; color: #0d1117; }
+  .scene-dot.done   { border-color: var(--correct); background: var(--correct); color: #fff; }
+ 
+  .nav-arrows { display: flex; gap: 8px; margin-left: auto; }
+  .nav-btn {
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 1rem;
+    padding: 4px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-weight: 800;
+  }
+  .nav-btn:hover:not(:disabled) { border-color: #5eead4; color: #5eead4; }
+  .nav-btn:disabled { opacity: 0.3; cursor: default; }
+ 
+  /* ── SCENE CARD ── */
+  .scene-card {
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 28px 24px;
+    margin-bottom: 20px;
+    animation: fadeUp 0.3s ease;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+ 
+  .scene-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: var(--teal);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .scene-title {
+    font-family: 'Bangers', cursive;
+    font-size: 1.9rem;
+    color: #5eead4;
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+    line-height: 1.1;
+  }
+  .scene-body {
+    font-size: 1rem;
+    line-height: 1.85;
+    color: var(--text);
+    margin-bottom: 18px;
+  }
+  .scene-body strong { color: #5eead4; }
+  .scene-body em     { color: var(--saffron); font-style: normal; font-weight: 700; }
+ 
+  .scene-illustration {
+    font-size: 3.5rem;
+    text-align: center;
+    margin-bottom: 16px;
+    line-height: 1;
+    filter: drop-shadow(0 4px 14px rgba(94,234,212,0.25));
+  }
+ 
+  /* ── GRAMMAR BOX ── */
+  .grammar-box {
+    background: rgba(13,148,136,0.1);
+    border: 2px solid rgba(13,148,136,0.45);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin: 16px 0;
+  }
+  .grammar-box .g-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: #5eead4;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+  }
+  .grammar-box p { font-size: 0.95rem; line-height: 1.75; }
+  .grammar-box code {
+    background: rgba(241,196,15,0.15);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    color: var(--saffron);
+    font-size: 0.95rem;
+  }
+ 
+  /* ── VOCAB PILLS ── */
+  .idiom-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+  .idiom-pill {
+    background: rgba(13,148,136,0.15);
+    border: 1.5px solid rgba(13,148,136,0.5);
+    border-radius: 50px;
+    padding: 5px 14px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #5eead4;
+    position: relative;
+  }
+  .idiom-pill:hover { border-color: var(--saffron); color: var(--saffron); background: rgba(241,196,15,0.1); }
+  .idiom-def {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%; transform: translateX(-50%);
+    background: var(--navy);
+    border: 2px solid #5eead4;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.8rem;
+    line-height: 1.5;
+    width: 230px;
+    color: var(--text);
+    font-weight: 600;
+    z-index: 100;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .idiom-pill.open .idiom-def { display: block; }
+ 
+  /* ── HINT BANNER ── */
+  .hint-banner {
+    display: none;
+    background: rgba(56,189,248,0.12);
+    border: 2px solid var(--hint-color);
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-size: 0.9rem;
+    color: var(--hint-color);
+    font-weight: 700;
+    margin-bottom: 16px;
+    animation: fadeUp 0.3s ease;
+  }
+  .hint-banner.active { display: block; }
+ 
+  /* ── QUESTIONS ── */
+  .question-block { margin-top: 20px; }
+  .q-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: var(--xp-color);
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .q-text {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 16px;
+    line-height: 1.55;
+  }
+  .choices { display: flex; flex-direction: column; gap: 10px; }
+  .choice-btn {
+    background: var(--navy);
+    border: 2px solid var(--card-border);
+    border-radius: 10px;
+    padding: 12px 18px;
+    text-align: left;
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .choice-btn .choice-letter {
+    width: 28px; height: 28px; min-width: 28px;
+    border-radius: 50%;
+    background: var(--card-border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 800;
+    transition: all 0.15s;
+  }
+  .choice-btn:hover:not(:disabled) { border-color: #5eead4; }
+  .choice-btn:hover:not(:disabled) .choice-letter { background: #5eead4; color: #0d1117; }
+  .choice-btn.correct { border-color: var(--correct); background: rgba(34,197,94,0.1); }
+  .choice-btn.correct .choice-letter { background: var(--correct); color: #fff; }
+  .choice-btn.wrong { border-color: var(--wrong); background: rgba(239,68,68,0.1); }
+  .choice-btn.wrong .choice-letter { background: var(--wrong); color: #fff; }
+  .choice-btn:disabled { cursor: default; }
+ 
+  .feedback {
+    display: none;
+    margin-top: 14px;
+    padding: 12px 18px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    animation: fadeUp 0.25s ease;
+  }
+  .feedback.correct { display: block; background: rgba(34,197,94,0.15); border: 2px solid var(--correct); color: var(--correct); }
+  .feedback.wrong   { display: block; background: rgba(239,68,68,0.12); border: 2px solid var(--wrong); color: var(--wrong); }
+ 
+  .try-again-btn {
+    display: none;
+    margin-top: 12px;
+    background: var(--wrong);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 22px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .try-again-btn:hover { opacity: 0.85; }
+  .try-again-btn.visible { display: inline-block; }
+ 
+  .continue-btn {
+    display: none;
+    margin-top: 18px;
+    background: linear-gradient(135deg, var(--teal), #0a7268);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 28px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+    box-shadow: 0 4px 16px rgba(13,148,136,0.4);
+  }
+  .continue-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(13,148,136,0.5); }
+  .continue-btn.visible { display: inline-block; }
+ 
+  .xp-burst {
+    display: none;
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%) scale(0.5);
+    font-family: 'Bangers', cursive;
+    font-size: 3rem;
+    color: #5eead4;
+    text-shadow: 0 0 30px rgba(94,234,212,0.8), 0 4px 0 rgba(0,0,0,0.5);
+    z-index: 9999;
+    pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+    letter-spacing: 3px;
+  }
+  .xp-burst.pop  { display: block; transform: translate(-50%,-50%) scale(1); }
+  .xp-burst.fade { opacity: 0; transform: translate(-50%,-70%) scale(1.2); }
+ 
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-box {
+    background: var(--card-bg);
+    border: 3px solid #5eead4;
+    border-radius: 20px;
+    padding: 36px 32px;
+    text-align: center;
+    max-width: 400px;
+    width: 92%;
+    animation: fadeUp 0.4s ease;
+    box-shadow: 0 0 60px rgba(94,234,212,0.15);
+  }
+  .modal-box .modal-emoji { font-size: 4rem; margin-bottom: 12px; }
+  .modal-box h2 {
+    font-family: 'Bangers', cursive;
+    font-size: 2.4rem;
+    color: #5eead4;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+  }
+  .modal-box p { font-size: 1rem; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
+  .modal-close {
+    background: linear-gradient(135deg, #5eead4, #0d9488);
+    color: #0d1117;
+    border: none;
+    border-radius: 10px;
+    padding: 12px 32px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+ 
+  /* ── TEACHER DASHBOARD ── */
+  #teacher-panel {
+    background: var(--navy-light);
+    border: 2px solid rgba(13,148,136,0.4);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-top: 30px;
+  }
+  .t-header {
+    font-family: 'Bangers', cursive;
+    font-size: 1.3rem;
+    color: #5eead4;
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .t-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .t-stat {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 12px 14px;
+    border: 1.5px solid var(--card-border);
+  }
+  .t-stat .t-val {
+    font-family: 'Bangers', cursive;
+    font-size: 1.8rem;
+    color: #5eead4;
+    line-height: 1;
+  }
+  .t-stat .t-key {
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .t-log {
+    background: var(--card-bg);
+    border-radius: 10px;
+    padding: 12px;
+    border: 1.5px solid var(--card-border);
+    max-height: 150px;
+    overflow-y: auto;
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 1.8;
+    margin-bottom: 14px;
+  }
+  .t-log .log-correct { color: var(--correct); }
+  .t-log .log-wrong   { color: var(--wrong); }
+ 
+  .t-hint-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .t-hint-btn {
+    background: rgba(56,189,248,0.1);
+    border: 1.5px solid var(--hint-color);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--hint-color);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .t-hint-btn:hover { background: rgba(56,189,248,0.2); }
+ 
+  .t-idiom-log { font-size: 0.8rem; color: var(--muted); }
+  .t-idiom-log span { color: #5eead4; font-weight: 700; }
+ 
+  .print-btn {
+    background: var(--card-bg);
+    border: 1.5px solid var(--card-border);
+    border-radius: 8px;
+    padding: 8px 18px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: var(--muted);
+    cursor: pointer;
+    margin-top: 14px;
+    transition: all 0.15s;
+  }
+  .print-btn:hover { border-color: #5eead4; color: #5eead4; }
+ 
+  @media print {
+    body { background: #fff !important; color: #000 !important; }
+    body::before { display: none; }
+    #teacher-panel, .nav-btn, .continue-btn, .try-again-btn,
+    .print-btn, .t-hint-row, .idiom-pill .idiom-def,
+    .modal-overlay, .xp-burst, .intro-banner, .series-bar { display: none !important; }
+    .scene-card { border: 1.5px solid #ccc; background: #fff; color: #000; page-break-inside: avoid; }
+    .scene-title, .ep-title { color: #0a5c54; }
+    .grammar-box { border-color: #0a5c54; background: #f0fffe; }
+    .xp-badge { background: #f5f5f5; color: #000; box-shadow: none; }
+    .ep-header { border-color: #ccc; background: #fff; }
+    #print-summary { display: block !important; }
+  }
+ 
+  #print-summary {
+    display: none;
+    margin-top: 20px;
+    padding: 20px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    background: #fff;
+    color: #000;
+  }
+  #print-summary h2 { font-size: 1.2rem; margin-bottom: 10px; color: #0a5c54; }
+  #print-summary table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+  #print-summary td, #print-summary th { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+  #print-summary th { background: #f0fffe; }
+</style>
+</head>
+<body>
+ 
+<div id="app">
+ 
+  <!-- LESSON INTRO -->
+  <div class="intro-banner">
+    <div class="intro-title">🫙 Welcome Back, Yusuf — Lesson 2!</div>
+    <p>In Lesson 1 you decoded conditionals and inversion through Chef Tarık's secret ingredient. Today, you're going deeper — into the science of fermentation, the grammar of <strong>reported speech and modal verbs</strong>, and the vocabulary of precision. The kitchen is still your classroom. Let's get to work. 🧪</p>
+  </div>
+ 
+  <!-- HEADER -->
+  <div class="ep-header">
+    <div>
+      <div class="ep-title">🫙 Lesson 2: The Art of Fermentation</div>
+      <div class="ep-sub">YUSUF · C1 COOKING SERIES · LESSON 2 OF 9 · REPORTED SPEECH + ADVANCED MODALS</div>
+    </div>
+    <div class="xp-badge">⭐ XP: <span id="xp-display">0</span></div>
+  </div>
+ 
+  <!-- SERIES TRACKER -->
+  <div class="series-bar">
+    <div class="series-label">Series</div>
+    <div class="series-pip done">1</div>
+    <div class="series-pip current">2</div>
+    <div class="series-pip">3</div>
+    <div class="series-pip">4</div>
+    <div class="series-pip">5</div>
+    <div class="series-pip">6</div>
+    <div class="series-pip">7</div>
+    <div class="series-pip">8</div>
+    <div class="series-pip">9</div>
+  </div>
+ 
+  <!-- VOCAB PILLS -->
+  <div class="idiom-row" id="idiom-row">
+    <div class="idiom-pill" onclick="toggleIdiom(this)">
+      in a pickle
+      <div class="idiom-def">💡 "In a pickle" means in a difficult or awkward situation. Yes, it comes from actual pickling — being preserved in brine means being stuck!</div>
+    </div>
+    <div class="idiom-pill" onclick="toggleIdiom(this)">
+      a slow burn
+      <div class="idiom-def">💡 "A slow burn" describes something that develops gradually but intensifies over time — exactly like fermentation. Also used for emotions and stories.</div>
+    </div>
+    <div class="idiom-pill" onclick="toggleIdiom(this)">
+      ferment trouble
+      <div class="idiom-def">💡 "To ferment trouble" means to quietly cause problems or unrest — the trouble 'grows' like a fermentation culture, unseen until it's too late.</div>
+    </div>
+    <div class="idiom-pill" onclick="toggleIdiom(this)">
+      raw deal
+      <div class="idiom-def">💡 "A raw deal" means being treated unfairly. 'Raw' here means unprocessed, incomplete — you didn't get the full, cooked version of fairness.</div>
+    </div>
+    <div class="idiom-pill" onclick="toggleIdiom(this)">
+      bring to the boil
+      <div class="idiom-def">💡 "Bring something to the boil" means to reach a critical, intense point — emotions, situations, or conflicts that have been simmering for a while.</div>
+    </div>
+    <div class="idiom-pill" onclick="toggleIdiom(this)">
+      past its sell-by date
+      <div class="idiom-def">💡 "Past its sell-by date" means outdated, no longer useful or relevant — borrowed directly from food labelling language.</div>
+    </div>
+  </div>
+ 
+  <!-- SCENE NAV -->
+  <div class="scene-nav" id="scene-nav">
+    <div class="nav-arrows">
+      <button class="nav-btn" id="prev-btn" onclick="goScene(-1)">◀ Back</button>
+      <button class="nav-btn" id="next-btn" onclick="goScene(1)">Next ▶</button>
+    </div>
+  </div>
+ 
+  <!-- HINT BANNER -->
+  <div class="hint-banner" id="hint-banner">💡 <span id="hint-text"></span></div>
+ 
+  <!-- SCENE CONTAINER -->
+  <div id="scene-container"></div>
+ 
+  <!-- PRINT SUMMARY -->
+  <div id="print-summary">
+    <h2>📋 Lesson Summary — Yusuf | Lesson 2: The Art of Fermentation</h2>
+    <table>
+      <tr><th>Metric</th><th>Result</th></tr>
+      <tr><td>Total XP Earned</td><td id="ps-xp">—</td></tr>
+      <tr><td>Correct Answers</td><td id="ps-correct">—</td></tr>
+      <tr><td>Attempts Needed</td><td id="ps-attempts">—</td></tr>
+      <tr><td>Scenes Completed</td><td id="ps-scenes">—</td></tr>
+      <tr><td>Vocab Clicked</td><td id="ps-idioms">—</td></tr>
+      <tr><td>Grammar Focus</td><td>Reported Speech (backshift + no backshift) + Advanced Modal Verbs + Cleft Sentences</td></tr>
+      <tr><td>Level</td><td>C1 — Upper Advanced</td></tr>
+    </table>
+    <p id="ps-log" style="margin-top:12px; font-size:0.85rem; color:#555;"></p>
+  </div>
+ 
+  <!-- TEACHER DASHBOARD -->
+  <div id="teacher-panel">
+    <div class="t-header">🎓 Teacher Dashboard — Lesson 2</div>
+    <div class="t-grid">
+      <div class="t-stat"><div class="t-val" id="t-xp">0</div><div class="t-key">Total XP</div></div>
+      <div class="t-stat"><div class="t-val" id="t-correct">0</div><div class="t-key">Correct</div></div>
+      <div class="t-stat"><div class="t-val" id="t-wrong">0</div><div class="t-key">Attempts</div></div>
+      <div class="t-stat"><div class="t-val" id="t-scene">1</div><div class="t-key">Scene</div></div>
+    </div>
+    <div class="t-log" id="t-log">Answer log will appear here...</div>
+    <div style="font-size:0.75rem; font-weight:800; letter-spacing:1px; color:var(--muted); text-transform:uppercase; margin-bottom:8px;">🔥 Fire a Hint</div>
+    <div class="t-hint-row">
+      <button class="t-hint-btn" onclick="fireHint('In reported speech, check whether the reporting verb is in the past — if so, backshift applies.')">Reported Speech Hint</button>
+      <button class="t-hint-btn" onclick="fireHint('Modal verbs like must, can, will change in reported speech: must → had to, can → could, will → would.')">Modal Backshift Hint</button>
+      <button class="t-hint-btn" onclick="fireHint('Re-read the passage — the answer is always supported by the text.')">Re-read Hint</button>
+      <button class="t-hint-btn" onclick="fireHint('For cleft sentences: It + be + emphasis + that/who clause.')">Cleft Hint</button>
+      <button class="t-hint-btn" onclick="fireHint('Excellent thinking, Yusuf! You are closer than you think. 🧠')">Encouragement</button>
+    </div>
+    <div class="t-idiom-log" id="t-idiom-log">Vocab clicked: <span>none yet</span></div>
+    <button class="print-btn" onclick="printSummary()">🖨️ Print Lesson Summary</button>
+  </div>
+ 
+</div>
+ 
+<div class="xp-burst" id="xp-burst"></div>
+ 
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <div class="modal-emoji" id="modal-emoji">🏆</div>
+    <h2 id="modal-title">LESSON COMPLETE!</h2>
+    <p id="modal-msg">Outstanding work!</p>
+    <button class="modal-close" onclick="closeModal()">Next Lesson 🫙</button>
+  </div>
+</div>
+ 
+<script>
+let state = {
+  xp: 0,
+  currentScene: 0,
+  scenesDone: [],
+  correctCount: 0,
+  wrongCount: 0,
+  answerLog: [],
+  idiomsClicked: [],
+  questionStates: {}
+};
+ 
+const SCENES = [
+  {
+    id: 0,
+    label: "Scene 1 · Gaziantep 🇹🇷 · Warm-Up",
+    title: "The Fermentation Room",
+    illustration: "🫙🧫🌿",
+    body: `Six months before the Michelin star, Emre travelled to <strong>Gaziantep</strong> — the culinary capital of Turkey — to understand where Tarık's ingredient came from.<br><br>
+He visited a <em>centuries-old</em> market where a vendor named Baran sold fermented citrus preparations from large clay pots. Baran told him: <em>"Fermentation is patience made edible. You cannot rush it, you cannot fake it, and you cannot replicate it in a laboratory without losing everything that makes it alive."</em><br><br>
+Emre wrote every word down. He later told Tarık what Baran had said. Tarık nodded slowly: <em>"That's exactly what I've been trying to explain for twenty years. Baran understood it without ever needing to study it. <strong>That's the difference between knowledge and wisdom.</strong>"</em>`,
+    grammar: {
+      label: "🔵 C1 Grammar Focus: Reported Speech — Backshift Rules",
+      text: `When the reporting verb is in the past (<code>said, told, explained</code>), the tenses shift back:<br><br>
+      Present Simple → Past Simple: <code>"It is alive" → He said it <strong>was</strong> alive.</code><br>
+      Present Continuous → Past Continuous: <code>"I am waiting" → She said she <strong>was waiting</strong>.</code><br>
+      Past Simple → Past Perfect: <code>"I studied it" → He said he <strong>had studied</strong> it.</code><br>
+      Will → Would: <code>"I will explain" → She said she <strong>would explain</strong>.</code><br><br>
+      Backshift is <strong>obligatory</strong> when reporting past events that are no longer current.`
+    },
+    question: {
+      text: "Baran said: 'You cannot rush fermentation.' Which reported speech version is correct?",
+      choices: [
+        { text: "Baran said that you cannot rush fermentation.", correct: false },
+        { text: "Baran said that you could not rush fermentation.", correct: true },
+        { text: "Baran said that you can not have rushed fermentation.", correct: false },
+        { text: "Baran said that fermentation is not rushed.", correct: false }
+      ],
+      xp: 120,
+      correctMsg: "🌟 Exactly right. 'Cannot' → 'could not' is the correct modal backshift in reported speech when the reporting verb is past.",
+      wrongMsg: "In reported speech with a past reporting verb, 'can' becomes 'could' and 'cannot' becomes 'could not.' Apply the backshift."
+    }
+  },
+  {
+    id: 1,
+    label: "Scene 2 · The Science 🧪 · Modals",
+    title: "What Fermentation Actually Does",
+    illustration: "🔬🍋🧬",
+    body: `Emre interviewed a food scientist named Dr. Polat in Ankara. Dr. Polat explained the science behind Tarık's reduction with calm precision:<br><br>
+<em>"The lacto-fermentation process <strong>must</strong> be carried out at a consistent temperature — ideally 18°C. The bacteria <strong>will</strong> convert the natural sugars in the citrus peel into lactic acid over several months. This lactic acid <strong>can</strong> then act as a flavour modulator, suppressing bitterness while amplifying savoury depth."</em><br><br>
+Emre asked whether this <strong>could</strong> be replicated artificially. Dr. Polat paused. <em>"Technically, yes. But the result <strong>would</strong> be flat — like a photograph of a sunset. Accurate, but not true."</em>`,
+    grammar: {
+      label: "🔵 C1 Grammar Focus: Advanced Modal Verbs — Certainty, Obligation, Possibility",
+      text: `Modals at C1 carry precise meaning beyond just 'strong/weak obligation':<br><br>
+      <code>must</code> — strong necessity or logical deduction<br>
+      <code>will</code> — predictable/natural result (not just future)<br>
+      <code>can</code> — inherent capability<br>
+      <code>could</code> — theoretical possibility (weaker than 'can')<br>
+      <code>would</code> — conditional or characteristic behaviour<br><br>
+      In academic and scientific writing, these distinctions signal precision. <code>Will convert</code> ≠ <code>may convert</code> ≠ <code>should convert</code>.`
+    },
+    question: {
+      text: "In reported speech: Dr. Polat said 'The bacteria will convert sugars into lactic acid.' Which version correctly applies backshift?",
+      choices: [
+        { text: "Dr. Polat said the bacteria will convert sugars into lactic acid.", correct: false },
+        { text: "Dr. Polat said the bacteria would convert sugars into lactic acid.", correct: true },
+        { text: "Dr. Polat said the bacteria shall convert sugars into lactic acid.", correct: false },
+        { text: "Dr. Polat said the bacteria must have converted sugars into lactic acid.", correct: false }
+      ],
+      xp: 130,
+      correctMsg: "🔥 Perfect. 'Will' → 'would' is the correct backshift. The statement was made in the past, so the future marker shifts back in time.",
+      wrongMsg: "The reporting verb is 'said' (past), so 'will' must shift to 'would' in reported speech. Option A keeps 'will' unchanged — that's incorrect."
+    }
+  },
+  {
+    id: 2,
+    label: "Scene 3 · The Argument ⚡ · Reported Speech",
+    title: "Emre vs. the Business Partner",
+    illustration: "⚡🤝💼",
+    body: `Zeytin's business partner, Tolga, had other ideas. Six months before the Michelin inspection, he approached Chef Tarık with a proposal:<br><br>
+<em>"I've spoken to a food manufacturer. They claim <strong>they can mass-produce your reduction</strong> and sell it commercially. They told me <strong>it would generate significant revenue</strong> and that <strong>we should consider licensing the recipe</strong>."</em><br><br>
+Tarık refused immediately. Emre later wrote in his notes: <em>"Tolga told Tarık that a manufacturer claimed <strong>they could mass-produce the reduction</strong> and that <strong>it would generate significant revenue</strong>. He also said <strong>they should consider licensing</strong> — an idea Tarık dismissed without a second thought."</em><br><br>
+The contrast between Tolga's vision and Tarık's philosophy was now completely visible. One man saw an ingredient. The other saw a legacy.`,
+    grammar: {
+      label: "🔵 C1 Grammar: Reported Speech — No Backshift Exceptions",
+      text: `Backshift is <strong>not required</strong> when:<br><br>
+      1. The situation is <strong>still true now</strong>: <em>"The Earth orbits the Sun" → He said the Earth <strong>orbits</strong> the Sun.</em> (No backshift — permanent truth)<br><br>
+      2. The reporting is in the <strong>same time frame</strong>: <em>"She says she is busy"</em> (present reporting verb — no shift needed)<br><br>
+      3. Using <code>said</code> for <strong>written/recorded statements</strong>: <em>The report says that inflation <strong>is</strong> rising.</em><br><br>
+      At C1, knowing <em>when not to</em> backshift is as important as knowing when to.`
+    },
+    question: {
+      text: "Which sentence does NOT require backshift because it reports a permanent scientific truth?",
+      choices: [
+        { text: "She said she was going to the market yesterday.", correct: false },
+        { text: "He told me he would be late for the meeting.", correct: false },
+        { text: "The scientist confirmed that lactic acid bacteria thrive in anaerobic environments.", correct: true },
+        { text: "Tarık said he had been developing the recipe for years.", correct: false }
+      ],
+      xp: 140,
+      correctMsg: "🧠 Excellent reasoning! Scientific facts that remain permanently true don't require backshift — 'thrive' stays present, not past.",
+      wrongMsg: "Look for the option that reports a fact that is permanently and currently true. Permanent truths are exempt from backshift."
+    }
+  },
+  {
+    id: 3,
+    label: "Scene 4 · The Proposal 📑 · Cleft Sentences",
+    title: "It Was Emre Who Spoke",
+    illustration: "📑🗣️💡",
+    body: `The tension between Tolga and Tarık reached a peak at a staff meeting. Everyone expected Tarık to respond. Instead, it was Emre who stood up first.<br><br>
+<em>"<strong>It is the process that defines the product,</strong>"</em> Emre said, surprising himself with the clarity of his own conviction. <em>"Not the other way around. <strong>What Tarık has created is not a formula — it's a relationship between time, temperature, and intention.</strong> You can't package that. <strong>It is precisely that complexity which gives it value.</strong>"</em><br><br>
+Tolga left the meeting without speaking. It was the last time he raised the subject.<br><br>
+Emre used a structure called a <em>cleft sentence</em> — one of the most powerful tools in formal English for creating emphasis.`,
+    grammar: {
+      label: "🔵 C1 Grammar Focus: Cleft Sentences for Emphasis",
+      text: `A <strong>cleft sentence</strong> splits a single idea into two clauses to emphasise one element.<br><br>
+      Types:<br>
+      <code>It + be + [emphasis] + that/who clause</code><br>
+      ✅ <code><strong>It is the process</strong> that defines the product.</code> (emphasises "the process")<br>
+      ✅ <code><strong>It was Emre</strong> who stood up.</code> (emphasises "Emre")<br><br>
+      <code>What-cleft</code>: <code>What + clause + be + [emphasis]</code><br>
+      ✅ <code><strong>What he created</strong> is a relationship.</code><br><br>
+      Cleft sentences are common in academic writing, formal speeches, and high-register debate.`
+    },
+    question: {
+      text: "Which sentence correctly uses a cleft structure to emphasise 'the flavour'?",
+      choices: [
+        { text: "The flavour is what makes the dish exceptional.", correct: false },
+        { text: "It is the flavour that makes the dish exceptional.", correct: true },
+        { text: "What exceptional is in the dish is the flavour.", correct: false },
+        { text: "It was exceptional that the flavour made the dish.", correct: false }
+      ],
+      xp: 140,
+      correctMsg: "✅ Correct! 'It is [emphasis] + that clause' — this is the standard It-cleft structure. Elegant and effective.",
+      wrongMsg: "The It-cleft structure is: 'It is/was + [emphasised element] + that/who + rest of sentence.'"
+    }
+  },
+  {
+    id: 4,
+    label: "Scene 5 · The Recipe 📖 · Modals of Deduction",
+    title: "Reading Between the Lines",
+    illustration: "📖🔍🧂",
+    body: `Emre found Tarık's original recipe notes in a drawer — a battered notebook from 2006. The handwriting was almost illegible in places. He deciphered what he could:<br><br>
+<em>Day 1: Citrus peel, salt, water. Sealed. Left to stand — unclear temperature noted.</em><br>
+<em>Week 4: Colour change. Must be working.</em><br>
+<em>Month 6: Reduced. Smell extraordinary.</em><br>
+<em>Month 12: Consistency too thin. Will try again with less water.</em><br>
+<em>Month 18: Perfect. Do not change.</em><br><br>
+Emre studied the notes carefully. "He <strong>must have failed</strong> dozens of times before this," he realised. "He <strong>can't have known</strong> it would work. He <strong>might have abandoned</strong> it after month six. But he didn't."<br><br>
+These are <em>modal verbs of deduction about the past</em> — one of the most sophisticated structures at C1.`,
+    grammar: {
+      label: "🔵 C1 Grammar Focus: Modal Verbs of Past Deduction",
+      text: `To speculate about past events, use: <code>modal + have + past participle</code><br><br>
+      <code>must have</code> — strong certainty (almost certain it happened)<br>
+      → <em>He <strong>must have worked</strong> on this for years.</em><br><br>
+      <code>can't/couldn't have</code> — strong certainty it did NOT happen<br>
+      → <em>She <strong>can't have known</strong> about the ingredient.</em><br><br>
+      <code>might/could have</code> — weak possibility<br>
+      → <em>He <strong>might have abandoned</strong> the project.</em><br><br>
+      <code>should have</code> — the right action wasn't taken<br>
+      → <em>He <strong>should have documented</strong> the temperature.</em>`
+    },
+    question: {
+      text: "Emre sees that the recipe notes are incomplete. He says: 'He clearly didn't document the temperatures — he _____ them down.' Which modal completes this correctly?",
+      choices: [
+        { text: "must have written", correct: false },
+        { text: "should have written", correct: true },
+        { text: "might have written", correct: false },
+        { text: "can't have written", correct: false }
+      ],
+      xp: 150,
+      correctMsg: "🎯 Spot on. 'Should have written' = the correct action was NOT taken — exactly right here since the temperatures are missing from the notes.",
+      wrongMsg: "'Should have' is used when the right thing wasn't done. 'Must have' = certain it happened. 'Can't have' = certain it didn't. What's the right modal for a missed obligation?"
+    }
+  },
+  {
+    id: 5,
+    label: "Scene 6 · The Training 🍳 · Reported Questions",
+    title: "What Did the Inspector Ask?",
+    illustration: "🍳❓📋",
+    body: `After the Michelin award, Ms. Demir sent a follow-up email. She had questions about the lamb dish — specifically about the flavour she couldn't identify.<br><br>
+She wrote: <em>"Could you tell me whether <strong>the reduction is something you produce in-house</strong>? I would also like to know <strong>where the technique originates</strong>. Finally, I'm curious — <strong>how long does the preparation take</strong>?"</em><br><br>
+Tarık showed Emre the email. "How do I answer this without revealing anything?" he asked.<br><br>
+Emre later summarised the questions: <em>"She wanted to know whether <strong>the reduction was produced in-house</strong>. She also asked where <strong>the technique originated</strong> and how long <strong>the preparation took</strong>."</em><br><br>
+This is <em>reported question</em> structure — different from reported statements because the word order must change.`,
+    grammar: {
+      label: "🔵 C1 Grammar Focus: Reported Questions",
+      text: `Reported questions use <strong>statement word order</strong> (subject before verb) and lose the question mark:<br><br>
+      Direct: <code>"Where does the technique originate?"</code><br>
+      Reported: <code>She asked where the technique <strong>originated</strong>.</code> ✅<br><br>
+      Direct: <code>"Is the reduction produced in-house?"</code><br>
+      Reported: <code>She wanted to know whether the reduction <strong>was produced</strong> in-house.</code> ✅<br><br>
+      Key: No auxiliary inversion. No question mark. Use <code>if/whether</code> for yes/no questions. Backshift applies normally.`
+    },
+    question: {
+      text: "Which reported question is CORRECTLY formed?",
+      choices: [
+        { text: "She asked how long did the preparation take.", correct: false },
+        { text: "She asked how long the preparation took.", correct: true },
+        { text: "She asked how long has the preparation taken.", correct: false },
+        { text: "She asked that how long the preparation takes.", correct: false }
+      ],
+      xp: 140,
+      correctMsg: "✅ Exactly. No inversion, no question mark, backshift applied ('took' not 'takes'). That's a perfectly formed reported question.",
+      wrongMsg: "Reported questions use statement word order: 'how long + subject + verb.' No inversion, no 'did/does.' Also check for backshift."
+    }
+  },
+  {
+    id: 6,
+    label: "Scene 7 · Tarık's Reply ✉️ · Hedging Language",
+    title: "The Art of Not Answering",
+    illustration: "✉️🤫🖊️",
+    body: `Tarık drafted his reply to Ms. Demir with Emre's help. They needed to be honest without being revealing. This required <em>hedging language</em> — a key C1 skill used in academic and professional writing.<br><br>
+Their draft:<br><br>
+<em>"The reduction is <strong>prepared entirely on the premises</strong>. As for its origins, it <strong>may be described as</strong> a family-influenced technique, rooted in <strong>what might broadly be called</strong> traditional Anatolian preservation methods. The preparation process is <strong>somewhat time-intensive</strong>, though the precise duration is <strong>not something we are currently in a position to disclose</strong>."</em><br><br>
+Ms. Demir replied with a single line: <em>"I suspected as much. The dish speaks for itself."</em>`,
+    grammar: {
+      label: "🔵 C1 Language Focus: Hedging — Softening Claims with Precision",
+      text: `<strong>Hedging</strong> uses cautious language to avoid overcommitting to a claim. Essential in academic, legal, and formal communication.<br><br>
+      Common hedging expressions:<br>
+      <code>may/might be described as...</code><br>
+      <code>what could broadly be called...</code><br>
+      <code>somewhat / to some extent / relatively</code><br>
+      <code>it appears that / it seems likely that</code><br>
+      <code>not in a position to...</code><br><br>
+      Hedging is NOT weakness — it's <strong>epistemic precision</strong>. It signals you understand the limits of a claim.`
+    },
+    question: {
+      text: "Which sentence demonstrates appropriate C1-level hedging?",
+      choices: [
+        { text: "The method is definitely the best approach available.", correct: false },
+        { text: "This technique is, to some extent, influenced by traditional preservation methods.", correct: true },
+        { text: "I think maybe it could possibly be somewhat useful.", correct: false },
+        { text: "There is no doubt that fermentation improves every dish.", correct: false }
+      ],
+      xp: 130,
+      correctMsg: "🌟 Perfect. 'To some extent' hedges the claim appropriately without undermining it. That's sophisticated, calibrated language.",
+      wrongMsg: "Option A overclaims. Option C over-hedges (too many qualifiers). Option D is overconfident. Only one option hedges with precision."
+    }
+  },
+  {
+    id: 7,
+    label: "Scene 8 · The Legacy 🌿 · Noun Clauses",
+    title: "What Emre Learned",
+    illustration: "🌿📚✨",
+    body: `A year after the Michelin star, Emre gave a talk at a culinary institute in Istanbul. He was asked what the most important thing he'd learned from Tarık was.<br><br>
+He thought for a long time. Then he said:<br><br>
+<em>"<strong>What I learned is that precision and patience are not opposites.</strong> <strong>What surprised me most was that the secret ingredient wasn't about flavour at all — it was about philosophy.</strong> <strong>What Tarık understood, and what took me years to grasp, is that a truly great dish is an argument about what matters.</strong>"</em><br><br>
+The audience was silent. Then someone asked: "And what matters?"<br><br>
+Emre smiled. "<strong>That,</strong>" he said, "is exactly what you spend a lifetime figuring out."`,
+    grammar: {
+      label: "🔵 C1 Grammar Focus: Noun Clauses as Subject and Object",
+      text: `A <strong>noun clause</strong> acts as a noun — it can be the subject or object of a sentence.<br><br>
+      As subject: <code><strong>What I learned</strong> is that patience matters.</code> (subject = "what I learned")<br>
+      As object: <code>I realised <strong>that the process was irreversible</strong>.</code> (object = the 'that' clause)<br><br>
+      Common openers: <code>what / that / whether / whoever / wherever / however</code><br><br>
+      Noun clauses that begin with <code>what</code> are sometimes called <strong>free relatives</strong> — they combine the roles of subject and relative pronoun, making them very efficient and elegant.`
+    },
+    question: {
+      text: "In 'What Tarık understood is that a great dish is an argument', what grammatical role does 'What Tarık understood' play?",
+      choices: [
+        { text: "Object of the verb 'is'", correct: false },
+        { text: "Adverbial clause modifying the main verb", correct: false },
+        { text: "Subject of the sentence, functioning as a noun clause", correct: true },
+        { text: "Relative clause modifying 'Tarık'", correct: false }
+      ],
+      xp: 150,
+      correctMsg: "🏆 Brilliant! 'What Tarık understood' is a noun clause acting as the subject of the sentence. You can replace it with 'This' — 'This is that a great dish is an argument.' That's the test.",
+      wrongMsg: "Ask: what is the verb 'is' referring to? What comes before 'is' in the sentence? That entire clause is the subject — it's a noun clause."
+    }
+  },
+  {
+    id: 8,
+    label: "Scene 9 · The New Chef 👨‍🍳 · Passive Voice",
+    title: "A Technique Passed On",
+    illustration: "👨‍🍳🤝🫙",
+    body: `Two years later, Emre begins teaching his own apprentice — a young chef named Kaan. He teaches Kaan the fermentation technique, but also the philosophy behind it.<br><br>
+<em>"The reduction <strong>has been perfected over decades</strong>. It <strong>was developed</strong> through failure and patience, not luck. The temperature <strong>must be maintained</strong> throughout the process. The jars <strong>should not be opened</strong> before month three. And above all — the technique <strong>cannot be rushed</strong>."</em><br><br>
+Kaan listens carefully. He asks: "Did you invent this?"<br><br>
+Emre shakes his head. <em>"It <strong>was handed to me</strong>. Now I'm <strong>passing it on</strong> to you. The recipe doesn't belong to any of us — it just <strong>passes through</strong> us."</em><br><br>
+Passive voice is doing significant work here — it deliberately <em>removes the agent</em> to emphasise the action and the process over the individual.`,
+    grammar: {
+      label: "🔵 C1 Grammar Focus: Advanced Passive — Meaning and Effect",
+      text: `The passive voice has <strong>specific rhetorical effects</strong> at C1:<br><br>
+      1. <strong>Agent removal</strong> — when the agent is unknown, irrelevant, or deliberately depersonalised:<br>
+      <code>The technique <strong>was developed</strong> over decades.</code> (Who developed it? Not the focus.)<br><br>
+      2. <strong>Formality and objectivity</strong> — common in academic and scientific writing<br><br>
+      3. <strong>Emphasis on process</strong>, not person:<br>
+      <code>The jars <strong>must be sealed</strong> tightly.</code> (The sealing matters, not who does it.)<br><br>
+      At C1, passive choice reflects intentional rhetorical control — not laziness.`
+    },
+    question: {
+      text: "Why does Emre use passive voice when he says 'It was handed to me'?",
+      choices: [
+        { text: "Because he doesn't know who gave it to him", correct: false },
+        { text: "To emphasise the continuity of the tradition rather than any individual's ownership", correct: true },
+        { text: "Because passive voice is always more polite than active", correct: false },
+        { text: "To avoid mentioning Tarık's name directly", correct: false }
+      ],
+      xp: 140,
+      correctMsg: "✅ Exactly. The passive here strips away personal ownership and frames the technique as something that flows through people — it belongs to the tradition, not the individual. Precise reading.",
+      wrongMsg: "He clearly knows who gave it to him (Tarık). Think about what the passive emphasises: the act of passing something on, not the people involved. It's a philosophical choice."
+    }
+  },
+  {
+    id: 9,
+    label: "Scene 10 · Lesson Review 🏁 · Final Challenge",
+    title: "End of Lesson 2",
+    illustration: "🌟🫙🏆",
+    body: `Yusuf — another exceptional lesson! Here's your Lesson 2 summary:<br><br>
+💬 <strong>Reported Speech:</strong> Backshift modal verbs correctly — <em>will → would, can → could, must → had to</em><br>
+🔬 <strong>Advanced Modals:</strong> Deduction about the past — <em>must have / can't have / should have + past participle</em><br>
+🎯 <strong>Cleft Sentences:</strong> <em>It is X that... / What X did was...</em> for elegant emphasis<br>
+❓ <strong>Reported Questions:</strong> Statement word order + no question mark + backshift<br>
+🌿 <strong>Hedging:</strong> Calibrated language — not weakness, but epistemic precision<br>
+📘 <strong>Noun Clauses:</strong> <em>What I learned is that...</em> — noun clauses as subjects and objects<br>
+🫙 <strong>Advanced Passive:</strong> Rhetorical choices — passive to depersonalise, formalise, or emphasise process<br><br>
+Final question: This one requires you to think across everything from both lessons. Ready? 🎯`,
+    grammar: {
+      label: "🔵 C1 Full Review: Reported Speech + Passive + Cleft",
+      text: `These three structures often combine in sophisticated writing:<br><br>
+      <code>It was reported that the technique <strong>had been developed</strong> over decades.</code><br>
+      — Cleft + passive + reported speech backshift, all in one sentence.<br><br>
+      <code>What she said was that the ingredient <strong>could not be replicated</strong>.</code><br>
+      — Noun clause + reported speech + passive modal.<br><br>
+      The best C1 writers combine these naturally, not consciously. By Lesson 9 — that will be you.`
+    },
+    question: {
+      text: "Combine these elements correctly: Report what Tarık said ('The technique cannot be shared'), using a cleft structure to emphasise 'the technique'. Which option is fully correct?",
+      choices: [
+        { text: "It was the technique that Tarık said it cannot be shared.", correct: false },
+        { text: "It was the technique that Tarık said could not be shared.", correct: true },
+        { text: "What Tarık said the technique was that it can't be shared.", correct: false },
+        { text: "It was the technique which Tarık said that could not be shared.", correct: false }
+      ],
+      xp: 200,
+      correctMsg: "🏆 FLAWLESS! Cleft structure ('It was the technique that...') + reported speech backshift ('could not' not 'cannot') + passive voice ('be shared') — all three structures, perfectly integrated. Lesson 2 complete, Yusuf. Lesson 3 awaits: The Language of Menus 📜",
+      wrongMsg: "You need three things: (1) It-cleft — 'It was the technique that...' (2) Reported speech backshift — 'cannot' → 'could not' (3) Passive: 'be shared.' Check which option has all three correct."
+    },
+    isLast: true
+  }
+];
+ 
+function shuffleChoices(choices) {
+  const arr = choices.map((c, i) => ({ ...c, origIndex: i }));
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+ 
+function renderSceneNav() {
+  const nav = document.getElementById('scene-nav');
+  const arrows = nav.querySelector('.nav-arrows');
+  nav.innerHTML = '';
+  SCENES.forEach((s, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'scene-dot' +
+      (i === state.currentScene ? ' active' : '') +
+      (state.scenesDone.includes(i) ? ' done' : '');
+    dot.textContent = i + 1;
+    dot.title = s.title;
+    dot.onclick = () => { state.currentScene = i; renderScene(); };
+    nav.appendChild(dot);
+  });
+  nav.appendChild(arrows);
+  document.getElementById('prev-btn').disabled = state.currentScene === 0;
+  document.getElementById('next-btn').disabled = state.currentScene === SCENES.length - 1;
+  document.getElementById('t-scene').textContent = state.currentScene + 1;
+}
+ 
+function renderScene() {
+  renderSceneNav();
+  const scene = SCENES[state.currentScene];
+  const shuffled = shuffleChoices(scene.question.choices);
+  const letters = ['A','B','C','D'];
+  const qKey = `scene_${scene.id}`;
+  const answered = state.questionStates[qKey] || null;
+ 
+  let choicesHTML = shuffled.map((c, idx) => {
+    let cls = '';
+    if (answered) {
+      if (c.correct) cls = 'correct';
+      else if (answered.pickedIndex === idx && !c.correct) cls = 'wrong';
+    }
+    return `<button class="choice-btn ${cls}" ${answered ? 'disabled' : ''}
+      onclick="checkAnswer(this, ${c.correct}, '${escapeStr(c.text)}', ${scene.question.xp}, ${idx}, ${scene.id})"
+      data-correct="${c.correct}">
+      <span class="choice-letter">${letters[idx]}</span>
+      ${escapeStr(c.text)}
+    </button>`;
+  }).join('');
+ 
+  let feedbackHTML = '';
+  let tryAgainHTML = '';
+  let continueHTML = '';
+ 
+  if (answered) {
+    if (answered.correct) {
+      feedbackHTML = `<div class="feedback correct">✅ ${escapeStr(scene.question.correctMsg)}</div>`;
+      continueHTML = `<button class="continue-btn visible" onclick="advanceScene()">Continue ▶</button>`;
+    } else {
+      feedbackHTML = `<div class="feedback wrong">❌ ${escapeStr(scene.question.wrongMsg)}</div>`;
+      tryAgainHTML = `<button class="try-again-btn visible" onclick="resetQuestion(${scene.id})">🔄 Try Again</button>`;
+    }
+  }
+ 
+  document.getElementById('scene-container').innerHTML = `
+    <div class="scene-card">
+      <div class="scene-label">${scene.label}</div>
+      <div class="scene-title">${scene.title}</div>
+      <div class="scene-illustration">${scene.illustration}</div>
+      <div class="scene-body">${scene.body}</div>
+      ${scene.grammar ? `<div class="grammar-box"><div class="g-label">${scene.grammar.label}</div><p>${scene.grammar.text}</p></div>` : ''}
+      <div class="question-block">
+        <div class="q-label">🎯 C1 Challenge Question</div>
+        <div class="q-text">${scene.question.text}</div>
+        <div class="choices" id="choices-${scene.id}">${choicesHTML}</div>
+        ${feedbackHTML}
+        ${tryAgainHTML}
+        ${continueHTML}
+      </div>
+    </div>
+  `;
+  document.getElementById('hint-banner').classList.remove('active');
+}
+ 
+function escapeStr(s) {
+  return String(s).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
+ 
+function checkAnswer(btn, isCorrect, text, xpVal, pickedIndex, sceneId) {
+  const qKey = `scene_${sceneId}`;
+  if (state.questionStates[qKey]) return;
+  state.questionStates[qKey] = { correct: isCorrect, pickedIndex };
+  if (isCorrect) {
+    state.correctCount++;
+    state.xp += xpVal;
+    logAnswer(`✅ Scene ${sceneId + 1}: "${text}" — +${xpVal} XP`, true);
+    if (!state.scenesDone.includes(state.currentScene)) {
+      state.scenesDone.push(state.currentScene);
+    }
+    showXPBurst(`+${xpVal} XP ⭐`);
+  } else {
+    state.wrongCount++;
+    logAnswer(`❌ Scene ${sceneId + 1}: Wrong — "${text}"`, false);
+  }
+  updateDashboard();
+  renderScene();
+}
+ 
+function resetQuestion(sceneId) {
+  delete state.questionStates[`scene_${sceneId}`];
+  renderScene();
+}
+ 
+function advanceScene() {
+  const scene = SCENES[state.currentScene];
+  if (scene.isLast) {
+    const totalPossible = SCENES.reduce((sum, s) => sum + s.question.xp, 0);
+    showModal('🏆', 'LESSON 2 COMPLETE!', `You earned ${state.xp} XP out of ${totalPossible} possible. Reported speech, modals, cleft sentences, passive voice — all conquered. Next: Lesson 3, The Language of Menus 📜`);
+    return;
+  }
+  if (state.currentScene < SCENES.length - 1) {
+    state.currentScene++;
+    renderScene();
+  }
+}
+ 
+function goScene(dir) {
+  const next = state.currentScene + dir;
+  if (next >= 0 && next < SCENES.length) {
+    state.currentScene = next;
+    renderScene();
+  }
+}
+ 
+function toggleIdiom(el) {
+  const isOpen = el.classList.contains('open');
+  document.querySelectorAll('.idiom-pill').forEach(p => p.classList.remove('open'));
+  if (!isOpen) {
+    el.classList.add('open');
+    const text = el.firstChild.textContent.trim();
+    if (!state.idiomsClicked.includes(text)) {
+      state.idiomsClicked.push(text);
+      updateIdiomLog();
+    }
+  }
+}
+ 
+function updateIdiomLog() {
+  const el = document.getElementById('t-idiom-log');
+  el.innerHTML = state.idiomsClicked.length === 0
+    ? 'Vocab clicked: <span>none yet</span>'
+    : `Vocab clicked: <span>${state.idiomsClicked.join(', ')}</span>`;
+}
+ 
+function fireHint(msg) {
+  document.getElementById('hint-text').textContent = msg;
+  document.getElementById('hint-banner').classList.add('active');
+  logAnswer(`💡 Hint fired: "${msg}"`, null);
+}
+ 
+function updateDashboard() {
+  document.getElementById('xp-display').textContent = state.xp;
+  document.getElementById('t-xp').textContent = state.xp;
+  document.getElementById('t-correct').textContent = state.correctCount;
+  document.getElementById('t-wrong').textContent = state.wrongCount;
+}
+ 
+function logAnswer(msg, correct) {
+  state.answerLog.push(msg);
+  const log = document.getElementById('t-log');
+  const div = document.createElement('div');
+  div.className = correct === true ? 'log-correct' : correct === false ? 'log-wrong' : '';
+  div.textContent = msg;
+  if (log.firstChild && log.firstChild.textContent === 'Answer log will appear here...') log.innerHTML = '';
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+ 
+function showXPBurst(msg) {
+  const el = document.getElementById('xp-burst');
+  el.textContent = msg;
+  el.className = 'xp-burst pop';
+  setTimeout(() => { el.classList.add('fade'); }, 700);
+  setTimeout(() => { el.className = 'xp-burst'; }, 1200);
+}
+ 
+function showModal(emoji, title, msg) {
+  document.getElementById('modal-emoji').textContent = emoji;
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-msg').textContent = msg;
+  document.getElementById('modal').classList.add('active');
+}
+ 
+function closeModal() {
+  document.getElementById('modal').classList.remove('active');
+}
+ 
+function printSummary() {
+  document.getElementById('ps-xp').textContent = state.xp;
+  document.getElementById('ps-correct').textContent = state.correctCount;
+  document.getElementById('ps-attempts').textContent = state.wrongCount;
+  document.getElementById('ps-scenes').textContent = state.scenesDone.length + ' / ' + SCENES.length;
+  document.getElementById('ps-idioms').textContent = state.idiomsClicked.length > 0 ? state.idiomsClicked.join(', ') : 'None';
+  document.getElementById('ps-log').textContent = state.answerLog.join(' | ');
+  window.print();
+}
+ 
+renderScene();
+</script>
+</body>
+</html>

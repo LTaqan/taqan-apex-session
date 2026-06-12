@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Episode 2: The Trojan Mix-Up | Yusuf</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f2eadd; --bg2:#e6dcc8; --bg3:#d6c9b0; --bg4:#bfae91;
+  --primary:#0f766e; --primary-lt:#14b8a6; --primary-bg:rgba(15,118,110,0.1); --primary-border:rgba(15,118,110,0.3);
+  --accent:#b45309; --accent-bg:rgba(180,83,9,0.15); --accent-border:rgba(180,83,9,0.5);
+  --ink:#1e293b; --ink-light:#334155; --ink-lighter:#475569;
+  --green:#166534;--green-bg:rgba(22,101,52,0.1);--green-border:rgba(22,101,52,0.3);
+  --error:#b91c1c;--error-bg:rgba(185,28,28,0.1);--error-border:rgba(185,28,28,0.3);
+  --r-md:8px;--r-lg:12px;--r-xl:20px;
+  --font:'Nunito',sans-serif; --font-serif:'Playfair Display',serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);min-height:100vh;overflow-x:hidden}
+
+#mode-bar{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(242,234,221,0.96);backdrop-filter:blur(8px);border-bottom:2px solid var(--primary);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+#mode-bar .logo{font-family:var(--font-serif);font-size:18px;color:var(--primary);font-weight:800;white-space:nowrap;}
+.mode-btns{display:flex;gap:6px}
+.mode-btn{padding:8px 16px;border-radius:6px;border:2px solid var(--bg4);background:var(--bg2);color:var(--ink-light);font-family:var(--font);font-size:13px;font-weight:800;cursor:pointer;transition:all .2s}
+.mode-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.mode-btn:hover:not(.active){border-color:var(--primary);color:var(--ink)}
+
+#student-view,#teacher-view{display:none;padding-top:70px}
+#student-view.active,#teacher-view.active{display:block}
+
+.s-wrap{max-width:720px;margin:0 auto;padding:24px 16px 60px;display:flex;flex-direction:column;gap:20px}
+.s-hero{background:linear-gradient(135deg,var(--primary),#0e5e58);border:3px solid var(--accent);border-radius:var(--r-xl);padding:30px;display:flex;align-items:center;gap:20px;position:relative;overflow:hidden; box-shadow: 0 10px 25px rgba(15,118,110,0.3);}
+.s-hero-icon{width:64px;height:64px;background:var(--accent-bg);border:2px solid var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0;}
+.s-hero-title{font-family:var(--font-serif);font-size:26px;color:#fff;line-height:1.2;}
+.s-hero-sub{font-size:14px;color:#e2e8f0;margin-top:6px; font-weight: 600;}
+.s-series-badge{display:inline-block; background:var(--accent); color:#fff; font-size:12px; font-weight:800; padding:4px 10px; border-radius:4px; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.08em;}
+
+.s-progress{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--r-md);padding:14px 18px;display:flex;align-items:center;gap:15px;}
+.s-prog-label{font-size:14px;font-weight:800;color:var(--ink-light);white-space:nowrap}
+.s-prog-bar{flex:1;height:12px;background:var(--bg4);border-radius:6px;overflow:hidden;}
+.s-prog-fill{height:100%;background:linear-gradient(90deg,var(--primary-lt),var(--primary));border-radius:6px;transition:width .6s ease}
+.s-xp{font-size:16px;font-weight:800;color:var(--primary);}
+
+.s-scene{display:none;flex-direction:column;gap:18px;animation:fadeUp .5s ease}
+.s-scene.active{display:flex}
+@keyframes fadeUp{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+
+.s-card{background:var(--bg);border:2px solid var(--bg4);border-radius:var(--r-lg);padding:26px; position:relative;}
+.s-card::after {content:''; position:absolute; top:4px; left:4px; right:4px; bottom:4px; border:1px solid var(--bg3); border-radius:var(--r-md); pointer-events:none;}
+
+.s-scene-tag{font-family:var(--font-serif);font-size:18px;font-weight:800;letter-spacing:.05em;color:var(--primary);text-transform:uppercase;margin-bottom:14px; border-bottom: 2px solid var(--bg4); padding-bottom:6px; display:inline-block;}
+.s-scene-tag.grammar{color:var(--accent); border-bottom-color:var(--accent);}
+.s-story{font-size:16px;line-height:1.8;color:var(--ink)}
+.s-story strong{font-weight:800;color:var(--primary)}
+
+.s-logic{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--r-md);padding:18px;margin-top:16px}
+.s-logic-title{font-size:14px;font-weight:800;color:var(--ink);text-transform:uppercase;margin-bottom:12px}
+.s-rule{display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid var(--bg3);font-size:15px; font-weight:600;}
+.s-rule:last-child{border-bottom:none}
+.s-tag{background:var(--accent);color:#fff;border-radius:4px;padding:3px 10px;font-size:12px;font-weight:800;white-space:nowrap;}
+
+.s-quiz-tag{font-size:13px;font-weight:800;letter-spacing:.09em;color:var(--primary);text-transform:uppercase;margin-bottom:8px;margin-top:20px}
+.s-quiz-q{font-size:17px;font-weight:800;line-height:1.5;margin-bottom:16px; color:var(--ink);}
+.s-choices{display:flex;flex-direction:column;gap:10px}
+.s-choice{background:var(--bg);border:2px solid var(--bg4);border-radius:var(--r-md);padding:16px;font-family:var(--font);font-size:15px;font-weight:700;color:var(--ink);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:14px}
+.s-choice:hover{background:var(--bg2);border-color:var(--primary);}
+.s-choice .cl{width:32px;height:32px;border-radius:6px;background:var(--bg3);border:2px solid var(--bg4);color:var(--ink-light);font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.s-choice.correct{border-color:var(--green);background:var(--green-bg)}
+.s-choice.wrong{border-color:var(--error);background:var(--error-bg)}
+
+.tf-row{display:flex;gap:12px;margin-bottom:16px}
+.tf-btn{flex:1;padding:16px;font-family:var(--font-serif);font-size:20px;font-weight:800;border-radius:var(--r-md);border:2px solid var(--bg4);background:var(--bg);color:var(--ink);cursor:pointer;text-align:center;}
+.tf-btn:hover{background:var(--bg2);}
+.tf-btn.correct{background:var(--green);color:#fff;border-color:var(--green);}
+.tf-btn.wrong{background:var(--error);color:#fff;border-color:var(--error);}
+
+.s-fb{border-radius:var(--r-md);padding:16px;font-size:15px;font-weight:700;line-height:1.6;border:2px solid;display:none; margin-top:14px;}
+.s-fb.ok{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+.s-fb.err{background:var(--error-bg);border-color:var(--error);color:var(--error)}
+.s-fb.show{display:block;animation:fadeUp .3s ease}
+.s-hint{background:var(--bg2);border:2px dashed var(--accent);border-radius:var(--r-md);padding:14px;font-size:14px;font-weight:700;color:var(--ink-light);display:none; margin-bottom:16px;}
+.s-hint.show{display:block;}
+
+.vpill, .ipill{display:inline-block;border-radius:4px;padding:2px 8px;font-size:14px;font-weight:800;cursor:pointer;transition:all .2s;}
+.vpill{background:var(--accent-bg);border:1px solid var(--accent);color:var(--ink);}
+.ipill{background:var(--bg3);border:1px solid var(--bg4);color:var(--primary);}
+
+.s-nav{display:flex;justify-content:flex-end;margin-top:10px;}
+.s-next{background:var(--primary);border:none;border-radius:var(--r-md);padding:14px 28px;font-family:var(--font);font-size:16px;font-weight:800;color:#fff;cursor:pointer;display:none;}
+.s-next.show{display:inline-block}
+
+.s-reward{background:linear-gradient(135deg,var(--bg),var(--bg2));border:3px solid var(--accent);border-radius:var(--r-xl);padding:40px 30px;text-align:center;}
+.s-reward-icon{font-size:60px;margin-bottom:16px;}
+.s-reward-title{font-family:var(--font-serif);font-size:32px;color:var(--primary);margin-bottom:10px; font-weight:800;}
+.s-reward-xp{font-size:38px;font-weight:800;color:var(--accent);margin:16px 0;}
+.s-reward-sub{font-size:16px;color:var(--ink);line-height:1.7; font-weight:600; background:var(--bg); padding:20px; border-radius:var(--r-md); border:2px dashed var(--bg4); margin-bottom:20px;}
+.cliffhanger {background:var(--primary); border-radius:var(--r-md); padding:20px; text-align:left; color:#fff;}
+.cliffhanger-title {font-family:var(--font-serif); font-size:20px; font-weight:800; color:var(--accent); margin-bottom:10px;}
+
+/* TEACHER DASHBOARD */
+.t-wrap{max-width:960px;margin:0 auto;padding:24px 20px 60px;display:flex;flex-direction:column;gap:20px}
+.t-header{background:var(--bg);border:2px solid var(--primary);border-radius:var(--r-xl);padding:24px;display:flex;justify-content:space-between;flex-wrap:wrap}
+.t-header h1{font-family:var(--font-serif);font-size:26px;color:var(--primary);font-weight:800;}
+.t-stats{display:flex;gap:12px}.t-stat{background:var(--bg2);border:2px solid var(--bg4);border-radius:var(--r-md);padding:14px 20px;text-align:center}
+.t-stat-val{font-size:28px;font-weight:800;color:var(--primary)}.t-stat-lbl{font-size:12px;color:var(--ink-light);font-weight:800;text-transform:uppercase;}
+.t-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:768px){.t-grid{grid-template-columns:1fr}}
+.t-card{background:var(--bg);border:2px solid var(--bg4);border-radius:var(--r-lg);padding:20px}
+.t-card-title{font-size:15px;font-weight:800;color:var(--primary);text-transform:uppercase;margin-bottom:16px;border-bottom:2px solid var(--bg4);padding-bottom:10px}
+.t-answer-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bg3);font-size:14px; font-weight:600;}
+.t-ans-badge{padding:4px 12px;border-radius:12px;font-size:12px;font-weight:800}.t-ans-badge.correct{background:var(--green);color:#fff;}.t-ans-badge.wrong{background:var(--error);color:#fff;}.t-ans-badge.pending{background:var(--bg3);color:var(--ink-light);}
+.t-hint-btn{background:var(--bg2);border:2px solid var(--accent);border-radius:var(--r-md);padding:12px 16px;color:var(--ink);cursor:pointer;width:100%;text-align:left;margin-bottom:10px;font-weight:800}
+.t-print-btn{background:var(--primary);border:none;border-radius:var(--r-md);padding:14px 28px;font-size:16px;font-weight:800;color:#fff;cursor:pointer;}
+@media print{ #mode-bar,.mode-btns,#teacher-view,.s-next,#student-view{display:none!important} #print-summary{display:block!important; padding:0; margin:0; background:#fff;} }
+#print-summary{display:none;padding:80px 32px 32px;font-family:var(--font);color:#111;background:#fff;min-height:100vh;}
+#print-summary.active{display:block;}
+#print-summary h1{font-family:var(--font-serif); font-size:28px;color:var(--primary);}
+#print-summary table{width:100%;border-collapse:collapse;font-size:14px;margin-top:12px}
+#print-summary td,#print-summary th{border:1px solid #ddd;padding:12px;text-align:left}
+</style>
+</head>
+<body>
+
+<div id="mode-bar">
+  <div class="logo">⏳ The Time-Traveling Historian: Ep 2</div>
+  <div class="mode-btns">
+    <button class="mode-btn active" onclick="setMode('student')">Student View</button>
+    <button class="mode-btn" onclick="setMode('teacher')">Teacher Dashboard</button>
+    <button class="mode-btn" onclick="showSummary()">Print Summary</button>
+  </div>
+</div>
+
+<!-- STUDENT VIEW -->
+<div id="student-view" class="active">
+<div class="s-wrap">
+
+  <div class="s-hero">
+    <div class="s-hero-icon">🐴</div>
+    <div>
+      <span class="s-series-badge">Historical Comedy Series: Episode 2 of 5</span>
+      <div class="s-hero-title">The Trojan Mix-Up</div>
+      <div class="s-hero-sub">Level: B2 ESL · Present Perfect & Logic · Guide: Yusuf</div>
+    </div>
+  </div>
+
+  <div class="s-progress">
+    <span class="s-prog-label" id="s-prog-label">Scene 1 of 6</span>
+    <div class="s-prog-bar"><div class="s-prog-fill" id="s-prog-fill" style="width:16%"></div></div>
+    <span class="s-xp" id="s-xp">0 XP</span>
+  </div>
+
+  <div class="s-scene active" id="s-scene-1">
+    <div class="s-card">
+      <div class="s-scene-tag">Scene 1 — A Massive Mistake</div>
+      <div class="s-story">
+        Agent Yusuf, we have another crisis on our hands.<br><br>
+        Bob took a vacation to the year <strong>1200 BC</strong> to watch the Trojan War. The Greeks built a <span class="vpill" onclick="showFeedback('vocab-gargantuan')">gargantuan</span> wooden horse, hid soldiers inside, and left it as a "gift" for the city of Troy.<br><br>
+        Bob snuck into the horse for a selfie. He dropped his modern, talking GPS navigation device inside it! The Trojans are about to pull the horse into the city. If they hear a robotic voice saying <em>"Turn left,"</em> the great <span class="ipill" onclick="showFeedback('idiom-deception')">deception</span> will be ruined!
+      </div>
+    </div>
+    
+    <div class="s-card">
+      <div class="s-quiz-tag">Idiom Check</div>
+      <div class="s-quiz-q">The Trojans accepted the wooden horse without checking inside. We have an idiom in English: <em>"Never look a gift horse in the mouth."</em> What does it mean?</div>
+      <div class="s-hint" id="hint-q1" style="display:none">💡 <strong>Hint:</strong> If someone gives you a free gift, should you complain about it or look for flaws?</div>
+      <div class="s-choices" id="q1-choices">
+        <button class="s-choice" onclick="checkQ1(this,'A')"><span class="cl">A</span> Never accept gifts from strangers.</button>
+        <button class="s-choice" onclick="checkQ1(this,'B')"><span class="cl">B</span> Never feed an animal you don't own.</button>
+        <button class="s-choice" onclick="checkQ1(this,'C')"><span class="cl">C</span> When you receive a gift, don't be ungrateful or look for problems with it.</button>
+      </div>
+      <div class="s-fb" id="q1-fb"></div>
+    </div>
+    <div class="s-fb info" id="fb-vocab-gargantuan" style="display:none">📚 <strong>Vocabulary: Gargantuan</strong> — Extremely huge; gigantic.</div>
+    <div class="s-fb info" id="fb-idiom-deception" style="display:none">🎭 <strong>Vocabulary: Deception</strong> — The act of hiding the truth or tricking someone.</div>
+    <div class="s-nav"><button class="s-next" id="s-next-1" onclick="goScene(2)">Enter the Ancient City →</button></div>
+  </div>
+
+  <div class="s-scene" id="s-scene-2">
+    <div class="s-card">
+      <div class="s-scene-tag">Scene 2 — Inside the Gates</div>
+      <div class="s-story">
+        You step out of your portal as the sun sets. The Trojans have pulled the horse inside their high walls. The city is celebrating.<br><br>
+        You need to climb up the leg of the horse, but there are thousands of people around. Finding the right moment to climb is like finding a <span class="ipill" onclick="showFeedback('idiom-needle')">needle in a haystack</span>.<br><br>
+        You put on a cloak and hide near the horse, listening to two Trojan guards talking.
+      </div>
+    </div>
+    
+    <div class="s-card">
+      <div style="font-size:13px;font-weight:800;color:var(--primary);text-transform:uppercase;margin-bottom:14px;border-bottom:2px solid var(--bg4)">True or False</div>
+      <div class="s-quiz-q" style="margin-top:4px">Statement 1: If finding a moment is "like finding a needle in a haystack," it means it is a very easy task.</div>
+      <div class="tf-row" id="tf1-row">
+        <button class="tf-btn t-btn" onclick="checkTF(this,'tf1','TRUE')">TRUE</button>
+        <button class="tf-btn f-btn" onclick="checkTF(this,'tf1','FALSE')">FALSE</button>
+      </div>
+      <div class="s-fb" id="tf1-fb"></div>
+    </div>
+    <div class="s-fb info" id="fb-idiom-needle" style="display:none">🌾 <strong>Idiom: A needle in a haystack</strong> — Something that is almost impossible to find.</div>
+    <div class="s-nav"><button class="s-next" id="s-next-2" onclick="goScene(3)">Listen to the guards →</button></div>
+  </div>
+
+  <div class="s-scene" id="s-scene-3">
+    <div class="s-card">
+      <div class="s-scene-tag grammar">Scene 3 — Grammar Timeout</div>
+      <div class="s-story">
+        The guards are arguing. One of them says, <em>"This is strange. I ______________ (never / see) a wooden horse this big before!"</em><br><br>
+        When we talk about life experiences from the past leading up to the *present moment*, we use the <strong>Present Perfect</strong>!
+      </div>
+      <div class="s-logic">
+        <div class="s-logic-title" style="color:var(--accent);">Present Perfect (Experience)</div>
+        <div class="s-rule"><span class="s-tag">Form</span> Subject + <strong>have/has + Past Participle (V3)</strong></div>
+        <div class="s-rule" style="font-size:14px; font-style:italic;">Example: "<strong>Have</strong> you <strong>ever eaten</strong> Turkish delight?"</div>
+      </div>
+    </div>
+    
+    <div class="s-card">
+      <div class="s-quiz-tag grammar">Grammar Challenge</div>
+      <div class="s-quiz-q">The second guard replies. Choose the correct Present Perfect sentence:</div>
+      <div class="s-choices" id="qGrammar-choices">
+        <button class="s-choice grammar" onclick="checkQGrammar(this,'A')"><span class="cl">A</span> I never heard a horse making strange beeping noises before!</button>
+        <button class="s-choice grammar" onclick="checkQGrammar(this,'B')"><span class="cl">B</span> I have never heard a horse making strange beeping noises before!</button>
+        <button class="s-choice grammar" onclick="checkQGrammar(this,'C')"><span class="cl">C</span> I was never hearing a horse making strange beeping noises before!</button>
+      </div>
+      <div class="s-fb" id="qGrammar-fb"></div>
+    </div>
+    <div class="s-nav"><button class="s-next" id="s-next-3" onclick="goScene(4)">Climb the horse →</button></div>
+  </div>
+
+  <div class="s-scene" id="s-scene-4">
+    <div class="s-card">
+      <div class="s-scene-tag">Scene 4 — Inside the Belly</div>
+      <div class="s-story">
+        The guards walk away. You quickly climb up a rope and slip inside a hidden trapdoor.<br><br>
+        It is pitch black inside. There are 30 Greek soldiers hiding in here. <br><br>
+        If you make a loud noise, you will wake the soldiers, and they will <span class="ipill" onclick="showFeedback('idiom-cat')">let the cat out of the bag</span> too early! You hear the robotic voice of the GPS echoing from deeper inside.
+      </div>
+    </div>
+    
+    <div class="s-card">
+      <div style="font-size:13px;font-weight:800;color:var(--primary);text-transform:uppercase;margin-bottom:14px;border-bottom:2px solid var(--bg4)">True or False</div>
+      <div class="s-quiz-q" style="margin-top:4px">Statement: If the Greeks "let the cat out of the bag", it means they will accidentally reveal their secret surprise attack too early.</div>
+      <div class="tf-row" id="tf2-row">
+        <button class="tf-btn t-btn" onclick="checkTF(this,'tf2','TRUE')">TRUE</button>
+        <button class="tf-btn f-btn" onclick="checkTF(this,'tf2','FALSE')">FALSE</button>
+      </div>
+      <div class="s-fb" id="tf2-fb"></div>
+    </div>
+    <div class="s-fb info" id="fb-idiom-cat" style="display:none">🐈 <strong>Idiom: Let the cat out of the bag</strong> — To accidentally reveal a secret.</div>
+    <div class="s-nav"><button class="s-next" id="s-next-4" onclick="goScene(5)">Find the GPS →</button></div>
+  </div>
+
+  <div class="s-scene" id="s-scene-5">
+    <div class="s-card">
+      <div class="s-scene-tag">Scene 5 — The GPS Puzzle</div>
+      <div class="s-story">
+        The horse has three internal storage compartments. You have to find the correct compartment quickly. The robotic GPS voice says: <em>"Recalculating route..."</em>
+      </div>
+      <div class="s-logic">
+        <div class="s-logic-title">Compartment Clues</div>
+        <div class="s-rule"><span class="s-tag">1</span> The Head (Very top, near the horse's ears).</div>
+        <div class="s-rule"><span class="s-tag">2</span> The Upper Belly (Where the Greek soldiers are sleeping).</div>
+        <div class="s-rule"><span class="s-tag">3</span> The Lower Hooves (Storage for Greek swords).</div>
+        <br>
+        <div style="background:var(--accent-bg); padding:10px; border-left:3px solid var(--accent);">
+          <strong>Bob's Log:</strong> "I took a selfie near the ears, but then I climbed down below the sleeping soldiers to look at their shiny swords. I dropped my phone down there!"
+        </div>
+      </div>
+    </div>
+    
+    <div class="s-card">
+      <div class="s-quiz-tag">Logic Challenge</div>
+      <div class="s-quiz-q">Based on Bob's log, which compartment contains the GPS?</div>
+      <div class="s-choices" id="q5-choices">
+        <button class="s-choice" onclick="checkQ5(this,'A')"><span class="cl">A</span> Compartment 1 (The Head)</button>
+        <button class="s-choice" onclick="checkQ5(this,'B')"><span class="cl">B</span> Compartment 2 (The Upper Belly)</button>
+        <button class="s-choice" onclick="checkQ5(this,'C')"><span class="cl">C</span> Compartment 3 (The Lower Hooves)</button>
+      </div>
+      <div class="s-fb" id="q5-fb"></div>
+    </div>
+    <div class="s-nav"><button class="s-next" id="s-next-5" onclick="goScene(6)">Grab the GPS →</button></div>
+  </div>
+
+  <div class="s-scene" id="s-scene-6">
+    <div class="s-card">
+      <div class="s-scene-tag">Scene 6 — The Great Escape</div>
+      <div class="s-story">
+        You climb down to the Lower Hooves. You find the GPS device glowing between two bronze swords!<br><br>
+        Just as you pick it up, the GPS voice yells: <em>"YOU HAVE ARRIVED AT YOUR DESTINATION!"</em><br><br>
+        A Greek soldier wakes up. You dive out of the hidden trapdoor in the horse's leg, landing safely outside. You open your time portal and escape by the <span class="ipill" onclick="showFeedback('idiom-skin')">skin of your teeth</span>!
+      </div>
+    </div>
+    
+    <div class="s-reward">
+      <div class="s-reward-icon">🐴</div>
+      <div class="s-reward-title">Timeline Restored, Yusuf!</div>
+      <div class="s-reward-xp" id="s-final-xp">0 XP Earned</div>
+      <div class="s-reward-sub">
+        Today you navigated Ancient Troy and mastered the <strong>Present Perfect (Experience)</strong>.<br><br>
+        <strong>Homework:</strong> Write two sentences starting with "I have never..." to describe things you haven't done yet!
+      </div>
+      
+      <div class="cliffhanger">
+        <div class="cliffhanger-title">Next Time on The Time-Traveling Historian...</div>
+        <div style="font-size:15px; line-height:1.6;">
+          Bob met Marco Polo on the Silk Road in Anatolia. Bob accidentally traded a bag of spicy modern Doritos chips for ancient silk! The traders are furious.<br><br>
+          Find out what happens in <strong>Episode 3: The Silk Road Switch!</strong>
+        </div>
+      </div>
+    </div>
+    <div class="s-fb info" id="fb-idiom-skin" style="display:none">🦷 <strong>Idiom: By the skin of your teeth</strong> — To escape by a very narrow margin!</div>
+  </div>
+
+</div>
+</div>
+
+<!-- TEACHER DASHBOARD -->
+<div id="teacher-view">
+<div class="t-wrap">
+  <div class="t-header">
+    <div><h1>Teacher Dashboard</h1><p><span class="live-dot"></span>Ep 2: Trojan Mix-Up · B2 ESL</p></div>
+    <div class="t-stats">
+      <div class="t-stat"><div class="t-stat-val" id="t-xp">0</div><div class="t-stat-lbl">XP</div></div>
+    </div>
+  </div>
+
+  <div class="t-grid">
+    <div class="t-card">
+      <div class="t-card-title">Answer Log</div>
+      <div class="t-answer-row"><span class="t-ans-q">Q1 — Idiom: "gift horse"</span><span class="t-ans-badge pending" id="tlog-q1">Pending</span></div>
+      <div class="t-answer-row"><span class="t-ans-q">TF1 — Idiom: "needle in haystack"</span><span class="t-ans-badge pending" id="tlog-tf1">Pending</span></div>
+      <div class="t-answer-row"><span class="t-ans-q" style="color:var(--accent);">Q3 — Grammar: Present Perfect</span><span class="t-ans-badge pending" id="tlog-qGrammar">Pending</span></div>
+      <div class="t-answer-row"><span class="t-ans-q">TF2 — Idiom: "cat out of bag"</span><span class="t-ans-badge pending" id="tlog-tf2">Pending</span></div>
+      <div class="t-answer-row"><span class="t-ans-q">Q5 — Logic: Compartment</span><span class="t-ans-badge pending" id="tlog-q5">Pending</span></div>
+    </div>
+    <div class="t-card">
+      <div class="t-card-title">Hint Controls</div>
+      <button class="t-hint-btn" id="thint-q1" onclick="fireHint('q1')">💡 Hint: Q1</button>
+      <button class="t-hint-btn" id="thint-qGrammar" onclick="fireHint('qGrammar')">💡 Hint: Grammar</button>
+      <button class="t-hint-btn" id="thint-q5" onclick="fireHint('q5')">💡 Hint: Q5</button>
+    </div>
+  </div>
+  <button class="t-print-btn" onclick="showSummary()">🖨 Print / Save Summary</button>
+</div>
+</div>
+
+<div id="print-summary">
+  <button onclick="window.print()" style="padding:10px 20px; margin-bottom:20px; background:var(--primary); color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:16px;">🖨 Print Document</button>
+  <h1>Lesson Summary — Ep 2: Trojan Mix-Up</h1>
+  <p><strong>Student:</strong> Yusuf &nbsp;|&nbsp; <strong>Level:</strong> B2 ESL &nbsp;|&nbsp; <strong>Date:</strong> <span id="print-date"></span></p>
+  <table>
+    <tr><th>Question</th><th>Topic</th><th>Result</th><th>XP</th></tr>
+    <tr><td>Q1</td><td>Idiom: "look a gift horse..."</td><td id="pr-q1">—</td><td id="pr-q1-xp">—</td></tr>
+    <tr><td>TF1</td><td>Idiom: "needle in a haystack"</td><td id="pr-tf1">—</td><td id="pr-tf1-xp">—</td></tr>
+    <tr><td>Q3</td><td>Grammar: Present Perfect</td><td id="pr-qGrammar">—</td><td id="pr-qGrammar-xp">—</td></tr>
+    <tr><td>TF2</td><td>Idiom: "let the cat out of the bag"</td><td id="pr-tf2">—</td><td id="pr-tf2-xp">—</td></tr>
+    <tr><td>Q5</td><td>Logic: Spatial Reading</td><td id="pr-q5">—</td><td id="pr-q5-xp">—</td></tr>
+  </table>
+  <h2>Total XP: <span id="pr-total-xp">0</span></h2>
+</div>
+
+<script>
+var xp=0,correct=0,totalAttempts=0,currentScene=1;
+var attempts={q1:0,tf1:0,qGrammar:0,tf2:0,q5:0};
+
+function setMode(m){
+  document.getElementById('student-view').classList.toggle('active',m==='student');
+  document.getElementById('teacher-view').classList.toggle('active',m==='teacher');
+  document.getElementById('print-summary').classList.toggle('active',m==='summary');
+  document.querySelectorAll('.mode-btn').forEach(function(b){b.classList.remove('active')});
+  if(m==='student') document.querySelectorAll('.mode-btn')[0].classList.add('active');
+  if(m==='teacher') document.querySelectorAll('.mode-btn')[1].classList.add('active');
+  if(m==='summary') document.querySelectorAll('.mode-btn')[2].classList.add('active');
+}
+function addXP(pts){
+  xp+=pts; document.getElementById('s-xp').textContent=xp+' XP'; document.getElementById('t-xp').textContent=xp;
+  document.getElementById('s-final-xp').textContent=xp+' XP Earned'; document.getElementById('pr-total-xp').textContent=xp;
+}
+function recordAnswer(q,result,pts){
+  var badge=document.getElementById('tlog-'+q);
+  if(badge){badge.className='t-ans-badge '+(result==='correct'?'correct':'wrong');badge.textContent=result==='correct'?'✓ Correct':'✗ Wrong'}
+  var pr=document.getElementById('pr-'+q);var prXP=document.getElementById('pr-'+q+'-xp');
+  if(pr)pr.textContent=result==='correct'?'Correct':'Incorrect'; if(prXP)prXP.textContent=pts+' XP';
+}
+function goScene(n){
+  document.querySelectorAll('.s-scene').forEach(function(s){s.classList.remove('active')});
+  document.getElementById('s-scene-'+n).classList.add('active');
+  document.getElementById('s-prog-fill').style.width=[0,16,32,48,64,80,100][n]+'%';
+  document.getElementById('s-prog-label').textContent='Scene '+n+' of 6';
+  if(n===6){document.getElementById('s-final-xp').textContent=xp+' XP Earned'; showFeedback('idiom-skin');}
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function showFeedback(id){var el=document.getElementById('fb-'+id); if(el){el.style.display='block';el.classList.add('show')}}
+function fireHint(q){var btn=document.getElementById('thint-'+q); if(btn){btn.classList.add('fired');btn.innerHTML='✓ Hint sent';btn.onclick=null}}
+function lockChoices(sel){document.querySelectorAll(sel).forEach(function(b){b.onclick=null;b.style.opacity='.7'})}
+
+function checkQ1(btn,ans){
+  attempts.q1++; var fb=document.getElementById('q1-fb');
+  if(ans==='C'){
+    lockChoices('#q1-choices .s-choice'); btn.classList.add('correct');btn.style.opacity='1';
+    var pts=attempts.q1===1?25:10;addXP(pts);recordAnswer('q1','correct',pts);
+    fb.className='s-fb ok show';fb.innerHTML='<strong>Correct!</strong> ✓ Don\'t look for flaws in a free gift. +'+pts+' XP!';
+    document.getElementById('s-next-1').classList.add('show');
+  } else {
+    btn.classList.add('wrong'); btn.style.opacity='.6'; btn.onclick=null; recordAnswer('q1','wrong',0);
+    fb.className='s-fb err show'; fb.innerHTML='<strong>Incorrect!</strong> Try again!';
+  }
+}
+
+function checkTF(btn,which,ans){
+  attempts[which]++; var fb=document.getElementById(which+'-fb'); var row=document.getElementById(which+'-row');
+  var correct_ans=(which==='tf1')?'FALSE':'TRUE'; 
+  if(ans===correct_ans){
+    row.querySelectorAll('.tf-btn').forEach(function(b){b.onclick=null;b.style.opacity='.65'});
+    btn.classList.add('correct');btn.style.opacity='1';
+    var pts=attempts[which]===1?20:10;addXP(pts);recordAnswer(which,'correct',pts);
+    fb.className='s-fb ok show';
+    if(which==='tf1'){fb.innerHTML='<strong>Correct!</strong> ✓ FALSE. It means it is almost IMPOSSIBLE to find. +'+pts+' XP!'; document.getElementById('s-next-2').classList.add('show');}
+    else {fb.innerHTML='<strong>Spot on!</strong> ✓ TRUE. They will reveal the secret. +'+pts+' XP!'; document.getElementById('s-next-4').classList.add('show');}
+  } else {
+    btn.classList.add('wrong'); btn.style.opacity='.65'; btn.onclick=null; recordAnswer(which,'wrong',0);
+    fb.className='s-fb err show'; fb.innerHTML='<strong>Think again!</strong>';
+  }
+}
+
+function checkQGrammar(btn,ans){
+  attempts.qGrammar++; var fb=document.getElementById('qGrammar-fb');
+  if(ans==='B'){
+    lockChoices('#qGrammar-choices .s-choice'); btn.classList.add('correct');btn.style.opacity='1';
+    var pts=attempts.qGrammar===1?35:15;addXP(pts);recordAnswer('qGrammar','correct',pts);
+    fb.className='s-fb ok show';fb.innerHTML='<strong>Perfect Grammar!</strong> ✓ "Have never heard" links past experience to present. +'+pts+' XP!';
+    document.getElementById('s-next-3').classList.add('show');
+  } else {
+    btn.classList.add('wrong'); btn.style.opacity='.6'; btn.onclick=null; recordAnswer('qGrammar','wrong',0);
+    fb.className='s-fb err show'; fb.innerHTML='<strong>Grammar Foul!</strong> We need Present Perfect (have + V3). Try again!';
+  }
+}
+
+function checkQ5(btn,ans){
+  attempts.q5++; var fb=document.getElementById('q5-fb');
+  if(ans==='C'){
+    lockChoices('#q5-choices .s-choice'); btn.classList.add('correct');btn.style.opacity='1';
+    var pts=attempts.q5===1?35:15;addXP(pts);recordAnswer('q5','correct',pts);
+    fb.className='s-fb ok show';fb.innerHTML='<strong>Excellent Logic!</strong> ✓ He went BELOW the sleeping soldiers to look at swords. That is Compartment 3! +'+pts+' XP!';
+    document.getElementById('s-next-5').classList.add('show');
+  } else {
+    btn.classList.add('wrong'); btn.style.opacity='.6'; btn.onclick=null; recordAnswer('q5','wrong',0);
+    fb.className='s-fb err show'; fb.innerHTML='<strong>Not there!</strong> He went *below* the soldiers. Try again.';
+  }
+}
+
+function showSummary(){ document.getElementById('print-date').textContent=new Date().toLocaleDateString(); setMode('summary'); }
+</script>
+</body>
+</html>

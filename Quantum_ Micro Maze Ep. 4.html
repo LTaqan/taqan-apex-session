@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Episode 4: The Micro-Maze | Sean</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#170b24; --bg2:#26143c; --bg3:#3b205e; --bg4:#502b80;
+  --primary:#c084fc; 
+  --primary2:#e879f9; --primary-dim:#9333ea;
+  --text:#f8fafc;--text2:#cbd5e1;--text3:#94a3b8;
+  --accent:#38bdf8; 
+  --accent-bg:rgba(56,189,248,0.15);--accent-border:rgba(56,189,248,0.5);
+  --red:#f43f5e;--red-bg:rgba(244,63,94,0.1);--red-border:rgba(244,63,94,0.3);
+  --white:#ffffff;--white-bg:rgba(255,255,255,0.1);--white-border:rgba(255,255,255,0.3);
+  --green:#4ade80;--green-bg:rgba(74,222,128,0.1);--green-border:rgba(74,222,128,0.3);
+  --r-md:12px;--r-lg:16px;--r-xl:24px;
+  --font:'Nunito',sans-serif;--font-display:'Orbitron',sans-serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 50% 10%,rgba(192,132,252,0.1) 0%,transparent 60%);pointer-events:none;z-index:0}
+
+#mode-bar{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(23,11,36,0.96);backdrop-filter:blur(8px);border-bottom:2px solid var(--primary);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+#mode-bar .logo{font-family:var(--font-display);font-size:18px;color:var(--primary2);letter-spacing:.08em;white-space:nowrap; text-shadow:0 0 8px var(--primary);}
+.mode-btns{display:flex;gap:6px}
+.mode-btn{padding:8px 16px;border-radius:8px;border:2px solid var(--bg4);background:var(--bg3);color:var(--text2);font-family:var(--font);font-size:13px;font-weight:800;cursor:pointer;transition:all .2s}
+.mode-btn.active{background:var(--primary);color:#fff;border-color:var(--primary); box-shadow:0 0 10px var(--primary-dim);}
+.mode-btn:hover:not(.active){border-color:var(--primary2);color:var(--text)}
+
+#student-view,#teacher-view{display:none;padding-top:64px}
+#student-view.active,#teacher-view.active{display:block}
+
+.s-wrap{max-width:680px;margin:0 auto;padding:24px 16px 48px;display:flex;flex-direction:column;gap:20px}
+.s-hero{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:2px solid var(--primary);border-radius:var(--r-xl);padding:24px;display:flex;align-items:center;gap:18px;position:relative;overflow:hidden; box-shadow: 0 10px 30px rgba(192,132,252,0.2);}
+.s-hero::before{content:'🦠';position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:70px;opacity:.1}
+.s-hero-icon{width:60px;height:60px;background:var(--accent-bg);border:2px solid var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0; box-shadow: 0 0 15px var(--accent-border);}
+.s-hero-title{font-family:var(--font-display);font-size:24px;color:#fff;letter-spacing:.05em;line-height:1.2}
+.s-hero-sub{font-size:14px;color:var(--primary2);margin-top:6px; font-weight: 800;}
+.s-series-badge {display:inline-block; background:var(--accent); color:var(--bg); font-size:12px; font-weight:800; padding:4px 10px; border-radius:6px; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.05em;}
+
+.s-progress{background:var(--bg2);border:2px solid var(--bg4);border-radius:var(--r-md);padding:14px 18px;display:flex;align-items:center;gap:12px}
+.s-prog-label{font-size:14px;font-weight:800;color:var(--text2);white-space:nowrap}
+.s-prog-bar{flex:1;height:10px;background:var(--bg4);border-radius:5px;overflow:hidden}
+.s-prog-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:5px;transition:width .6s cubic-bezier(0.4, 0, 0.2, 1)}
+.s-xp{font-size:16px;font-weight:800;color:var(--accent);white-space:nowrap; text-shadow: 0 0 10px rgba(56,189,248,0.5);}
+
+.s-scene{display:none;flex-direction:column;gap:16px;animation:fadeUp .5s ease}
+.s-scene.active{display:flex}
+@keyframes fadeUp{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+
+.s-card{background:var(--bg2);border:2px solid var(--bg4);border-radius:var(--r-lg);padding:24px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);}
+.s-scene-tag{font-family:var(--font-display);font-size:18px;letter-spacing:.1em;color:var(--primary2);text-transform:uppercase;margin-bottom:12px; display:inline-block; border-bottom: 2px solid var(--primary-dim); padding-bottom:4px;}
+.s-scene-tag.grammar{color:var(--white); border-bottom-color: var(--white-border);}
+.s-story{font-size:16px;line-height:1.7;color:var(--text)}
+.s-story strong{font-weight:800;color:var(--primary2)}
+.s-story em{color:var(--accent);font-style:normal;font-weight:800}
+
+.s-logic{background:var(--bg3);border:2px solid var(--primary-dim);border-radius:var(--r-md);padding:16px;margin-top:12px}
+.s-logic-title{font-size:14px;font-weight:800;letter-spacing:.08em;color:var(--text);text-transform:uppercase;margin-bottom:12px; font-family:var(--font-display);}
+.s-rule{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--bg4);font-size:15px; font-weight:600;}
+.s-rule:last-child{border-bottom:none}
+.s-tag{background:var(--white-bg);color:var(--white);border:1px solid var(--white-border);border-radius:6px;padding:2px 10px;font-size:12px;font-weight:800;white-space:nowrap;margin-top:2px;flex-shrink:0}
+
+.s-quiz-tag{font-size:14px;font-weight:800;letter-spacing:.09em;color:var(--accent);text-transform:uppercase;margin-bottom:8px;margin-top:18px}
+.s-quiz-q{font-size:17px;font-weight:800;line-height:1.4;margin-bottom:16px}
+.s-choices{display:flex;flex-direction:column;gap:10px}
+.s-choice{background:var(--bg3);border:2px solid var(--bg4);border-radius:var(--r-md);padding:16px;font-family:var(--font);font-size:16px;font-weight:600;color:var(--text);text-align:left;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:14px}
+.s-choice:hover{background:var(--bg4);border-color:var(--primary2); transform: translateX(5px);}
+.s-choice .cl{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,0.1);border:2px solid var(--text3);color:var(--text);font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.s-choice.correct{border-color:var(--primary);background:var(--bg3); color:var(--primary2);}
+.s-choice.wrong{border-color:var(--red);background:var(--red-bg)}
+
+.s-fb{border-radius:var(--r-md);padding:16px;font-size:15px;font-weight:700;line-height:1.5;border:2px solid;display:none; margin-top:12px;}
+.s-fb.ok{background:rgba(16,185,129,0.15);border-color:var(--accent);color:var(--accent)}
+.s-fb.err{background:var(--red-bg);border-color:var(--red);color:var(--red)}
+.s-fb.show{display:block;animation:fadeUp .3s ease}
+
+.s-hint{background:rgba(255,255,255,0.1);border:2px dashed var(--primary2);border-radius:var(--r-md);padding:14px;font-size:14px;font-weight:700;color:var(--primary2);display:none; margin-bottom:16px;}
+.s-hint.show{display:block;animation:fadeUp .3s ease}
+
+/* SEQ DRAG */
+.seq-pool{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.seq-item{background:var(--bg3);border:1px solid var(--bg4);border-radius:var(--r-md);padding:11px 14px;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:10px; font-weight:700;}
+.seq-item.selected{border-color:var(--primary);background:var(--primary-dim);color:#fff;}
+.seq-item.placed{opacity:.4;cursor:not-allowed}
+.seq-slots{display:flex;flex-direction:column;gap:6px}
+.seq-slot{background:var(--bg4);border:2px dashed var(--text3);border-radius:var(--r-md);padding:11px 14px;font-size:14px;color:var(--text3);min-height:46px;cursor:pointer;display:flex;align-items:center;gap:10px}
+.seq-slot.filled{background:var(--bg3);border:1px solid var(--primary-dim);border-style:solid;color:var(--text);}
+.slot-num{width:24px;height:24px;border-radius:50%;background:var(--accent-bg);color:var(--accent);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center; border:1px solid var(--accent);}
+.check-btn{background:var(--accent-bg);border:1px solid var(--accent);border-radius:var(--r-md);padding:10px 20px;color:var(--accent);cursor:pointer;font-weight:800;margin-top:8px}
+
+.s-nav{display:flex;gap:10px;flex-wrap:wrap;align-items:center; margin-top: 10px; justify-content:flex-end;}
+.s-next{background:var(--primary);border:none;border-radius:var(--r-md);padding:14px 28px;font-family:var(--font-display);font-size:20px;font-weight:800;color:#000;cursor:pointer;transition:all .2s;display:none; text-transform:uppercase; letter-spacing:0.05em; box-shadow: 0 4px 15px rgba(192,132,252,0.4);}
+.s-next:hover{background:var(--primary2); transform:translateY(-2px);}
+.s-next.show{display:inline-block}
+
+.s-reward{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:3px solid var(--accent);border-radius:var(--r-xl);padding:40px 24px;text-align:center; box-shadow: 0 10px 40px rgba(56,189,248,0.2);}
+.s-reward-icon{font-size:64px;margin-bottom:16px; animation: float 3s ease-in-out infinite;}
+@keyframes float { 0%, 100% {transform:translateY(0)} 50% {transform:translateY(-15px)} }
+.s-reward-title{font-family:var(--font-display);font-size:32px;color:var(--accent);letter-spacing:.04em;margin-bottom:8px}
+.s-reward-xp{font-size:36px;font-weight:800;color:var(--primary2);margin:16px 0; text-shadow: 0 0 15px rgba(192,132,252,0.5);}
+.s-reward-sub{font-size:16px;color:var(--text);line-height:1.7; font-weight:600; background:var(--bg); padding:20px; border-radius:var(--r-md); border:1px solid var(--bg4);}
+
+/* TEACHER DASHBOARD */
+.t-wrap{max-width:900px;margin:0 auto;padding:24px 20px 48px;display:flex;flex-direction:column;gap:20px}
+.t-header{background:var(--bg2);border:2px solid var(--primary);border-radius:var(--r-xl);padding:24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.t-header-left h1{font-family:var(--font-display);font-size:28px;color:var(--primary2);letter-spacing:.04em}
+.t-stats{display:flex;gap:12px;flex-wrap:wrap}
+.t-stat{background:var(--bg3);border:2px solid var(--bg4);border-radius:var(--r-md);padding:12px 20px;text-align:center;min-width:90px}
+.t-stat-val{font-size:26px;font-weight:800;color:var(--accent)}
+.t-stat-lbl{font-size:12px;color:var(--text2);margin-top:4px; font-weight:700; text-transform:uppercase;}
+.t-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.t-grid{grid-template-columns:1fr}}
+.t-card{background:var(--bg2);border:2px solid var(--bg4);border-radius:var(--r-lg);padding:20px}
+.t-card-title{font-size:14px;font-weight:800;letter-spacing:.08em;color:var(--primary2);text-transform:uppercase;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--bg4)}
+.t-answer-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bg4);font-size:14px; font-weight:600;}
+.t-answer-row:last-child{border-bottom:none}
+.t-ans-q{color:var(--text);flex:1}
+.t-ans-badge{padding:4px 12px;border-radius:12px;font-size:12px;font-weight:800;white-space:nowrap}
+.t-ans-badge.correct{background:var(--primary);color:#000;}
+.t-ans-badge.wrong{background:var(--red);color:#fff;}
+.t-ans-badge.pending{background:var(--bg4);color:var(--text3);}
+.t-hint-btn{background:var(--bg3);border:2px solid var(--primary-dim);border-radius:var(--r-md);padding:12px 16px;font-family:var(--font);font-size:14px;font-weight:800;color:var(--primary2);cursor:pointer;text-align:left;transition:all .2s;display:flex;align-items:center;gap:10px}
+.t-hint-btn:hover{background:var(--bg4); border-color:var(--primary);}
+.t-hint-btn.fired{background:var(--bg3);opacity:.5;cursor:default; border-color:var(--bg4);}
+
+/* PERFECTED PRINT STYLES */
+@media print{ 
+  body, html { background: #fff !important; color: #000 !important; }
+  body::before { display: none !important; }
+  #mode-bar, .mode-btns, #teacher-view, .s-next, #student-view, .no-print { display:none !important; } 
+  #print-summary { display:block !important; padding:0 !important; margin:0 !important; background:#fff !important; color:#000 !important; }
+  #print-summary h1 { color: #000 !important; }
+  #print-summary table { border-collapse: collapse; width: 100%; }
+  #print-summary th, #print-summary td { border: 1px solid #000 !important; color:#000 !important; }
+}
+
+#print-summary{display:none;padding:60px 32px 32px;font-family:var(--font);color:#111;background:#fff;min-height:100vh;}
+#print-summary.active{display:block;}
+#print-summary h1{font-family:var(--font-display);font-size:32px;color:#9333ea;}
+#print-summary table{width:100%;border-collapse:collapse;font-size:14px;margin-top:12px}
+#print-summary td,#print-summary th{border:1px solid #ddd;padding:10px;text-align:left; color:#111;}
+#print-summary th{background:#f1f5f9;font-weight:800; color:#111;}
+</style>
+</head>
+<body>
+
+<div id="mode-bar">
+  <div class="logo">🧪 Wacky Science: Sean Ep 4</div>
+  <div class="mode-btns">
+    <button class="mode-btn active" onclick="setMode('student')">Student View</button>
+    <button class="mode-btn" onclick="setMode('teacher')">Teacher Dashboard</button>
+    <button class="mode-btn" onclick="showSummary()">Print Summary</button>
+  </div>
+</div>
+
+<div id="student-view" class="active">
+<div class="s-wrap">
+
+  <div class="s-hero">
+    <div class="s-hero-icon">🦠</div>
+    <div>
+      <span class="s-series-badge">Science Adventure Series: Ep 4</span>
+      <div class="s-hero-title">The Micro-Maze</div>
+      <div class="s-hero-sub">B1 ESL · Present Perfect · Hero: Sean</div>
+    </div>
+  </div>
+
+  <div class="s-progress">
+    <span class="s-prog-label" id="s-prog-label">Level 1 of 5</span>
+    <div class="s-prog-bar"><div class="s-prog-fill" id="s-prog-fill" style="width:20%"></div></div>
+    <span class="s-xp" id="s-xp">0 XP</span>
+  </div>
+
+  <div class="s-scene active" id="s-scene-1">
+    <div class="s-card">
+      <div class="s-scene-tag">Level 1 — A Tiny Problem</div>
+      <div class="s-story">
+        You stepped through the portal into Dimension X. But when you look around, everything is gigantic!<br><br>
+        A blade of grass looks like a skyscraper. A normal ant looks like a scary monster. The portal didn't transport you to a new world... it <strong>shrunk</strong> you!<br><br>
+        You hear the Professor's voice through your earpiece. <em>"Sean! You are now microscopic! You are inside a drop of water!"</em>
+      </div>
+    </div>
+    <div class="s-card">
+      <div class="s-quiz-tag">Vocabulary Check</div>
+      <div class="s-quiz-q">The Professor says you are "microscopic". What does this mean?</div>
+      <div class="s-hint" id="hint-q1" style="display:none">💡 <strong>Hint:</strong> Think about what a 'microscope' is used for!</div>
+      <div class="s-choices" id="q1-choices">
+        <button class="s-choice" onclick="checkQ1(this,'A')"><span class="cl">A</span> It means you are very fast.</button>
+        <button class="s-choice" onclick="checkQ1(this,'B')"><span class="cl">B</span> It means you are too small to be seen with human eyes.</button>
+        <button class="s-choice" onclick="checkQ1(this,'C')"><span class="cl">C</span> It means you are glowing blue.</button>
+      </div>
+      <div class="s-fb" id="q1-fb"></div>
+    </div>
+    <div class="s-nav"><button class="s-next" id="s-next-1" onclick="goScene(2)">Look around →</button></div>
+  </div>
+
+  <div class="s-scene" id="s-scene-2">
+    <div class="s-card">
+      <div class="s-scene-tag grammar">Level 2 — Grammar Timeout</div>
+      <div class="s-story">
+        As you walk around, you see giant green plant cells floating in the water. <br><br>
+        You want to tell the Professor about your life experiences. We use the <strong>Present Perfect</strong> tense to talk about experiences we have had (or haven't had) in our life!
+      </div>
+      <div class="s-logic">
+        <div class="s-logic-title" style="color:var(--primary2);">Present Perfect Rules</div>
+        <div class="s-rule"><span class="s-tag gram">Form</span> Have / Has + Past Participle (V3)</div>
+        <div class="s-rule"><span class="s-tag gram">Keywords</span> We often use "ever" (in questions) and "never" (in negatives).</div>
+        <div class="s-rule" style="font-size:14px; font-style:italic; color:var(--text2);">Example: "<strong>Have</strong> you <strong>ever seen</strong> a giant plant cell?"</div>
+      </div>
+    </div>
+    <div class="s-card">
+      <div class="s-quiz-tag grammar">Grammar Challenge</div>
+      <div class="s-quiz-q">Fill in the blank correctly:<br><br><em>"I ________ never ________ an insect this big in my whole life!"</em></div>
+      <div class="s-hint" id="hint-qGrammar" style="display:none">💡 <strong>Hint:</strong> Look at the rule! We need "Have" + the V3 past participle of see.</div>
+      <div class="s-choices" id="qGrammar-choices">
+        <button class="s-choice grammar" onclick="checkQGrammar(this,'A')"><span class="cl">A</span> have / saw</button>
+        <button class="s-choice grammar" onclick="checkQGrammar(this,'B')"><span class="cl">B</span> has / seen</button>
+        <button class="s-choice grammar" onclick="checkQGrammar(this,'C')"><span class="cl">C</span> have / seen</button>
+      </div>
+      <div class="s-fb" id="qGrammar-fb"></div>
+    </div>
+    <div class="s-nav"><button class="s-next" id="s-next-2" onclick="goScene(3)">Run from the insect →</button></div>
+  </div>
+
+  <div class="s-scene" id="s-scene-3">
+    <div class="s-card">
+      <div class="s-scene-tag">Level 3 — The Un-Shrink Ray</div>
+      <div class="s-story">
+        The robot dog runs past you, dropping the notebook! You grab it.<br><br>
+        Inside, you find the instructions to build an <strong>Un-Shrink Ray</strong> to get back to normal size. But the instructions are scrambled!
+      </div>
+    </div>
+    <div class="s-card">
+      <div style="font-size:11px;font-weight:800;color:var(--text2);text-transform:uppercase;margin-bottom:10px;border-bottom:1px solid var(--bg4)">Sequencing Challenge</div>
+      <div class="s-quiz-q">Place the steps in the logical order to build the ray and escape:</div>
+      
+      <div class="seq-pool" id="seq-pool">
+        <div class="seq-item" id="ev-B" onclick="selectEvent('B')">Connect the battery to the laser.</div>
+        <div class="seq-item" id="ev-D" onclick="selectEvent('D')">Grow back to normal size.</div>
+        <div class="seq-item" id="ev-A" onclick="selectEvent('A')">Find the broken laser piece.</div>
+        <div class="seq-item" id="ev-C" onclick="selectEvent('C')">Point the laser at yourself and fire!</div>
+      </div>
+      
+      <div class="seq-slots" id="seq-slots">
+        <div class="seq-slot" id="slot-1" onclick="placeEvent(1)"><span class="slot-num">1</span> <span class="slot-text" id="slot-text-1">First step</span></div>
+        <div class="seq-slot" id="slot-2" onclick="placeEvent(2)"><span class="slot-num">2</span> <span class="slot-text" id="slot-text-2">Second step</span></div>
+        <div class="seq-slot" id="slot-3" onclick="placeEvent(3)"><span class="slot-num">3</span> <span class="slot-text" id="slot-text-3">Third step</span></div>
+        <div class="seq-slot" id="slot-4" onclick="placeEvent(4)"><span class="slot-num">4</span> <span class="slot-text" id="slot-text-4">Fourth step</span></div>
+      </div>
+      <button class="check-btn" id="check-seq-btn" onclick="checkSequence()">Check Sequence</button>
+      <div class="s-fb" id="seq-fb"></div>
+    </div>
+    <div class="s-nav"><button class="s-next" id="s-next-3" onclick="goScene(4)">Power up the ray →</button></div>
+  </div>
+
+  <div class="s-scene" id="s-scene-4">
+    <div class="s-card">
+      <div class="s-scene-tag grammar">Level 4 — The Final Charge</div>
+      <div class="s-story">
+        The laser is built! But it needs your voice to charge up. You must speak the truth about your experiences to power it.
+      </div>
+    </div>
+    <div class="s-card">
+      <div class="s-quiz-tag">Grammar Check</div>
+      <div class="s-quiz-q">Which sentence is grammatically correct to power the laser?</div>
+      <div class="s-hint" id="hint-q4" style="display:none">💡 <strong>Hint:</strong> Remember the rule: "Have" + Past Participle (V3). The V3 of 'be' is 'been'.</div>
+      <div class="s-choices" id="q4-choices">
+        <button class="s-choice" onclick="checkQ4(this,'A')"><span class="cl">A</span> I have be to Dimension X before.</button>
+        <button class="s-choice" onclick="checkQ4(this,'B')"><span class="cl">B</span> I have been to Dimension X today!</button>
+        <button class="s-choice" onclick="checkQ4(this,'C')"><span class="cl">C</span> I has been to Dimension X today!</button>
+      </div>
+      <div class="s-fb" id="q4-fb"></div>
+    </div>
+    <div class="s-nav"><button class="s-next" id="s-next-4" onclick="goScene(5)">Fire the Laser! →</button></div>
+  </div>
+
+  <div class="s-scene" id="s-scene-5">
+    <div class="s-reward">
+      <div class="s-reward-icon">🧬</div>
+      <div class="s-reward-title">Back to Normal!</div>
+      <div class="s-reward-xp" id="s-final-xp">0 XP Earned</div>
+      <div class="s-reward-sub">
+        ZAAAAAP! You grow back to normal size and safely return to the laboratory with the Professor's notebook.<br><br>
+        Amazing job, Sean! You navigated the Micro-Maze using <strong>Sequencing Logic</strong> and the <strong>Present Perfect Tense</strong>.<br><br>
+        <strong>Homework:</strong> Write two sentences using the Present Perfect about things you <em>have</em> done, and one thing you <em>have never</em> done!
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<div id="teacher-view">
+<div class="t-wrap">
+  <div class="t-header">
+    <div class="t-header-left">
+      <h1>Teacher Dashboard — Sean's Lesson</h1>
+      <p><span class="live-dot"></span>Ep 4: The Micro-Maze · B1 ESL</p>
+    </div>
+    <div class="t-stats">
+      <div class="t-stat"><div class="t-stat-val" id="t-xp">0</div><div class="t-stat-lbl">XP</div></div>
+      <div class="t-stat"><div class="t-stat-val" id="t-correct">0</div><div class="t-stat-lbl">Correct</div></div>
+      <div class="t-stat"><div class="t-stat-val" id="t-attempts">0</div><div class="t-stat-lbl">Attempts</div></div>
+    </div>
+  </div>
+
+  <div class="t-grid">
+    <div class="t-card">
+      <div class="t-card-title">Answer Log</div>
+      <div class="t-answer-row"><span class="t-ans-q">Q1 — Vocab: "Microscopic"</span><span class="t-ans-badge pending" id="tlog-q1">Pending</span></div>
+      <div class="t-answer-row"><span class="t-ans-q" style="color:var(--primary2);">Q2 — Grammar: Present Perfect</span><span class="t-ans-badge pending" id="tlog-qGrammar">Pending</span></div>
+      <div class="t-answer-row"><span class="t-ans-q">Q3 — Logic: Sequencing</span><span class="t-ans-badge pending" id="tlog-seq">Pending</span></div>
+      <div class="t-answer-row"><span class="t-ans-q">Q4 — Grammar: Form Check</span><span class="t-ans-badge pending" id="tlog-q4">Pending</span></div>
+    </div>
+
+    <div class="t-card">
+      <div class="t-card-title">Hint Controls</div>
+      <div class="t-hint-section">
+        <button class="t-hint-btn" id="thint-q1" onclick="fireHint('q1')">💡 Hint: Q1 (Vocab)</button>
+        <button class="t-hint-btn" id="thint-qGrammar" onclick="fireHint('qGrammar')" style="margin-top:10px;">💡 Hint: Grammar</button>
+        <button class="t-hint-btn" id="thint-q4" onclick="fireHint('q4')" style="margin-top:10px;">💡 Hint: Q4 (Laser)</button>
+      </div>
+    </div>
+  </div>
+  <button class="t-print-btn" onclick="showSummary()" style="background:var(--bg3); color:white; border:2px solid var(--bg4); padding:12px 24px; border-radius:8px; font-weight:bold; cursor:pointer; margin: 0 auto; display:block;">🖨 Print Lesson Summary</button>
+</div>
+</div>
+
+<div id="print-summary">
+  <button class="no-print" onclick="window.print()" style="padding:10px 20px; margin-bottom: 20px; background:var(--primary); color:#000; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:16px;">🖨 Print Document</button>
+  <h1>Lesson Summary — Episode 4: The Micro-Maze</h1>
+  <p><strong>Student:</strong> Sean &nbsp;|&nbsp; <strong>Level:</strong> B1 ESL &nbsp;|&nbsp; <strong>Focus:</strong> Present Perfect &amp; Sequencing &nbsp;|&nbsp; <strong>Date:</strong> <span id="print-date"></span></p>
+  <table>
+    <tr><th>Question</th><th>Topic</th><th>Result</th><th>XP</th></tr>
+    <tr><td>Q1</td><td>Vocabulary (Microscopic)</td><td id="pr-q1">—</td><td id="pr-q1-xp">—</td></tr>
+    <tr><td>Q2</td><td>Grammar (Present Perfect Form)</td><td id="pr-qGrammar">—</td><td id="pr-qGrammar-xp">—</td></tr>
+    <tr><td>Q3</td><td>Logic (Chronological Sequencing)</td><td id="pr-seq">—</td><td id="pr-seq-xp">—</td></tr>
+    <tr><td>Q4</td><td>Grammar (Experience Check)</td><td id="pr-q4">—</td><td id="pr-q4-xp">—</td></tr>
+  </table>
+  <h2 style="margin-top: 20px;">Total XP: <span id="pr-total-xp">0</span></h2>
+</div>
+
+<script>
+var xp=0,correct=0,totalAttempts=0,currentScene=1;
+var attempts={q1:0,qGrammar:0,seq:0,q4:0};
+
+function setMode(m){
+  document.getElementById('student-view').classList.toggle('active',m==='student');
+  document.getElementById('teacher-view').classList.toggle('active',m==='teacher');
+  document.getElementById('print-summary').classList.toggle('active',m==='summary');
+  document.querySelectorAll('.mode-btn').forEach(function(b){b.classList.remove('active')});
+  if(m==='student') document.querySelectorAll('.mode-btn')[0].classList.add('active');
+  if(m==='teacher') document.querySelectorAll('.mode-btn')[1].classList.add('active');
+  if(m==='summary') document.querySelectorAll('.mode-btn')[2].classList.add('active');
+}
+function addXP(pts){
+  xp+=pts; document.getElementById('s-xp').textContent=xp+' XP'; document.getElementById('t-xp').textContent=xp;
+  document.getElementById('s-final-xp').textContent=xp+' XP Earned'; document.getElementById('pr-total-xp').textContent=xp;
+}
+function recordAnswer(q,result,pts){
+  if(result==='correct')correct++; totalAttempts++;
+  document.getElementById('t-correct').textContent=correct; document.getElementById('t-attempts').textContent=totalAttempts;
+  var badge=document.getElementById('tlog-'+q);
+  if(badge){badge.className='t-ans-badge '+(result==='correct'?'correct':'wrong');badge.textContent=result==='correct'?'✓ Correct':'✗ Wrong'}
+  var pr=document.getElementById('pr-'+q);var prXP=document.getElementById('pr-'+q+'-xp');
+  if(pr)pr.textContent=result==='correct'?'Correct':'Incorrect'; if(prXP)prXP.textContent=pts+' XP';
+}
+function goScene(n){
+  document.querySelectorAll('.s-scene').forEach(function(s){s.classList.remove('active')});
+  document.getElementById('s-scene-'+n).classList.add('active');
+  document.getElementById('s-prog-fill').style.width=[0,25,50,75,100][n-1]+'%';
+  document.getElementById('s-prog-label').textContent='Level '+n+' of 5';
+  currentScene=n;
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function fireHint(q){
+  var el=document.getElementById('hint-'+q); if(el){el.style.display='block';el.classList.add('show')}
+  var btn=document.getElementById('thint-'+q); if(btn){btn.classList.add('fired');btn.innerHTML='<span class="t-hint-icon">✓</span> Hint sent';btn.onclick=null}
+}
+function lockChoices(sel){
+    document.querySelectorAll(sel).forEach(function(b){b.onclick=null;b.style.cursor='default';})
+}
+function disableWrongButton(btn) {
+  btn.classList.add('wrong');
+  btn.style.opacity = '0.6';
+  btn.style.cursor = 'not-allowed';
+  btn.onclick = null;
+}
+
+// Q1 Logic
+function checkQ1(btn,ans){
+  attempts.q1++; var fb=document.getElementById('q1-fb');
+  if(ans==='B'){
+    lockChoices('#q1-choices .s-choice'); btn.classList.add('correct');
+    var pts=attempts.q1===1?100:50;addXP(pts);recordAnswer('q1','correct',pts);
+    fb.className='s-fb ok show';fb.innerHTML='<strong>Perfect!</strong> ✓ Microscopic means too small to be seen without help! +'+pts+' XP!';
+    document.getElementById('s-next-1').classList.add('show');
+  } else {
+    disableWrongButton(btn);
+    recordAnswer('q1','wrong',0); fb.className='s-fb err show'; fb.innerHTML='<strong>Incorrect!</strong> Read the hint. Try again.';
+  }
+}
+
+// Q2 Logic
+function checkQGrammar(btn,ans){
+  attempts.qGrammar++; var fb=document.getElementById('qGrammar-fb');
+  if(ans==='C'){
+    lockChoices('#qGrammar-choices .s-choice'); btn.classList.add('correct');
+    var pts=attempts.qGrammar===1?100:50;addXP(pts);recordAnswer('qGrammar','correct',pts);
+    fb.className='s-fb ok show';fb.innerHTML='<strong>Perfect Grammar!</strong> ✓ I have seen! +'+pts+' XP!';
+    document.getElementById('s-next-2').classList.add('show');
+  } else {
+    disableWrongButton(btn);
+    recordAnswer('qGrammar','wrong',0); fb.className='s-fb err show';
+    fb.innerHTML=ans==='A'?'<strong>Incorrect!</strong> "Saw" is past simple. We need the V3 past participle (seen).':'<strong>Incorrect!</strong> "I" takes "have", not "has".';
+  }
+}
+
+// Q4 Logic
+function checkQ4(btn,ans){
+  attempts.q4++; var fb=document.getElementById('q4-fb');
+  if(ans==='B'){
+    lockChoices('#q4-choices .s-choice'); btn.classList.add('correct');
+    var pts=attempts.q4===1?100:50;addXP(pts);recordAnswer('q4','correct',pts);
+    fb.className='s-fb ok show';fb.innerHTML='<strong>Laser Charged!</strong> ✓ "I have been" is correct! +'+pts+' XP!';
+    document.getElementById('s-next-4').classList.add('show');
+  } else {
+    disableWrongButton(btn);
+    recordAnswer('q4','wrong',0); fb.className='s-fb err show'; fb.innerHTML='<strong>Incorrect!</strong> Check the subject and the verb. Try again!';
+  }
+}
+
+/* SEQUENCING LOGIC */
+var evTexts={A:'Find the broken laser piece.',C:'Connect the battery to the laser.',B:'Point the laser at yourself and fire!',D:'Grow back to normal size.'};
+var selectedEvent=null;
+var slotContents={1:null,2:null,3:null,4:null};
+var correctOrder=['A','C','B','D'];
+function selectEvent(id){
+  if(document.getElementById('ev-'+id).classList.contains('placed'))return;
+  document.querySelectorAll('.seq-item').forEach(function(i){i.classList.remove('selected')});
+  selectedEvent=id; document.getElementById('ev-'+id).classList.add('selected');
+}
+function placeEvent(slot){
+  if(!selectedEvent)return;
+  var oldEv=slotContents[slot];
+  if(oldEv){
+    document.getElementById('ev-'+oldEv).classList.remove('placed','selected');
+    document.getElementById('ev-'+oldEv).style.opacity='1';
+    document.getElementById('ev-'+oldEv).onclick=function(){selectEvent(oldEv)};
+  }
+  slotContents[slot]=selectedEvent;
+  document.getElementById('slot-'+slot).classList.add('filled');
+  document.getElementById('slot-text-'+slot).textContent=evTexts[selectedEvent];
+  document.getElementById('ev-'+selectedEvent).classList.add('placed');
+  document.getElementById('ev-'+selectedEvent).classList.remove('selected');
+  selectedEvent=null;
+}
+function checkSequence(){
+  attempts.seq++; var fb=document.getElementById('seq-fb');
+  var order=[slotContents[1],slotContents[2],slotContents[3],slotContents[4]];
+  if(order.indexOf(null)>=0){fb.className='s-fb err show';fb.innerHTML='Place all 4 steps!';return}
+  if(JSON.stringify(order)===JSON.stringify(correctOrder)){
+    var pts=attempts.seq===1?100:50;addXP(pts);recordAnswer('seq','correct',pts);
+    fb.className='s-fb ok show';fb.innerHTML='<strong>Perfect!</strong> ✓ Find piece -> Connect battery -> Fire! -> Grow! +'+pts+' XP!';
+    document.getElementById('check-seq-btn').style.display='none';
+    document.getElementById('s-next-3').classList.add('show');
+  } else {
+    recordAnswer('seq','wrong',0);
+    fb.className='s-fb err show';fb.innerHTML='<strong>Not quite!</strong> You have to find the piece before you can connect the battery! Try again.';
+    document.querySelectorAll('.seq-slot').forEach(function(s){s.classList.remove('filled')});
+    document.querySelectorAll('.seq-item').forEach(function(i){i.classList.remove('placed','selected');i.style.opacity='1';var id=i.id.replace('ev-','');i.onclick=function(){selectEvent(id)}});
+    slotContents={1:null,2:null,3:null,4:null};selectedEvent=null;
+    for(var i=1;i<=4;i++) document.getElementById('slot-text-'+i).textContent='Click to place';
+  }
+}
+
+// Print Summary Fix
+function showSummary(){
+  var dateSpan = document.getElementById('print-date');
+  if(dateSpan) dateSpan.textContent = new Date().toLocaleDateString();
+  setMode('summary');
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAQAN Apex · Programme Roadmap</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Mono:ital,wght@0,300;0,400;0,500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+/* ── THEME VARIABLES ──────────────────────────────────────── */
+:root {
+  --bg:          #F8F6F1;
+  --surface:     #FFFFFF;
+  --surface2:    #F2EEE6;
+  --border:      rgba(30,20,10,0.1);
+  --text:        #1A1410;
+  --text2:       #5A5040;
+  --text3:       #9A9080;
+  --gold:        #8A6D2C;
+  --gold-dim:    rgba(138,109,44,0.09);
+  --gold-border: rgba(138,109,44,0.3);
+  --shadow:      0 2px 18px rgba(0,0,0,0.07);
+  --shadow-hover:0 8px 32px rgba(0,0,0,0.12);
+
+  /* principle accent colours */
+  --c1: #8A6D2C; /* gold */
+  --c2: #B5621E; /* amber */
+  --c3: #2C5F8A; /* blue */
+  --c4: #1D7A5C; /* green */
+  --c5: #5A3A8A; /* purple */
+  --c6: #1D6B8A; /* teal */
+}
+body.dark {
+  --bg:          #080C14;
+  --surface:     #0F1520;
+  --surface2:    #141C2A;
+  --border:      rgba(255,255,255,0.07);
+  --text:        #EDE8DC;
+  --text2:       #A8A098;
+  --text3:       #5A5650;
+  --gold:        #C8A84B;
+  --gold-dim:    rgba(200,168,75,0.12);
+  --gold-border: rgba(200,168,75,0.35);
+  --shadow:      0 2px 18px rgba(0,0,0,0.4);
+  --shadow-hover:0 8px 32px rgba(0,0,0,0.6);
+}
+
+/* ── RESET ───────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background 0.35s ease, color 0.35s ease;
+}
+
+/* ── KEYFRAMES ───────────────────────────────────────────── */
+@keyframes fadeUp    { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeRight { from { opacity:0; transform:translateX(-14px); } to { opacity:1; transform:translateX(0); } }
+@keyframes lineGrow  { from { transform:scaleY(0); transform-origin:top; } to { transform:scaleY(1); transform-origin:top; } }
+@keyframes dotPop    { 0% { transform:scale(0); } 60% { transform:scale(1.25); } 100% { transform:scale(1); } }
+@keyframes shimmer   { 0%,100% { opacity:0.5; } 50% { opacity:1; } }
+
+/* ── LAYOUT ──────────────────────────────────────────────── */
+.page-wrap { max-width: 960px; margin: 0 auto; padding: 0 1.5rem 4rem; }
+
+/* ── HEADER ──────────────────────────────────────────────── */
+.site-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  max-width: 960px; margin: 0 auto;
+  border-bottom: 0.5px solid var(--border);
+}
+.site-logo { display: flex; align-items: center; gap: 10px; }
+.logo-badge {
+  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--gold);
+  background: var(--gold-dim); border: 0.5px solid var(--gold-border);
+  padding: 4px 12px; border-radius: 2px;
+}
+.logo-name {
+  font-family: 'Cormorant Garamond', serif; font-size: 22px; font-weight: 700;
+  color: var(--text); letter-spacing: 0.04em;
+}
+.header-right { display: flex; align-items: center; gap: 12px; }
+.theme-btn {
+  font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
+  padding: 5px 14px; border-radius: 2px; border: 0.5px solid var(--border);
+  background: transparent; color: var(--text3); cursor: pointer; transition: all 0.2s;
+}
+.theme-btn:hover { border-color: var(--gold-border); color: var(--gold); }
+
+/* ── TAB NAVIGATION ──────────────────────────────────────── */
+.tab-nav {
+  display: flex; gap: 0;
+  border-bottom: 0.5px solid var(--border);
+  margin-bottom: 3rem;
+  padding-top: 2.5rem;
+}
+.tab-btn {
+  font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 10px 20px; border: none;
+  background: transparent; color: var(--text3); cursor: pointer;
+  border-bottom: 2px solid transparent; transition: all 0.2s;
+  white-space: nowrap;
+}
+.tab-btn:hover { color: var(--text2); }
+.tab-btn.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+/* ── TAB PANELS ──────────────────────────────────────────── */
+.panel { display: none; }
+.panel.active { display: block; animation: fadeUp 0.35s ease; }
+
+.panel-header { margin-bottom: 2.5rem; }
+.panel-overline {
+  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 0.5rem;
+}
+.panel-title {
+  font-family: 'Cormorant Garamond', serif; font-size: clamp(28px, 4vw, 42px);
+  font-weight: 700; color: var(--text); line-height: 1.15; margin-bottom: 0.875rem;
+}
+.panel-sub {
+  font-size: 14px; color: var(--text2); line-height: 1.75; max-width: 560px;
+}
+
+/* ─────────────────────────────────────────────────────────
+   PANEL 1 · STUDENT JOURNEY TIMELINE
+───────────────────────────────────────────────────────── */
+.timeline-wrap { position: relative; padding-left: 48px; }
+.timeline-spine {
+  position: absolute; left: 15px; top: 8px; bottom: 8px; width: 1.5px;
+  background: var(--border); border-radius: 1px;
+}
+.timeline-spine-fill {
+  position: absolute; left: 0; top: 0; width: 100%; background: var(--gold);
+  border-radius: 1px; transform-origin: top; transform: scaleY(0);
+  transition: transform 1.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.panel.active .timeline-spine-fill { transform: scaleY(1); }
+
+.milestone {
+  position: relative; padding: 0 0 2.5rem;
+  opacity: 0; transform: translateX(-10px);
+  transition: opacity 0.45s ease, transform 0.45s ease;
+}
+.panel.active .milestone { opacity: 1; transform: translateX(0); }
+.panel.active .milestone:nth-child(1) { transition-delay: 0.25s; }
+.panel.active .milestone:nth-child(2) { transition-delay: 0.45s; }
+.panel.active .milestone:nth-child(3) { transition-delay: 0.65s; }
+.panel.active .milestone:nth-child(4) { transition-delay: 0.85s; }
+.panel.active .milestone:nth-child(5) { transition-delay: 1.05s; }
+
+.milestone-dot {
+  position: absolute; left: -39px; top: 4px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--surface); border: 2px solid var(--border);
+  transition: border-color 0.3s, background 0.3s;
+}
+.milestone.is-c1 .milestone-dot { background: var(--gold); border-color: var(--gold); }
+.milestone-level {
+  font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 4px;
+  display: flex; align-items: center; gap: 10px;
+}
+.level-badge {
+  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.12em;
+  padding: 2px 8px; border-radius: 2px; border: 0.5px solid var(--gold-border);
+  background: var(--gold-dim);
+}
+.milestone-title {
+  font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 700;
+  color: var(--text); margin-bottom: 0.5rem;
+}
+.milestone-body { font-size: 13px; color: var(--text2); line-height: 1.75; margin-bottom: 0.875rem; }
+.student-tags { display: flex; flex-wrap: wrap; gap: 7px; }
+.student-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.06em;
+  padding: 4px 10px; border-radius: 2px; border: 0.5px solid var(--border);
+  background: var(--surface2); color: var(--text2);
+}
+.student-tag.confirmed { border-color: var(--gold-border); color: var(--gold); background: var(--gold-dim); }
+.tag-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; opacity: 0.6; }
+
+/* ─────────────────────────────────────────────────────────
+   PANEL 2 · SIX FRAMEWORK PRINCIPLES
+───────────────────────────────────────────────────────── */
+.principles-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem;
+}
+@media (max-width: 660px) { .principles-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 440px) { .principles-grid { grid-template-columns: 1fr; } }
+
+.principle-card {
+  background: var(--surface); border: 0.5px solid var(--border); border-radius: 4px;
+  padding: 1.375rem 1.25rem; box-shadow: var(--shadow);
+  border-left-width: 3px; border-left-style: solid;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+  cursor: default;
+}
+.principle-card:hover { transform: translateY(-5px); box-shadow: var(--shadow-hover); }
+.principle-card:nth-child(1) { border-left-color: var(--c1); }
+.principle-card:nth-child(2) { border-left-color: var(--c2); }
+.principle-card:nth-child(3) { border-left-color: var(--c3); }
+.principle-card:nth-child(4) { border-left-color: var(--c4); }
+.principle-card:nth-child(5) { border-left-color: var(--c5); }
+.principle-card:nth-child(6) { border-left-color: var(--c6); }
+
+.principle-icon { width: 32px; height: 32px; margin-bottom: 1rem; }
+.principle-num {
+  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--text3); margin-bottom: 5px;
+}
+.principle-name {
+  font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 700;
+  color: var(--text); margin-bottom: 0.625rem; line-height: 1.25;
+}
+.principle-body { font-size: 12px; color: var(--text2); line-height: 1.72; }
+
+/* ─────────────────────────────────────────────────────────
+   PANEL 3 · SESSION STRUCTURE
+───────────────────────────────────────────────────────── */
+.session-flow {
+  display: grid; grid-template-columns: 1fr 40px 1fr 40px 1fr;
+  align-items: center; gap: 0; margin-bottom: 3rem;
+}
+@media (max-width: 620px) {
+  .session-flow { grid-template-columns: 1fr; }
+  .flow-arrow { transform: rotate(90deg); }
+}
+.flow-block {
+  background: var(--surface); border: 0.5px solid var(--border); border-radius: 4px;
+  padding: 1.5rem 1.25rem; box-shadow: var(--shadow); text-align: center;
+}
+.flow-num {
+  font-family: 'DM Mono', monospace; font-size: 22px; font-weight: 400;
+  color: var(--gold); opacity: 0.5; display: block; margin-bottom: 4px;
+}
+.flow-title {
+  font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 700;
+  color: var(--text); margin-bottom: 0.5rem;
+}
+.flow-body { font-size: 12px; color: var(--text2); line-height: 1.7; }
+.flow-arrow { text-align: center; color: var(--gold); font-size: 20px; opacity: 0.5; }
+
+.video-section-label {
+  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--text3); margin-bottom: 1rem;
+}
+.video-container {
+  position: relative; width: 100%; max-width: 640px; margin: 0 auto;
+  border-radius: 6px; overflow: hidden;
+  border: 0.5px solid var(--gold-border);
+  box-shadow: 0 4px 32px rgba(0,0,0,0.18);
+  background: #080C14;
+  aspect-ratio: 16/9;
+}
+/* hidden video element: set src to enable */
+.demo-video { position: absolute; inset: 0; width: 100%; height: 100%; display: none; }
+.video-overlay {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 16px;
+  background: radial-gradient(ellipse 80% 80% at 50% 50%, rgba(200,168,75,0.06) 0%, rgba(8,12,20,0.95) 100%);
+}
+.video-play-btn {
+  width: 64px; height: 64px; border-radius: 50%;
+  border: 1.5px solid rgba(200,168,75,0.6); background: rgba(200,168,75,0.1);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background 0.2s, border-color 0.2s;
+  animation: shimmer 2.8s ease-in-out infinite;
+}
+.video-play-btn:hover { background: rgba(200,168,75,0.22); border-color: rgba(200,168,75,1); }
+.video-play-btn svg { margin-left: 4px; }
+.video-caption {
+  font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 0.1em;
+  text-transform: uppercase; color: rgba(200,168,75,0.6); text-align: center;
+}
+.video-caption span { display: block; font-size: 9px; opacity: 0.45; margin-top: 4px; letter-spacing: 0.06em; text-transform: none; }
+
+/* ─────────────────────────────────────────────────────────
+   PANEL 4 · FULL ECOSYSTEM
+───────────────────────────────────────────────────────── */
+.eco-container {
+  background: var(--surface); border: 0.5px solid var(--border); border-radius: 6px;
+  padding: 2rem; box-shadow: var(--shadow); margin-bottom: 2.5rem; overflow: hidden;
+}
+.eco-svg { width: 100%; display: block; }
+
+/* outcome cards */
+.outcomes-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem;
+}
+@media (max-width: 640px) { .outcomes-grid { grid-template-columns: 1fr 1fr; } }
+
+.outcome-card {
+  background: var(--surface); border: 0.5px solid var(--border); border-radius: 4px;
+  padding: 1.25rem 1rem; box-shadow: var(--shadow); text-align: center;
+}
+.outcome-num {
+  font-family: 'Cormorant Garamond', serif; font-size: 38px; font-weight: 700;
+  color: var(--gold); line-height: 1; display: block; margin-bottom: 4px;
+}
+.outcome-label {
+  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--text3); display: block; margin-bottom: 6px;
+}
+.outcome-desc { font-size: 11px; color: var(--text2); line-height: 1.65; }
+</style>
+</head>
+<body>
+
+<!-- ─── HEADER ──────────────────────────────────────────── -->
+<header class="site-header">
+  <div class="site-logo">
+    <span class="logo-badge">Programme</span>
+    <span class="logo-name">TAQAN Apex</span>
+  </div>
+  <div class="header-right">
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">Dark mode</button>
+  </div>
+</header>
+
+<!-- ─── MAIN ─────────────────────────────────────────────── -->
+<div class="page-wrap">
+
+  <!-- TAB NAV -->
+  <nav class="tab-nav">
+    <button class="tab-btn active" onclick="switchTab(0)">Student Journey</button>
+    <button class="tab-btn" onclick="switchTab(1)">Six Principles</button>
+    <button class="tab-btn" onclick="switchTab(2)">Session Structure</button>
+    <button class="tab-btn" onclick="switchTab(3)">Full Ecosystem</button>
+  </nav>
+
+  <!-- ── PANEL 1: STUDENT JOURNEY ──────────────────────── -->
+  <div class="panel active" id="panel0">
+    <div class="panel-header">
+      <div class="panel-overline">Student Journey</div>
+      <h2 class="panel-title">A1 to C1: Every Step Documented</h2>
+      <p class="panel-sub">28 of 30 active students. 4 confirmed C1 graduates. Every episode, every tense switch, every latency reading logged from day one.</p>
+    </div>
+
+    <div class="timeline-wrap">
+      <div class="timeline-spine">
+        <div class="timeline-spine-fill"></div>
+      </div>
+
+      <!-- A1 -->
+      <div class="milestone">
+        <div class="milestone-dot"></div>
+        <div class="milestone-level"><span class="level-badge">A1</span> Foundation</div>
+        <div class="milestone-title">First Structures</div>
+        <div class="milestone-body">Core vocabulary, sentence construction, present simple. The student produces their first timed responses. Gaps are documented before Episode 02 is written.</div>
+        <div class="student-tags">
+          <span class="student-tag confirmed"><span class="tag-dot"></span>Yusuf · Started here</span>
+        </div>
+      </div>
+
+      <!-- A2 -->
+      <div class="milestone">
+        <div class="milestone-dot"></div>
+        <div class="milestone-level"><span class="level-badge">A2</span> Elementary</div>
+        <div class="milestone-title">Past Tense Demand</div>
+        <div class="milestone-body">Past simple formation, question construction, basic narrative. The student begins timed past-tense output. Auxiliary verb errors are logged and fed into the next episode.</div>
+        <div class="student-tags">
+          <span class="student-tag confirmed"><span class="tag-dot"></span>Lucas · Started here → C1 in 7 months</span>
+        </div>
+      </div>
+
+      <!-- B1 -->
+      <div class="milestone">
+        <div class="milestone-dot"></div>
+        <div class="milestone-level"><span class="level-badge">B1</span> Intermediate</div>
+        <div class="milestone-title">Tense Switching Under Pressure</div>
+        <div class="milestone-body">The core competency of the TAQAN framework. The student must move between past and present in a single sentence, under timer, without scaffolding. Latency data drives every future episode.</div>
+      </div>
+
+      <!-- B2 -->
+      <div class="milestone">
+        <div class="milestone-dot"></div>
+        <div class="milestone-level"><span class="level-badge">B2</span> Upper Intermediate</div>
+        <div class="milestone-title">Complex Argumentation</div>
+        <div class="milestone-body">Extended discourse, academic register, idiomatic language in context. The student writes full analytical reports, not just sentences. Free production is the primary measure.</div>
+      </div>
+
+      <!-- C1 -->
+      <div class="milestone is-c1">
+        <div class="milestone-dot"></div>
+        <div class="milestone-level"><span class="level-badge">C1</span> Advanced</div>
+        <div class="milestone-title">Fluent Production Under Pressure</div>
+        <div class="milestone-body">Authentic grammar control at speed, without prompting, across any topic. The student owns the tense system. Four students have reached this level on the TAQAN Apex programme.</div>
+        <div class="student-tags">
+          <span class="student-tag confirmed"><span class="tag-dot"></span>Yusuf · 2y 7m (A1 start)</span>
+          <span class="student-tag confirmed"><span class="tag-dot"></span>Lucas · 7 months (fastest)</span>
+          <span class="student-tag confirmed"><span class="tag-dot"></span>Can · Confirmed C1</span>
+          <span class="student-tag confirmed"><span class="tag-dot"></span>Asya · Confirmed C1</span>
+        </div>
+      </div>
+
+    </div><!-- /timeline-wrap -->
+  </div><!-- /panel0 -->
+
+  <!-- ── PANEL 2: SIX PRINCIPLES ───────────────────────── -->
+  <div class="panel" id="panel1">
+    <div class="panel-header">
+      <div class="panel-overline">Framework</div>
+      <h2 class="panel-title">Six Principles Behind Every Episode</h2>
+      <p class="panel-sub">Each session is built on six interdependent principles. Remove any one and the diagnostic precision breaks down.</p>
+    </div>
+
+    <div class="principles-grid">
+
+      <!-- 1 Grammar in Context -->
+      <div class="principle-card">
+        <svg class="principle-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="4" y="6" width="24" height="20" rx="2" stroke="var(--c1)" stroke-width="1.4" opacity="0.7"/>
+          <line x1="9" y1="13" x2="23" y2="13" stroke="var(--c1)" stroke-width="1.2" opacity="0.5"/>
+          <line x1="9" y1="18" x2="19" y2="18" stroke="var(--c1)" stroke-width="1.2" opacity="0.5"/>
+          <circle cx="23" cy="18" r="2.5" fill="var(--c1)" opacity="0.7"/>
+        </svg>
+        <div class="principle-num">01</div>
+        <div class="principle-name">Grammar in Context</div>
+        <div class="principle-body">Grammar is never taught in isolation. Every structure is embedded in a real narrative scenario that requires active production, not explanation.</div>
+      </div>
+
+      <!-- 2 Timed Output -->
+      <div class="principle-card">
+        <svg class="principle-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="16" cy="18" r="11" stroke="var(--c2)" stroke-width="1.4" opacity="0.7"/>
+          <line x1="16" y1="18" x2="16" y2="11" stroke="var(--c2)" stroke-width="1.4" stroke-linecap="round" opacity="0.8"/>
+          <line x1="16" y1="18" x2="20" y2="22" stroke="var(--c2)" stroke-width="1.4" stroke-linecap="round" opacity="0.8"/>
+          <line x1="12" y1="6" x2="20" y2="6" stroke="var(--c2)" stroke-width="1.2" stroke-linecap="round" opacity="0.5"/>
+        </svg>
+        <div class="principle-num">02</div>
+        <div class="principle-name">Timed Output</div>
+        <div class="principle-body">Response latency is measured every session. Hesitation over 2 seconds on a target structure flags it for the next episode. The data, not intuition, drives the next step.</div>
+      </div>
+
+      <!-- 3 Episode Architecture -->
+      <div class="principle-card">
+        <svg class="principle-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="3" y="10" width="8" height="12" rx="1.5" stroke="var(--c3)" stroke-width="1.3" opacity="0.7"/>
+          <rect x="12" y="8" width="8" height="16" rx="1.5" stroke="var(--c3)" stroke-width="1.3" opacity="0.8"/>
+          <rect x="21" y="12" width="8" height="10" rx="1.5" stroke="var(--c3)" stroke-width="1.3" opacity="0.6"/>
+          <line x1="11" y1="16" x2="12" y2="16" stroke="var(--c3)" stroke-width="1.2" opacity="0.5"/>
+          <line x1="20" y1="16" x2="21" y2="16" stroke="var(--c3)" stroke-width="1.2" opacity="0.5"/>
+        </svg>
+        <div class="principle-num">03</div>
+        <div class="principle-name">Episode Architecture</div>
+        <div class="principle-body">Each session is a self-contained story with a dramatic arc. Comprehension, analysis, and production flow in a fixed sequence. The student always knows where they are.</div>
+      </div>
+
+      <!-- 4 Real-time Diagnostics -->
+      <div class="principle-card">
+        <svg class="principle-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <polyline points="4,22 10,14 15,18 20,10 26,16" stroke="var(--c4)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round" fill="none" opacity="0.8"/>
+          <circle cx="26" cy="16" r="2.5" fill="var(--c4)" opacity="0.8"/>
+          <line x1="4" y1="26" x2="28" y2="26" stroke="var(--c4)" stroke-width="0.8" opacity="0.3"/>
+        </svg>
+        <div class="principle-num">04</div>
+        <div class="principle-name">Real-time Diagnostics</div>
+        <div class="principle-body">The teacher dashboard captures every response live. Tense switches, latency, and confidence are logged before the session ends, never reconstructed from memory.</div>
+      </div>
+
+      <!-- 5 Spaced Repetition -->
+      <div class="principle-card">
+        <svg class="principle-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 6 A10 10 0 1 1 6 16" stroke="var(--c5)" stroke-width="1.4" stroke-linecap="round" opacity="0.8"/>
+          <polyline points="6,10 6,16 12,16" stroke="var(--c5)" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round" opacity="0.8"/>
+          <circle cx="16" cy="16" r="2.5" fill="var(--c5)" opacity="0.6"/>
+        </svg>
+        <div class="principle-num">05</div>
+        <div class="principle-name">Spaced Repetition</div>
+        <div class="principle-body">High-frequency vocabulary and target structures recur across episodes with increasing complexity and reduced scaffolding. Retention is built through return, not drilling.</div>
+      </div>
+
+      <!-- 6 Student-built Content -->
+      <div class="principle-card">
+        <svg class="principle-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="14" cy="11" r="6" stroke="var(--c6)" stroke-width="1.3" opacity="0.7"/>
+          <path d="M4 27 Q4 20 14 20 Q20 20 23 24" stroke="var(--c6)" stroke-width="1.3" stroke-linecap="round" opacity="0.6"/>
+          <path d="M22 18 L28 12 L26 10 L20 16 Z" stroke="var(--c6)" stroke-width="1.3" stroke-linejoin="round" opacity="0.8"/>
+          <line x1="21" y1="22" x2="27" y2="22" stroke="var(--c6)" stroke-width="1.2" stroke-linecap="round" opacity="0.4"/>
+          <line x1="21" y1="25" x2="25" y2="25" stroke="var(--c6)" stroke-width="1.2" stroke-linecap="round" opacity="0.3"/>
+        </svg>
+        <div class="principle-num">06</div>
+        <div class="principle-name">Student-built Content</div>
+        <div class="principle-body">Every episode is written around the individual student's documented gaps, interests, and cultural context. Generic content doesn't produce diagnostic-grade data.</div>
+      </div>
+
+    </div><!-- /principles-grid -->
+  </div><!-- /panel1 -->
+
+  <!-- ── PANEL 3: SESSION STRUCTURE ────────────────────── -->
+  <div class="panel" id="panel2">
+    <div class="panel-header">
+      <div class="panel-overline">Session Structure</div>
+      <h2 class="panel-title">Three Blocks. Every Session.</h2>
+      <p class="panel-sub">The structure never changes. The content changes every time. The student knows the pattern; the pressure comes from the material.</p>
+    </div>
+
+    <div class="session-flow">
+      <div class="flow-block">
+        <span class="flow-num">01</span>
+        <div class="flow-title">Listen</div>
+        <div class="flow-body">Immersive story input. Illustrated scene stage, sentence-by-sentence caption, past-tense vocabulary in context. The student receives before they produce.</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-block">
+        <span class="flow-num">02</span>
+        <div class="flow-title">Analyse</div>
+        <div class="flow-body">Grammar target identification. Timed branch choices and sentence frame completion. Every verb switch is measured. The teacher dashboard logs in real time.</div>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-block">
+        <span class="flow-num">03</span>
+        <div class="flow-title">Produce</div>
+        <div class="flow-body">Free output under a two-minute deadline. No options, no frames. The student writes their own conclusion. This is the diagnostic output for the next episode.</div>
+      </div>
+    </div>
+
+    <!-- Video placeholder -->
+    <div class="video-section-label">Demo Session</div>
+    <div class="video-container" id="videoContainer">
+      <!--
+        VIDEO SLOT: wired for .webm
+        To enable: set the src attribute on the source element below
+        and call document.getElementById('demoVideo').style.display = 'block'
+        e.g. <source src="./demo_session.webm" type="video/webm">
+      -->
+      <video class="demo-video" id="demoVideo" controls>
+        <source src="" type="video/webm">
+      </video>
+      <div class="video-overlay" id="videoOverlay">
+        <div class="video-play-btn" onclick="playDemo()">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <polygon points="7,4 17,10 7,16" fill="rgba(200,168,75,0.85)"/>
+          </svg>
+        </div>
+        <div class="video-caption">
+          Demo Session: Grand Tournament
+          <span>Set demo_session.webm path in source element to enable</span>
+        </div>
+      </div>
+    </div>
+  </div><!-- /panel2 -->
+
+  <!-- ── PANEL 4: FULL ECOSYSTEM ────────────────────────── -->
+  <div class="panel" id="panel3">
+    <div class="panel-header">
+      <div class="panel-overline">Full Ecosystem</div>
+      <h2 class="panel-title">How the System Runs</h2>
+      <p class="panel-sub">61 content files across 30 student profiles. Every episode is a node in a continuous feedback loop: assessment, content, session, data, repeat.</p>
+    </div>
+
+    <div class="eco-container">
+      <svg class="eco-svg" viewBox="0 0 660 200" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <marker id="arrowGold" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+            <path d="M0,0.5 L0,6.5 L6,3.5 z" fill="#C8A84B" opacity="0.55"/>
+          </marker>
+          <marker id="arrowGoldLight" markerWidth="7" markerHeight="7" refX="5" refY="3.5" orient="auto">
+            <path d="M0,0.5 L0,6.5 L6,3.5 z" fill="#8A6D2C" opacity="0.55"/>
+          </marker>
+        </defs>
+
+        <!-- ─ Connection lines (gold dashed) ─ -->
+        <line x1="108" y1="80" x2="188" y2="80" stroke="#C8A84B" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.4" marker-end="url(#arrowGold)"/>
+        <line x1="240" y1="80" x2="304" y2="80" stroke="#C8A84B" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.4" marker-end="url(#arrowGold)"/>
+        <line x1="356" y1="80" x2="420" y2="80" stroke="#C8A84B" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.4" marker-end="url(#arrowGold)"/>
+        <line x1="472" y1="80" x2="548" y2="80" stroke="#C8A84B" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.4" marker-end="url(#arrowGold)"/>
+        <!-- return arc at bottom -->
+        <path d="M 566,80 C 590,80 600,90 600,110 L 600,155 C 600,175 590,175 566,175 L 94,175 C 70,175 60,175 60,155 L 60,110 C 60,90 70,80 94,80"
+          fill="none" stroke="#C8A84B" stroke-width="1.2" stroke-dasharray="4 4" opacity="0.28"/>
+        <!-- return arrow -->
+        <path d="M 94,80 L 88,74 M 94,80 L 88,86" stroke="#C8A84B" stroke-width="1.2" stroke-linecap="round" opacity="0.35"/>
+
+        <!-- ─ Nodes ─ -->
+        <!-- 1 Student Profile -->
+        <rect x="34" y="56" width="74" height="48" rx="4" fill="none" stroke="#C8A84B" stroke-width="1.4" opacity="0.65"/>
+        <text x="71" y="77" text-anchor="middle" fill="#C8A84B" font-family="'DM Mono', monospace" font-size="9" opacity="0.8" letter-spacing="0.5">STUDENT</text>
+        <text x="71" y="91" text-anchor="middle" fill="#C8A84B" font-family="'DM Mono', monospace" font-size="9" opacity="0.8" letter-spacing="0.5">PROFILE</text>
+
+        <!-- 2 Content Engine -->
+        <rect x="192" y="56" width="74" height="48" rx="4" fill="none" stroke="#C8A84B" stroke-width="1.4" opacity="0.65"/>
+        <text x="229" y="77" text-anchor="middle" fill="#C8A84B" font-family="'DM Mono', monospace" font-size="9" opacity="0.8" letter-spacing="0.5">CONTENT</text>
+        <text x="229" y="91" text-anchor="middle" fill="#C8A84B" font-family="'DM Mono', monospace" font-size="9" opacity="0.8" letter-spacing="0.5">ENGINE</text>
+
+        <!-- 3 Live Session -->
+        <rect x="308" y="56" width="74" height="48" rx="4" fill="rgba(200,168,75,0.1)" stroke="#C8A84B" stroke-width="1.8" opacity="0.8"/>
+        <text x="345" y="77" text-anchor="middle" fill="#C8A84B" font-family="'DM Mono', monospace" font-size="9" opacity="0.95" letter-spacing="0.5">LIVE</text>
+        <text x="345" y="91" text-anchor="middle" fill="#C8A84B" font-family="'DM Mono', monospace" font-size="9" opacity="0.95" letter-spacing="0.5">SESSION</text>
+
+        <!-- 4 Performance Data -->
+        <rect x="424" y="56" width="74" height="48" rx="4" fill="none" stroke="#C8A84B" stroke-width="1.4" opacity="0.65"/>
+        <text x="461" y="77" text-anchor="middle" fill="#C8A84B" font-family="'DM Mono', monospace" font-size="9" opacity="0.8" letter-spacing="0.5">PERF.</text>
+        <text x="461" y="91" text-anchor="middle" fill="#C8A84B" font-family="'DM Mono', monospace" font-size="9" opacity="0.8" letter-spacing="0.5">DATA</text>
+
+        <!-- 5 Next Episode -->
+        <rect x="550" y="56" width="74" height="48" rx="4" fill="none" stroke="#C8A84B" stroke-width="1.4" opacity="0.65"/>
+        <text x="587" y="77" text-anchor="middle" fill="#C8A84B" font-family="'DM Mono', monospace" font-size="9" opacity="0.8" letter-spacing="0.5">NEXT</text>
+        <text x="587" y="91" text-anchor="middle" fill="#C8A84B" font-family="'DM Mono', monospace" font-size="9" opacity="0.8" letter-spacing="0.5">EPISODE</text>
+
+        <!-- ─ node labels below ─ -->
+        <text x="71"  y="118" text-anchor="middle" fill="#9A9080" font-family="'DM Sans', sans-serif" font-size="9" opacity="0.6">assessment</text>
+        <text x="229" y="118" text-anchor="middle" fill="#9A9080" font-family="'DM Sans', sans-serif" font-size="9" opacity="0.6">61 files</text>
+        <text x="345" y="118" text-anchor="middle" fill="#9A9080" font-family="'DM Sans', sans-serif" font-size="9" opacity="0.6">28 active</text>
+        <text x="461" y="118" text-anchor="middle" fill="#9A9080" font-family="'DM Sans', sans-serif" font-size="9" opacity="0.6">logged live</text>
+        <text x="587" y="118" text-anchor="middle" fill="#9A9080" font-family="'DM Sans', sans-serif" font-size="9" opacity="0.6">gap-targeted</text>
+
+        <!-- ─ The invisible motion path ─ -->
+        <path id="ecoPath"
+          d="M 108,80 L 192,80 L 266,80 L 308,80 L 382,80 L 424,80 L 498,80 L 550,80 L 587,80
+             C 598,80 600,88 600,100 L 600,155
+             C 600,172 588,175 566,175 L 94,175
+             C 70,175 60,172 60,155 L 60,100
+             C 60,88 62,80 71,80 L 108,80"
+          fill="none" stroke="none"/>
+
+        <!-- ─ Animated traveling dot ─ -->
+        <circle r="5" fill="#C8A84B" opacity="0.9">
+          <animateMotion dur="12s" repeatCount="indefinite" rotate="0">
+            <mpath href="#ecoPath"/>
+          </animateMotion>
+        </circle>
+        <!-- second dot, offset -->
+        <circle r="3.5" fill="#C8A84B" opacity="0.45">
+          <animateMotion dur="12s" begin="-4s" repeatCount="indefinite" rotate="0">
+            <mpath href="#ecoPath"/>
+          </animateMotion>
+        </circle>
+      </svg>
+    </div><!-- /eco-container -->
+
+    <!-- Outcome cards -->
+    <div class="outcomes-grid">
+      <div class="outcome-card">
+        <span class="outcome-num">61</span>
+        <span class="outcome-label">Content Files</span>
+        <div class="outcome-desc">Episodes, drills, and listen tracks across the full A1–C1 range.</div>
+      </div>
+      <div class="outcome-card">
+        <span class="outcome-num">93%</span>
+        <span class="outcome-label">Adoption Rate</span>
+        <div class="outcome-desc">Of enrolled students completing at least three consecutive episodes.</div>
+      </div>
+      <div class="outcome-card">
+        <span class="outcome-num">28<span style="font-size:0.55em;opacity:0.6">/30</span></span>
+        <span class="outcome-label">Active Students</span>
+        <div class="outcome-desc">Currently enrolled and progressing through the episode sequence.</div>
+      </div>
+      <div class="outcome-card">
+        <span class="outcome-num">4</span>
+        <span class="outcome-label">Confirmed C1</span>
+        <div class="outcome-desc">Yusuf, Can, Asya, Lucas. Four students at full C1 fluency.</div>
+      </div>
+    </div>
+
+  </div><!-- /panel3 -->
+
+</div><!-- /page-wrap -->
+
+<script>
+/* ─── TABS ───────────────────────────────────────────────── */
+const panels  = document.querySelectorAll('.panel');
+const tabBtns = document.querySelectorAll('.tab-btn');
+
+function switchTab(idx) {
+  panels.forEach((p, i)  => p.classList.toggle('active', i === idx));
+  tabBtns.forEach((b, i) => b.classList.toggle('active', i === idx));
+}
+
+/* ─── THEME ──────────────────────────────────────────────── */
+function toggleTheme() {
+  const isDark = document.body.classList.toggle('dark');
+  document.getElementById('themeBtn').textContent = isDark ? 'Light mode' : 'Dark mode';
+  /* swap SVG arrow markers for correct colour in dark mode */
+}
+
+/* ─── VIDEO DEMO ─────────────────────────────────────────── */
+function playDemo() {
+  const vid = document.getElementById('demoVideo');
+  const overlay = document.getElementById('videoOverlay');
+  if (vid.src && vid.src !== window.location.href) {
+    overlay.style.display = 'none';
+    vid.style.display = 'block';
+    vid.play();
+  }
+}
+</script>
+</body>
+</html>

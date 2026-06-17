@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Melek | Episode 3: The Match Point</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f172a;
+    --bg2: #1e293b;
+    --bg3: #334155;
+    --bg4: #475569;
+    --primary: #4ade80;
+    --primary2: #86efac;
+    --primary-dim: #16a34a;
+    --text: #f8fafc;
+    --text2: #e2e8f0;
+    --text3: #cbd5e1;
+    --gold: #fbbf24;
+    --gold-bg: rgba(251, 191, 36, 0.1);
+    --red: #ef4444;
+    --red-bg: rgba(239, 68, 68, 0.1);
+    --green: #10b981;
+    --green-bg: rgba(16, 185, 129, 0.15);
+    --radius: 16px;
+    --shadow: 0 10px 40px rgba(0,0,0,0.5);
+    --font: 'Nunito', sans-serif;
+    --font-display: 'Bangers', cursive;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font); background: var(--bg); color: var(--text);
+    min-height: 100vh; overflow-x: hidden; transition: background 0.3s ease;
+  }
+
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background: radial-gradient(circle at 15% 20%, rgba(74, 222, 128, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(251, 191, 36, 0.1) 0%, transparent 50%);
+    pointer-events: none; z-index: 0;
+  }
+
+  .top-bar-container {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px);
+    border-bottom: 2px solid var(--primary); padding: 10px 20px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  .top-bar-container .brand-logo {
+    display: flex; align-items: center; gap: 8px; font-family: var(--font); font-weight: 800; font-size: 1.1rem; color: var(--text); letter-spacing: 0.5px; text-transform: uppercase;
+  }
+  .top-bar-container .brand-logo svg { width: 22px; height: 22px; fill: var(--primary); }
+
+  .top-btn {
+    background: var(--bg2); border: 1px solid var(--bg3); border-radius: 8px; padding: 8px 16px;
+    font-weight: 800; cursor: pointer; color: var(--text); transition: all 0.2s; font-family: var(--font);
+  }
+  .top-btn:hover { border-color: var(--primary2); color: var(--primary2); }
+  .mode-btn.active { background: var(--primary-dim); color: #fff; border-color: var(--primary); }
+  .top-btn.print-btn { background: var(--gold); color: #000; border-color: var(--gold); }
+  .top-btn.print-btn:hover { background: #f59e0b; color:#000; }
+
+  #student-view, #telemetry-view, #parent-view { display: none; }
+  #student-view.active, #telemetry-view.active, #parent-view.active { display: block; animation: fadeUp 0.4s ease; }
+
+  #app { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 80px 16px 80px; }
+
+  .hero-banner {
+    background: linear-gradient(135deg, var(--bg2), var(--bg)); border: 1px solid var(--bg3);
+    border-radius: var(--radius); padding: 30px; margin-bottom: 24px; display: flex; align-items: center; gap: 24px; position: relative; overflow: hidden; box-shadow: 0 0 20px rgba(74, 222, 128, 0.1);
+  }
+  .hero-badge {
+    width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--primary); background: rgba(74, 222, 128, 0.1);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 0 15px rgba(74, 222, 128, 0.4), inset 0 0 10px rgba(74, 222, 128, 0.2);
+  }
+  .hero-badge svg { width: 45px; height: 45px; fill: var(--primary); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
+  .hero-content { position: relative; z-index: 2; flex: 1; }
+  .hero-pill {
+    display: inline-block; background: var(--primary); color: #000; font-size: 0.75rem; font-weight: 900;
+    padding: 4px 10px; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;
+  }
+  .hero-title { font-family: var(--font-display); font-size: 2.8rem; color: var(--text); letter-spacing: 1px; line-height: 1; margin-bottom: 8px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+  .hero-sub { font-size: 0.95rem; color: var(--text3); font-weight: 800; letter-spacing: 0.5px; }
+  .hero-xp {
+    position: relative; z-index: 2; background: var(--gold); border-radius: 16px; padding: 16px 24px; text-align: center; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
+  }
+  .hero-xp-val { font-family: var(--font-display); font-size: 2rem; color: #000; line-height: 1; }
+  .hero-xp-lbl { font-size: 0.85rem; font-weight: 900; color: #000; text-transform: uppercase; margin-top: 4px; }
+
+  .scene-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+  .scene-dot {
+    width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--bg3); background: var(--bg2);
+    cursor: pointer; transition: all 0.3s; font-size: 1rem; font-weight: 900; color: var(--text3);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .scene-dot.active { border-color: var(--primary2); background: rgba(74, 222, 128, 0.1); color: var(--primary2); box-shadow: 0 0 15px rgba(74, 222, 128, 0.4); transform: scale(1.1); }
+  .scene-dot.done { border-color: var(--primary); background: var(--primary); color: #000; }
+  .nav-arrows { display: flex; gap: 10px; margin-left: auto; }
+  .nav-btn {
+    background: var(--bg2); border: 1px solid var(--bg3); border-radius: 10px; color: var(--text);
+    font-size: 1rem; padding: 8px 20px; cursor: pointer; transition: all 0.2s; font-weight: 800; font-family: var(--font);
+  }
+  .nav-btn:hover:not(:disabled) { border-color: var(--primary2); color: var(--primary2); background: var(--bg3); }
+  .nav-btn:disabled { opacity: 0.4; cursor: default; }
+
+  .scene-card {
+    background: linear-gradient(180deg, var(--bg2), var(--bg)); border: 1px solid var(--bg3);
+    border-radius: var(--radius); padding: 36px; margin-bottom: 24px; animation: fadeUp 0.4s ease; box-shadow: var(--shadow);
+  }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+  @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); fill: var(--gold); } 100% { transform: scale(1); } }
+  @keyframes pulse-btn { 0% { transform: scale(1); box-shadow: 0 6px 20px rgba(251,191,36,0.4); } 50% { transform: scale(1.02); box-shadow: 0 8px 25px rgba(251,191,36,0.7); } 100% { transform: scale(1); box-shadow: 0 6px 20px rgba(251,191,36,0.4); } }
+
+  .scene-label {
+    font-family: var(--font-display); font-size: 1.2rem; letter-spacing: 2px; color: var(--primary2);
+    text-transform: uppercase; margin-bottom: 12px; display: inline-block; border-bottom: 2px solid var(--primary-dim); padding-bottom: 8px;
+  }
+  .scene-title { font-family: var(--font-display); font-size: 2.6rem; color: #fff; margin-bottom: 20px; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+  .scene-body { font-size: 1.15rem; line-height: 1.8; color: var(--text); margin-bottom: 24px; font-weight: 600; }
+  .scene-body strong { color: var(--primary2); font-weight: 900; }
+  .scene-body em { color: var(--gold); font-style: normal; font-weight: 900; }
+
+  .ipill {
+    display: inline-block; background: var(--gold-bg); border: 1px solid var(--gold); color: var(--gold);
+    padding: 2px 10px; border-radius: 8px; cursor: pointer; font-weight: 800; font-size: 1.15rem; transition: all 0.2s;
+  }
+  .ipill:hover { background: var(--gold); color: #000; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(251,191,36,0.3); }
+  .idiom-display {
+    display: none; background: var(--bg2); border-left: 4px solid var(--gold); padding: 16px 20px; margin-top: 16px;
+    border-radius: 0 12px 12px 0; font-size: 1.1rem; color: var(--text); font-weight: 700; animation: fadeUp 0.3s ease;
+  }
+  .idiom-display.active { display: block; }
+  .idiom-display strong { color: var(--gold); font-size: 1.2rem; }
+
+  .grammar-box { background: rgba(0,0,0,0.2); border-left: 4px solid var(--primary); border-radius: 0 12px 12px 0; padding: 20px; margin: 24px 0; }
+  .grammar-box .g-label { font-family: var(--font-display); font-size: 1.2rem; letter-spacing: 1px; color: var(--primary2); margin-bottom: 10px; text-transform: uppercase; }
+  .grammar-box p { font-size: 1.1rem; line-height: 1.7; color: #fff; font-weight: 700; }
+  .grammar-box code { background: rgba(0,0,0,0.4); border-radius: 6px; padding: 4px 10px; font-family: var(--font); color: var(--gold); font-size: 1.1rem; font-weight: 900; }
+
+  .hint-banner {
+    display: none; background: rgba(0,0,0,0.3); border: 1px solid var(--primary-dim); border-left: 6px solid var(--primary);
+    padding: 18px; font-size: 1.1rem; color: var(--primary2); font-weight: 800; margin-top: 20px; margin-bottom: 20px; border-radius: 0 12px 12px 0;
+  }
+  .hint-banner.active { display: block; animation: fadeUp 0.3s ease; }
+
+  .question-block { margin-top: 10px; padding-top: 24px; border-top: 1px dashed var(--bg3); }
+  .q-label { font-family: var(--font-display); font-size: 1.2rem; letter-spacing: 1px; color: var(--gold); text-transform: uppercase; margin-bottom: 12px; }
+  .q-text { font-size: 1.25rem; font-weight: 800; margin-bottom: 20px; line-height: 1.6; }
+
+  .dd-row { display: flex; gap: 16px; margin-bottom: 12px; align-items: center; flex-wrap: wrap; }
+  .dd-cause { flex: 1; min-width: 250px; background: rgba(0,0,0,0.2); padding: 14px 18px; border: 1px solid var(--bg3); border-radius: 12px; font-size: 1.05rem; font-weight: 600; }
+  .dd-effect { flex: 1; min-width: 250px; background: var(--bg2); color: var(--text); padding: 14px 18px; border: 2px solid var(--bg4); border-radius: 12px; font-size: 1.05rem; cursor: pointer; outline: none; font-family: var(--font); font-weight: 700; transition: 0.2s; }
+  .dd-effect:focus { border-color: var(--primary2); }
+  .dd-effect.correct { border-color: var(--green); color: var(--green); background: var(--green-bg); }
+  .dd-effect.wrong { border-color: var(--red); color: var(--red); background: var(--red-bg); }
+
+  .court-wrapper { background: #d97706; padding: 12px; border-radius: 12px; border: 4px solid #fef3c7; max-width: 500px; margin: 0 auto; position: relative; }
+  .court-net { position: absolute; top: -10px; bottom: -10px; left: 50%; width: 4px; background: #fff; margin-left: -2px; z-index: 2; }
+  .court-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; background: #fed7aa; padding: 8px; border-radius: 4px; }
+  .court-zone { background: #fca5a5; padding: 30px 10px; text-align: center; font-weight: 900; color: #881337; font-size: 1.1rem; cursor: pointer; border-radius: 8px; border: 4px solid transparent; transition: 0.2s; display: flex; align-items: center; justify-content: center; min-height: 100px; font-family: var(--font-display); letter-spacing: 1px; }
+  .court-zone:hover:not(:disabled) { border-color: #4ade80; transform: scale(1.02); background: #fecdd3; }
+  .court-zone.blocked { background: #94a3b8; color: #475569; border-color: #475569; cursor: not-allowed; }
+  .court-zone.correct { background: var(--green); color: #fff; border-color: #059669; }
+  .court-zone.wrong { background: var(--red); color: #fff; border-color: #991b1b; }
+  .court-zone:disabled { cursor: not-allowed; transform: none; }
+
+  .wb-container { background: rgba(0,0,0,0.2); border: 2px dashed var(--bg4); border-radius: 16px; padding: 20px; }
+  .wb-line { min-height: 70px; border-bottom: 2px solid var(--primary2); margin-bottom: 24px; padding-bottom: 10px; display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; }
+  .wb-pool { display: flex; flex-wrap: wrap; gap: 10px; min-height: 50px; }
+  .wb-word { background: var(--bg3); border: 2px solid var(--bg4); color: var(--text); padding: 10px 18px; border-radius: 8px; font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.2); user-select: none; }
+  .wb-word:hover { border-color: var(--primary2); transform: translateY(-2px); box-shadow: 0 6px 12px rgba(74,222,128,0.3); }
+  .wb-word.in-line { background: var(--primary-dim); border-color: var(--primary); color: #fff; }
+
+  .voice-lock-box { background: rgba(0,0,0,0.2); border: 1px dashed var(--gold); border-radius: var(--radius); padding: 24px; text-align: center; margin-bottom: 20px; }
+  .voice-icon { width: 60px; height: 60px; margin: 0 auto 12px; fill: var(--text); display: block; animation: pulse 2s infinite; }
+  .read-text { font-size: 24px; font-weight: 800; color: #fff; font-style: italic; line-height: 1.5; margin: 15px 0; padding: 20px; background: rgba(0,0,0,0.4); border-radius: 12px; border-left: 6px solid var(--primary); }
+  .voice-status { display: inline-block; padding: 10px 20px; border-radius: 24px; font-weight: 900; font-size: 16px; background: var(--bg3); color: var(--text2); }
+
+  .seq-pool { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
+  .seq-item { background: var(--bg3); border: 1px solid var(--bg4); border-radius: 10px; padding: 14px 18px; font-size: 16px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-weight: 700; transition: 0.2s; margin-bottom: 4px; }
+  .seq-item:hover { border-color: var(--gold); transform: scale(1.01); }
+  .seq-slots { display: flex; flex-direction: column; gap: 8px; }
+  .seq-slot { background: rgba(0,0,0,0.2); border: 1px dashed var(--text3); border-radius: 10px; padding: 14px 18px; font-size: 16px; color: var(--text3); min-height: 56px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-weight: 700; margin-bottom: 4px; }
+  .seq-slot.filled { background: var(--bg3); border: 1px solid var(--primary); color: var(--text); }
+  .slot-num { width: 28px; height: 28px; border-radius: 50%; background: var(--gold-bg); color: var(--gold); font-size: 14px; font-weight: 900; display: flex; align-items: center; justify-content: center; border: 1px solid var(--gold); flex-shrink: 0; }
+
+  .check-btn {
+    background: var(--primary); color: #000; border: none; border-radius: 12px; padding: 16px 32px; font-family: var(--font-display);
+    font-size: 1.4rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(74,222,128,0.3); margin-top: 20px; letter-spacing: 1px; width: 100%;
+  }
+  .check-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(74,222,128,0.5); background: var(--primary2); }
+
+  .feedback { display: none; margin-top: 20px; padding: 18px 24px; border-radius: 12px; font-weight: 800; font-size: 1.1rem; line-height: 1.5; animation: fadeUp 0.3s ease; }
+  .feedback.correct { display: block; background: var(--green-bg); border-left: 4px solid var(--green); color: var(--green); }
+  .feedback.wrong { display: block; background: var(--red-bg); border-left: 4px solid var(--red); color: #fca5a5; }
+
+  .try-again-btn {
+    display: none; margin-top: 20px; background: var(--red-bg); color: var(--red); border: 2px solid var(--red);
+    border-radius: 50px; padding: 14px 36px; font-family: var(--font-display); font-size: 1.6rem; cursor: pointer; transition: all 0.2s;
+    letter-spacing: 2px; width: 100%; text-transform: uppercase;
+  }
+  .try-again-btn:hover { background: var(--red); color: #fff; transform: translateY(-3px); box-shadow: 0 6px 20px rgba(239,68,68,0.4); }
+  .try-again-btn.visible { display: block; }
+
+  .continue-btn {
+    display: none; margin-top: 24px; background: linear-gradient(135deg, var(--gold), var(--primary-dim)); color: #000; border: none;
+    border-radius: 50px; padding: 16px 36px; font-family: var(--font-display); font-size: 1.8rem; cursor: pointer; transition: all 0.2s;
+    box-shadow: 0 6px 20px rgba(251,191,36,0.4); letter-spacing: 2px; width: 100%; text-transform: uppercase; animation: pulse-btn 2s infinite;
+  }
+  .continue-btn:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 25px rgba(251,191,36,0.8); animation: none; }
+  .continue-btn.visible { display: block; }
+
+  #telemetry-panel { background: var(--bg2); border: 1px solid var(--bg3); border-radius: var(--radius); padding: 24px; margin-top: 0; box-shadow: var(--shadow); }
+  .t-header { font-family: var(--font-display); font-size: 2rem; color: var(--primary2); margin-bottom: 20px; letter-spacing: 1px; }
+  .t-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-bottom: 24px; }
+  .t-stat { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 16px; border: 1px solid var(--bg3); text-align: center; }
+  .t-stat .t-val { font-family: var(--font-display); font-size: 2.6rem; color: var(--gold); }
+  .t-stat .t-key { font-size: 0.85rem; font-weight: 900; letter-spacing: 1px; color: var(--text3); text-transform: uppercase; margin-top: 6px; }
+  .t-log { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 16px; border: 1px solid var(--bg3); max-height: 200px; overflow-y: auto; font-size: 1rem; font-weight: 700; line-height: 1.8; margin-bottom: 20px; }
+  .t-hint-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+  .t-hint-btn { background: rgba(0,0,0,0.2); border: 1px solid var(--primary-dim); border-radius: 8px; padding: 10px 18px; font-size: 0.95rem; font-weight: 800; color: var(--primary2); cursor: pointer; transition: all 0.2s; }
+  .t-hint-btn:hover { background: var(--primary-dim); color: #fff; }
+
+  .xp-burst {
+    display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0.5);
+    font-family: var(--font-display); font-size: 5rem; color: var(--primary2); text-shadow: 0 0 40px rgba(74,222,128,0.6);
+    z-index: 9999; pointer-events: none; transition: all 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
+  }
+
+  .parent-report-box { background: #fff; color: #1e293b; border-radius: 16px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); margin-top: 20px; }
+  .parent-report-box h2 { font-family: var(--font-display); font-size: 2.8rem; color: #0f172a; border-bottom: 3px solid #f1f5f9; padding-bottom: 16px; margin-bottom: 24px; letter-spacing: 1px; }
+  .parent-report-box table { width: 100%; border-collapse: collapse; font-size: 1.15rem; margin-bottom: 30px; }
+  .parent-report-box th, .parent-report-box td { border: 2px solid #e2e8f0; padding: 16px 20px; text-align: left; }
+  .parent-report-box th { background: #f8fafc; font-weight: 800; color: #16a34a; width: 30%; }
+  .parent-report-box td { font-weight: 600; }
+  .parent-report-box h3 { font-family: var(--font-display); font-size: 1.8rem; color: #0f172a; margin-bottom: 12px; letter-spacing: 1px; }
+  .download-btn {
+    background: #0f172a; color: #fff; border: 1px solid #334155; border-radius: 8px; padding: 16px 32px; font-family: var(--font);
+    font-weight: 900; font-size: 1.1rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.4); display: inline-flex; align-items: center; gap: 10px; margin-bottom: 30px; transition: 0.2s;
+  }
+  .download-btn:hover { background: #1e293b; transform: translateY(-2px); }
+  .download-btn svg { width: 20px; height: 20px; }
+</style>
+</head>
+<body>
+
+<svg style="display:none;">
+  <symbol id="icon-volleyball" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="10" stroke-width="2" stroke="currentColor" fill="none"/>
+    <path d="M12 2a15.3 15.3 0 0 1 7 10 15.3 15.3 0 0 1-7 10M12 2a15.3 15.3 0 0 0-7 10 15.3 15.3 0 0 0 7 10" stroke-width="2" stroke="currentColor" fill="none"/>
+    <path d="M2 12h20" stroke-width="2" stroke="currentColor" fill="none"/>
+  </symbol>
+  <symbol id="icon-mic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z" fill="currentColor" stroke="none"/>
+    <path d="M19 10v2a7 7 0 0 1-14 0v-2M12 18.4v3.3M8 22h8"/>
+  </symbol>
+</svg>
+
+<div class="top-bar-container">
+  <div class="brand-logo">
+    <svg><use href="#icon-volleyball"></use></svg> VOLLEYBALL SHOWDOWN
+  </div>
+  <div class="mode-btns" style="display:flex; gap:8px;">
+    <button class="top-btn active mode-btn" onclick="setMode('student')">Student View</button>
+    <button class="top-btn mode-btn" onclick="setMode('telemetry')">Telemetry Dashboard</button>
+    <button class="top-btn mode-btn" onclick="showSummary()">Parent Report</button>
+    <button class="top-btn print-btn" onclick="downloadReport()">📥 Download Visual Report</button>
+  </div>
+</div>
+
+<div id="app">
+
+  <div id="student-view" class="active">
+    <div class="hero-banner">
+      <div class="hero-badge"><svg><use href="#icon-volleyball"></use></svg></div>
+      <div class="hero-content">
+        <span class="hero-pill">VOLLEYBALL SHOWDOWN SERIES: EP 3 OF 6</span>
+        <h1 class="hero-title">The Match Point</h1>
+        <p class="hero-sub">B1 Advanced ESL · Interactive Mechanics · Hero: Melek</p>
+      </div>
+      <div class="hero-xp">
+        <div class="hero-xp-val">⭐ <span id="xp-display">0</span></div>
+        <div class="hero-xp-lbl">XP Earned</div>
+      </div>
+    </div>
+
+    <div class="scene-nav" id="scene-nav">
+      <div class="nav-arrows">
+        <button class="nav-btn" id="prev-btn" onclick="goScene(-1)">◀ Back</button>
+        <button class="nav-btn" id="next-btn" onclick="goScene(1)">Next ▶</button>
+      </div>
+    </div>
+
+    <div id="scene-container"></div>
+  </div>
+
+  <div id="telemetry-view">
+    <div id="telemetry-panel">
+      <div class="t-header">📊 Telemetry Dashboard</div>
+      <p style="color:var(--text3); font-size:1.1rem; margin-bottom:20px; font-weight:600;">
+        <em>Ep 3 mechanics: Court Grid, Past Simple Word Builder, Second Conditional Voice Lock, Phrasal Verb Dropdowns, Rally Sequencing, and a final Match Point Grid.</em>
+      </p>
+      <div class="t-grid">
+        <div class="t-stat"><div class="t-val" id="t-xp">0</div><div class="t-key">Total XP</div></div>
+        <div class="t-stat"><div class="t-val" id="t-correct">0</div><div class="t-key">Correct</div></div>
+        <div class="t-stat"><div class="t-val" style="color:var(--red);" id="t-wrong">0</div><div class="t-key">Errors</div></div>
+        <div class="t-stat"><div class="t-val" id="t-scene">1</div><div class="t-key">Scene / 7</div></div>
+      </div>
+      <div class="t-log" id="t-log">Activity log will appear here...</div>
+      <div style="font-size:0.85rem; font-weight:900; letter-spacing:1px; color:var(--text3); text-transform:uppercase; margin-bottom:10px;">✨ Fire a Live Hint</div>
+      <div class="t-hint-row">
+        <button class="t-hint-btn" onclick="fireHint('Grid Hint: Read the body text! Which zones are blocked? Find the only empty one.')">Grid Strategy Hint</button>
+        <button class="t-hint-btn" onclick="fireHint('Past Simple Hint: Use the completed past form. Score becomes scored. Win becomes won.')">Past Simple Hint</button>
+        <button class="t-hint-btn" onclick="fireHint('Second Conditional Hint: If + Past Simple (were), WOULD + base verb. It is hypothetical!')">Second Conditional Hint</button>
+        <button class="t-hint-btn" onclick="fireHint('Sequence Hint: In volleyball the order is: Opponent serves, Libero digs, Setter sets, Spiker spikes!')">Rally Sequence Hint</button>
+        <button class="t-hint-btn" onclick="fireHint('Brilliant reading of the game, Melek! One more scene and you are the champion!')">Encouragement</button>
+      </div>
+      <div style="font-size:0.95rem; color:var(--text3); margin-top:10px; font-weight:700;" id="t-idiom-log">Clues clicked: <span>none yet</span></div>
+    </div>
+  </div>
+
+  <div id="parent-view">
+    <button class="download-btn" onclick="downloadReport()">
+      <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7 10 12 15 17 10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+      </svg>
+      Download Visual Report (.html)
+    </button>
+    <div class="parent-report-box">
+      <h2>📋 Session Report: Melek | Volleyball Showdown Ep 3</h2>
+      <p style="margin-bottom: 24px; font-weight: 800; font-size: 1.2rem; color: #64748b;"><strong>Date: </strong><span id="print-date"></span></p>
+      <table>
+        <tr><th>Total XP Earned</th><td id="ps-xp">...</td></tr>
+        <tr><th>Correct Answers</th><td id="ps-correct">...</td></tr>
+        <tr><th>Attempts Needed</th><td id="ps-attempts">...</td></tr>
+        <tr><th>Scenes Completed</th><td id="ps-scenes">...</td></tr>
+        <tr><th>Vocab Explored</th><td id="ps-idioms">...</td></tr>
+        <tr><th>Focus Areas</th><td>Past Simple, Second Conditional, Rally Sequencing, Phrasal Verbs, Tactical Reading</td></tr>
+      </table>
+      <h3>Activity Log:</h3>
+      <div id="ps-log" style="margin-top:16px; font-size:1.1rem; color:#475569; font-weight:600; line-height:1.8; background:#f8fafc; padding:20px; border-radius:12px; border:1px solid #e2e8f0;"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// =========================================================
+// STATE
+// =========================================================
+let state = {
+  xp: 0,
+  currentScene: 0,
+  scenesDone: [],
+  correctCount: 0,
+  wrongCount: 0,
+  answerLog: [],
+  idiomsClicked: [],
+  xpBlockedScenes: [],
+  questionStates: {},
+  shuffledChoices: {},
+  wordBuilder: {}
+};
+
+let currentScenePoints = 0;
+let selectedSeqItem = null;
+let seqSlots = {1: null, 2: null, 3: null, 4: null};
+
+// =========================================================
+// VOCAB CLUE DICTIONARY
+// =========================================================
+const IDIOM_DEFS = {
+  'serving_ace': '💡 <strong>"Serving Ace"</strong><br>When the server hits the ball so powerfully that the other team cannot return it at all. A direct point from the serve!',
+  'setter': '💡 <strong>"Setter"</strong><br>The volleyball player who controls the attack. They receive the dig and set the ball perfectly for the spiker to hit.',
+  'match_point': '💡 <strong>"Match Point"</strong><br>The critical moment when one team only needs ONE more point to win the entire match. Maximum pressure!',
+  'cross_court': '💡 <strong>"Cross-Court Spike"</strong><br>Hitting the ball diagonally from one corner to the opposite far corner of the court. Very hard to defend!'
+};
+
+// =========================================================
+// SCENES DATA (7 scenes)
+// =========================================================
+const SCENES = [
+  {
+    id: 0,
+    type: 'grid',
+    label: "Scene 1 · Tactical Map 🏐",
+    title: "Italy Changes Tactics",
+    icon: "icon-volleyball",
+    body: `Turkey leads the match two sets to zero. The Italian team walks back onto the court with a completely new strategy for Set 3.<br><br>
+Melissa watches the Italian server carefully. The server shifts their weight forward, preparing a deep serve toward Turkey's back row. Turkey's three front players are already locked in position at the net.<br><br>
+Where must Turkey's libero sprint to receive this serve?`,
+    grammar: {
+      label: "✨ Tactical Map Challenge",
+      text: `Read the server's body position. The front three are locked at the net. The Italian serve targets the back half of the Turkish court. Find the open zone!`
+    },
+    question: {
+      text: "Italy's server aims a float serve at the center of Turkey's back row. The front three are fixed at the net. Which zone must the libero move to?",
+      xp: 20,
+      gridConfig: { cols: 3, labels: ["Front Left", "Front Center", "Front Right", "Back Left", "Back Center", "Back Right"] },
+      blockedZones: [0, 1, 2],
+      correctZone: 4,
+      correctMsg: "🎯 Perfect read! The libero sprints to Back Center and makes a perfect dig to start the rally!",
+      wrongMsg: "Oops! The front row is already covered by three players. The Italian serve targets the back half. Find the open back-row zone!"
+    }
+  },
+  {
+    id: 1,
+    type: 'wordbuilder',
+    label: "Scene 2 · B1 Grammar 🧩",
+    title: "The Rally Narration",
+    icon: "icon-volleyball",
+    body: `The libero's perfect dig saved the opening point of Set 3! The Istanbul crowd rises to its feet.<br><br>
+The TV commentator narrates the action using clear, simple past tense. The rally is finished. It is a completed action. Now the story is told.`,
+    grammar: {
+      label: "✨ Grammar: Past Simple",
+      text: `Use the <strong>Past Simple</strong> to talk about a completed action in the past.<br><br>
+      Form: <code>Subject + V2 (past verb form)</code><br><br>
+      <em>Score becomes <strong>scored</strong>. Win becomes <strong>won</strong>. Dive becomes <strong>dived</strong>.</em>`
+    },
+    question: {
+      text: "Build the TV commentator's sentence about Turkey's opening point of Set 3:",
+      words: ["Turkey", "scored", "the", "first", "point", "of", "Set", "3."],
+      correctSentence: "Turkey scored the first point of Set 3.",
+      xp: 20,
+      correctMsg: "🧩 Perfect construction! Scored is the correct Past Simple form of 'to score'.",
+      wrongMsg: "Syntax error! Use Past Simple: Subject + V2. Start with: Turkey scored..."
+    }
+  },
+  {
+    id: 2,
+    type: 'voice',
+    label: "Scene 3 · Pronunciation 🗣️",
+    title: "Melissa's Tactical Thinking",
+    icon: "icon-mic",
+    body: `The game is tight. Italy has fought back to 12 to 10. Melissa watches the <span class="ipill" onclick="showIdiom('setter')">setter</span> position and thinks about how she would play differently.<br><br>
+She uses a <strong>Second Conditional</strong> sentence to express a hypothetical tactic forming in her mind.`,
+    grammar: {
+      label: "✨ Grammar: Second Conditional",
+      text: `Use the <strong>Second Conditional</strong> for imaginary or hypothetical situations.<br><br>
+      Form: <code>If + Past Simple, would + base verb</code><br><br>
+      <em>If I were the <span class="ipill" onclick="showIdiom('setter')">setter</span>, I <strong>would</strong> aim for the back corner.</em>`
+    },
+    question: {
+      text: "Voice Lock Challenge: Say Melissa's hypothetical tactic out loud to your session partner!",
+      sentence: '"If I were the setter, I would aim for the back corner!"',
+      xp: 20,
+      correctMsg: "🎤 Excellent delivery! The Second Conditional expresses a hypothetical situation perfectly.",
+      wrongMsg: "Try again! Remember: IF + Past Simple (were) + WOULD + base verb."
+    }
+  },
+  {
+    id: 3,
+    type: 'dropdown',
+    label: "Scene 4 · Vocabulary 🔄",
+    title: "Phrasal Verbs: High Pressure",
+    icon: "icon-volleyball",
+    body: `Turkey leads 18 to 14 in Set 3. The team's head trainer calls a timeout to keep the players focused and composed under pressure.<br><br>
+She gives the team three clear tactical commands using phrasal verbs. Melissa listens to each one carefully.`,
+    question: {
+      text: "Match each of the trainer's phrasal verb commands to its correct tactical meaning:",
+      pairs: [
+        { cause: "To 'step up'", effectCorrect: "To perform at your best when the pressure is highest", options: ["To maintain your lead and resist the opponent", "To perform at your best when the pressure is highest", "To overcome the opponent's defense and score"] },
+        { cause: "To 'hold on'", effectCorrect: "To maintain your lead and resist the opponent", options: ["To maintain your lead and resist the opponent", "To perform at your best when the pressure is highest", "To overcome the opponent's defense and score"] },
+        { cause: "To 'break through'", effectCorrect: "To overcome the opponent's defense and score", options: ["To maintain your lead and resist the opponent", "To perform at your best when the pressure is highest", "To overcome the opponent's defense and score"] }
+      ],
+      xp: 20,
+      correctMsg: "🔥 Tactical vocabulary mastered! You understand exactly what the trainer wants the team to do.",
+      wrongMsg: "Think about the sport context. Step up is about personal performance. Hold on is about resisting pressure."
+    }
+  },
+  {
+    id: 4,
+    type: 'sequence',
+    label: "Scene 5 · Sequencing 🔄",
+    title: "The Match Point Rally",
+    icon: "icon-volleyball",
+    body: `Turkey reaches <span class="ipill" onclick="showIdiom('match_point')">Match Point</span>! The score is 24 to 21. One more point wins the entire match!<br><br>
+The final rally begins. Place the four key moments of the winning rally in the correct chronological order:`,
+    question: {
+      text: "Sequence the four key moments of Turkey's match-winning rally in the correct order:",
+      correctOrder: [
+        "1. Italy serves powerfully toward Turkey's back line.",
+        "2. Turkey's libero digs the ball up perfectly to the setter.",
+        "3. Cansu sets a high ball to the left antenna for Melissa.",
+        "4. Melissa spikes the ball cross-court to win the match!"
+      ],
+      xp: 20,
+      correctMsg: "🏆 Sequence complete! Serve, Dig, Set, Spike! You built the perfect match-winning rally!",
+      wrongMsg: "Chronology error! A rally goes: Opponent serves, Libero digs, Setter sets, Spiker spikes!"
+    }
+  },
+  {
+    id: 5,
+    type: 'grid',
+    label: "Scene 6 · Match Point! 🏐",
+    title: "The Winning Spike",
+    icon: "icon-volleyball",
+    body: `This is it! Melissa is in the air above the net, ready to swing for the <span class="ipill" onclick="showIdiom('cross_court')">cross-court</span> spike.<br><br>
+The Italian <strong>blockers</strong> have sealed the <strong>Front Left</strong> and <strong>Front Center</strong>. Their back defender is positioned in the <strong>Back Center</strong>.<br><br>
+Where must Melissa aim her winning spike to score the final point?`,
+    grammar: {
+      label: "✨ Final Point Decision",
+      text: `Two Italian blockers are at the front net. One defender covers the back center. One zone is completely open. Find it and win the match!`
+    },
+    question: {
+      text: "Italy's blockers cover Front Left and Front Center. Their libero is in Back Center. Which zone is completely open for Melissa's winning spike?",
+      xp: 20,
+      gridConfig: { cols: 3, labels: ["Front Left", "Front Center", "Front Right", "Back Left", "Back Center", "Back Right"] },
+      blockedZones: [0, 1, 4],
+      correctZone: 5,
+      correctMsg: "🏆 POINT! Melissa spikes to Back Right for the MATCH WINNER! Turkey wins 3-0!",
+      wrongMsg: "Blocked! Front Left, Front Center and Back Center are all covered. Find the open back corner!"
+    }
+  },
+  {
+    id: 6,
+    type: 'reward',
+    label: "Scene 7 · Champions! 🏆",
+    title: "Turkish Champions!",
+    icon: "icon-volleyball",
+    body: `WHAAAM! Melissa's spike hits the floor in the back right corner. The referee whistles: TURKEY WINS 3-0!<br><br>
+The Istanbul crowd erupts with noise. The Turkish team rushes onto the court in celebration!<br><br>
+<strong>Melek, you completed all 3 episodes of Volleyball Showdown!</strong><br><br>
+✅ Ep 1: Phrasal Verbs, Present Perfect Continuous<br>
+✅ Ep 2: Modals of Deduction, Spatial Reading<br>
+✅ Ep 3: Past Simple, Second Conditional, Rally Sequencing<br><br>
+<em>You are a true Volleyball Showdown Champion!</em>`,
+    isLast: true
+  }
+];
+
+// =========================================================
+// RENDER
+// =========================================================
+function renderSceneNav() {
+  const nav = document.getElementById('scene-nav');
+  const arrows = nav.querySelector('.nav-arrows');
+  nav.innerHTML = '';
+  SCENES.forEach((s, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'scene-dot' +
+      (i === state.currentScene ? ' active' : '') +
+      (state.scenesDone.includes(i) ? ' done' : '');
+    dot.textContent = i + 1;
+    dot.title = s.title;
+    dot.onclick = () => { goScene(i); };
+    nav.appendChild(dot);
+  });
+  nav.appendChild(arrows);
+  document.getElementById('prev-btn').disabled = state.currentScene === 0;
+  document.getElementById('next-btn').disabled = state.currentScene === SCENES.length - 1;
+  document.getElementById('t-scene').textContent = state.currentScene + 1;
+}
+
+function renderScene() {
+  renderSceneNav();
+  const scene = SCENES[state.currentScene];
+  const container = document.getElementById('scene-container');
+
+  if (scene.type === 'reward') {
+    container.innerHTML = `
+      <div class="scene-card" style="text-align:center;">
+        <svg style="width:100px;height:100px;fill:var(--gold);margin:0 auto 20px;display:block;animation:float 3s infinite ease-in-out;filter:drop-shadow(0 10px 10px rgba(0,0,0,0.3));"><use href="#${scene.icon}"></use></svg>
+        <div class="scene-title" style="font-size:3.5rem;">${scene.title}</div>
+        <div style="font-size:2.5rem;font-weight:900;color:var(--gold);margin-bottom:20px;">${state.xp} XP Earned!</div>
+        <div class="scene-body" style="background:rgba(0,0,0,0.2);padding:24px;border-radius:16px;border:1px solid var(--bg3);">${scene.body}</div>
+      </div>`;
+    return;
+  }
+
+  let html = `
+    <div class="scene-card">
+      <div class="scene-label">${scene.label}</div>
+      <div class="scene-title">${scene.title}</div>
+      <div class="scene-body">${scene.body}</div>
+      <div id="idiom-display" class="idiom-display"></div>
+      ${scene.grammar ? `<div class="grammar-box"><div class="g-label">${scene.grammar.label}</div><p>${scene.grammar.text}</p></div>` : ''}
+      <div class="hint-banner" id="hint-banner">💡 <span id="hint-text"></span></div>
+  `;
+
+  const qKey = `scene_${scene.id}`;
+  const answered = state.questionStates[qKey] || null;
+  let feedbackHTML = '';
+  let tryAgainHTML = '';
+  let continueHTML = '';
+
+  if (answered) {
+    if (answered.correct) {
+      feedbackHTML = `<div class="feedback correct show">✅ ${escapeStr(scene.question.correctMsg)}</div>`;
+      continueHTML = `<button class="continue-btn visible" onclick="advanceScene()">⭐ AWESOME! NEXT SCENE ➔</button>`;
+    } else {
+      feedbackHTML = `<div class="feedback wrong show">❌ ${escapeStr(scene.question.wrongMsg)}</div>`;
+      tryAgainHTML = `<button class="try-again-btn visible" onclick="resetQuestion(${scene.id})">🔄 TRY AGAIN</button>`;
+    }
+  }
+
+  if (scene.type === 'grid') {
+    let zonesHtml = scene.question.gridConfig.labels.map((lbl, idx) => {
+      let isBlocked = scene.question.blockedZones.includes(idx);
+      let isCorrectAns = scene.question.correctZone === idx;
+      let btnClass = 'court-zone';
+      let disabled = '';
+      if (isBlocked) {
+        btnClass += ' blocked'; disabled = 'disabled';
+      } else if (answered) {
+        disabled = 'disabled';
+        if (isCorrectAns && answered.correct) btnClass += ' correct';
+        if (!isCorrectAns && answered.pickedIndex === idx) btnClass += ' wrong';
+      }
+      return `<button class="${btnClass}" ${disabled} onclick="checkGridAnswer(${isCorrectAns}, ${idx}, ${scene.id})">${lbl}</button>`;
+    }).join('');
+
+    html += `
+      <div class="question-block">
+        <div class="q-label">🏐 Tactical Map Challenge</div>
+        <div class="q-text">${scene.question.text}</div>
+        <div class="court-wrapper">
+          <div class="court-net"></div>
+          <div class="court-grid">${zonesHtml}</div>
+        </div>
+        ${feedbackHTML}${tryAgainHTML}${continueHTML}
+      </div>`;
+  }
+  else if (scene.type === 'wordbuilder') {
+    if (!state.wordBuilder[scene.id]) {
+      let arr = [...scene.question.words].sort(() => Math.random() - 0.5);
+      state.wordBuilder[scene.id] = { pool: arr, line: [] };
+    }
+    let wbState = state.wordBuilder[scene.id];
+    let lineHtml = wbState.line.map((w, i) => `<div class="wb-word in-line" onclick="${answered ? '' : `wbRemove(${scene.id}, ${i})`}">${escapeStr(w)}</div>`).join('');
+    let poolHtml = wbState.pool.map((w, i) => `<div class="wb-word" onclick="${answered ? '' : `wbAdd(${scene.id}, ${i})`}">${escapeStr(w)}</div>`).join('');
+
+    html += `
+      <div class="question-block">
+        <div class="q-label">🧩 Sentence Construction</div>
+        <div class="q-text">${scene.question.text}</div>
+        <div class="wb-container">
+          <div class="wb-line">${lineHtml}</div>
+          <div class="wb-pool">${poolHtml}</div>
+        </div>
+        <button class="check-btn" onclick="validateWordBuilder(${scene.id})" ${answered ? 'style="display:none;"' : ''}>Verify Sentence</button>
+        ${feedbackHTML}${tryAgainHTML}${continueHTML}
+      </div>`;
+  }
+  else if (scene.type === 'dropdown') {
+    let ddHtml = scene.question.pairs.map((p, i) => {
+      let opts = `<option value="">Select meaning...</option>` + p.options.map(o => `<option value="${escapeStr(o)}">${escapeStr(o)}</option>`).join('');
+      let disabled = answered ? 'disabled' : '';
+      return `<div class="dd-row">
+                <div class="dd-cause">${p.cause}</div>
+                <div style="color:var(--primary2);font-weight:bold;">→</div>
+                <select class="dd-effect" id="dd-${scene.id}-${i}" ${disabled} onchange="checkDropdowns(${scene.id})">${opts}</select>
+              </div>`;
+    }).join('');
+
+    html += `
+      <div class="question-block">
+        <div class="q-label">🔄 Tactical Translation</div>
+        <div class="q-text">${scene.question.text}</div>
+        ${ddHtml}
+        <button class="check-btn" onclick="validateDropdowns(${scene.id})" ${answered ? 'style="display:none;"' : ''}>Verify Matches</button>
+        ${feedbackHTML}${tryAgainHTML}${continueHTML}
+      </div>`;
+  }
+  else if (scene.type === 'voice') {
+    html += `
+      <div class="question-block">
+        <div class="q-label" style="color:var(--gold);">🎙️ Voice Lock Challenge</div>
+        <div class="q-text">${scene.question.text}</div>
+        <div class="voice-lock-box">
+          <svg class="voice-icon"><use href="#icon-mic"></use></svg>
+          <div class="read-text">${scene.question.sentence}</div>
+          <div id="voice-status" class="voice-status">⏳ Awaiting Approval...</div>
+        </div>
+        ${feedbackHTML}${tryAgainHTML}${continueHTML}
+      </div>`;
+  }
+  else if (scene.type === 'sequence') {
+    let pool = [...scene.question.correctOrder];
+    let temp = pool[0]; pool[0] = pool[2]; pool[2] = pool[1]; pool[1] = pool[3]; pool[3] = temp;
+
+    let poolHtml = pool.map((item, i) => `<div class="seq-item" id="seq-item-${i}" onclick="selectSeqItem(${i})">${item}</div>`).join('');
+    let slotsHtml = [1,2,3,4].map(num => `<div class="seq-slot" id="seq-slot-${num}" onclick="placeSeqItem(${num})"><div class="slot-num">${num}</div><span id="s-text-${num}">Click an action above, then click here</span></div>`).join('');
+
+    html += `
+      <div class="question-block">
+        <div class="q-label">🔐 Volleyball Sequencing</div>
+        <div class="q-text">${scene.question.text}</div>
+        <div class="seq-pool">${poolHtml}</div>
+        <div class="seq-slots" style="margin-top:15px;">${slotsHtml}</div>
+        <button onclick="validateSequence(${scene.id})" ${answered ? 'style="display:none;"' : ''} class="check-btn" style="margin-top:20px;">Verify Sequence</button>
+        ${feedbackHTML}${tryAgainHTML}${continueHTML}
+      </div>`;
+  }
+
+  html += `</div>`;
+  container.innerHTML = html;
+
+  if (scene.type === 'voice' && !answered) {
+    document.getElementById('t-log').innerHTML = `
+      <div style="background:var(--gold-bg);padding:15px;border-radius:12px;border:1px solid var(--gold);text-align:center;margin-bottom:15px;">
+        <div style="color:var(--gold);font-weight:800;margin-bottom:10px;">🎙️ VOICE LOCK PENDING</div>
+        <button class="top-btn print-btn" onclick="approveVoiceLock(${scene.id})" style="border-color:var(--gold);">Approve Pronunciation</button>
+      </div>` + document.getElementById('t-log').innerHTML;
+  }
+}
+
+function escapeStr(s) { return String(s).replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
+
+// =========================================================
+// WORD BUILDER
+// =========================================================
+function wbAdd(sceneId, poolIdx) {
+  let obj = state.wordBuilder[sceneId];
+  obj.line.push(obj.pool.splice(poolIdx, 1)[0]);
+  renderScene();
+}
+
+function wbRemove(sceneId, lineIdx) {
+  let obj = state.wordBuilder[sceneId];
+  obj.pool.push(obj.line.splice(lineIdx, 1)[0]);
+  renderScene();
+}
+
+function validateWordBuilder(sceneId) {
+  const qKey = `scene_${sceneId}`;
+  if (state.questionStates[qKey]) return;
+  let wbState = state.wordBuilder[sceneId];
+  if (wbState.pool.length > 0) { alert("Please use all the words to build the sentence!"); return; }
+
+  let builtStr = wbState.line.join(' ');
+  if (builtStr === SCENES[sceneId].question.correctSentence) {
+    const xpToAward = state.xpBlockedScenes.includes(sceneId) ? 0 : currentScenePoints;
+    state.questionStates[qKey] = { correct: true };
+    state.correctCount++; state.xp += xpToAward;
+    logAnswer(`✅ Scene ${sceneId + 1}: Sentence Built, +${xpToAward} XP`, true);
+    if (!state.scenesDone.includes(state.currentScene)) state.scenesDone.push(state.currentScene);
+    showXPBurst(xpToAward > 0 ? `+${xpToAward} XP ⭐` : '✅ Correct!');
+  } else {
+    state.questionStates[qKey] = { correct: false };
+    state.wrongCount++; if (!state.xpBlockedScenes.includes(sceneId)) state.xpBlockedScenes.push(sceneId);
+    logAnswer(`❌ Scene ${sceneId + 1}: Sentence Error`, false);
+  }
+  updateDashboard(); renderScene();
+}
+
+// =========================================================
+// GRID
+// =========================================================
+function checkGridAnswer(isCorrect, pickedIndex, sceneId) {
+  const qKey = `scene_${sceneId}`;
+  if (state.questionStates[qKey]) return;
+  state.questionStates[qKey] = { correct: isCorrect, pickedIndex };
+
+  if (isCorrect) {
+    const xpToAward = state.xpBlockedScenes.includes(sceneId) ? 0 : currentScenePoints;
+    state.correctCount++; state.xp += xpToAward;
+    logAnswer(`✅ Scene ${sceneId + 1}: Grid Read Correct, +${xpToAward} XP`, true);
+    if (!state.scenesDone.includes(state.currentScene)) state.scenesDone.push(state.currentScene);
+    showXPBurst(xpToAward > 0 ? `+${xpToAward} XP ⭐` : '✅ Correct!');
+  } else {
+    state.wrongCount++; if (!state.xpBlockedScenes.includes(sceneId)) state.xpBlockedScenes.push(sceneId);
+    logAnswer(`❌ Scene ${sceneId + 1}: Clicked wrong court zone`, false);
+  }
+  updateDashboard(); renderScene();
+}
+
+// =========================================================
+// DROPDOWN
+// =========================================================
+function checkDropdowns(sceneId) {
+  if (state.questionStates[`scene_${sceneId}`]) return;
+}
+
+function validateDropdowns(sceneId) {
+  const qKey = `scene_${sceneId}`;
+  if (state.questionStates[qKey]) return;
+  let allCorrect = true;
+
+  SCENES[sceneId].question.pairs.forEach((p, i) => {
+    let sel = document.getElementById(`dd-${sceneId}-${i}`);
+    if (sel.value === p.effectCorrect) { sel.className = 'dd-effect correct'; }
+    else { sel.className = 'dd-effect wrong'; allCorrect = false; }
+  });
+
+  if (allCorrect) {
+    const xpToAward = state.xpBlockedScenes.includes(sceneId) ? 0 : currentScenePoints;
+    state.questionStates[qKey] = { correct: true };
+    state.correctCount++; state.xp += xpToAward;
+    logAnswer(`✅ Scene ${sceneId + 1}: Matches Correct, +${xpToAward} XP`, true);
+    if (!state.scenesDone.includes(state.currentScene)) state.scenesDone.push(state.currentScene);
+    showXPBurst(xpToAward > 0 ? `+${xpToAward} XP ⭐` : '✅ Correct!');
+  } else {
+    state.questionStates[qKey] = { correct: false };
+    state.wrongCount++; if (!state.xpBlockedScenes.includes(sceneId)) state.xpBlockedScenes.push(sceneId);
+    logAnswer(`❌ Scene ${sceneId + 1}: Matching Error`, false);
+  }
+  updateDashboard(); renderScene();
+}
+
+// =========================================================
+// VOICE LOCK
+// =========================================================
+function approveVoiceLock(sceneId) {
+  const qKey = `scene_${sceneId}`;
+  if (state.questionStates[qKey]) return;
+  state.questionStates[qKey] = { correct: true };
+
+  var statusBox = document.getElementById('voice-status');
+  if (statusBox) {
+    statusBox.textContent = '✅ Voice Approved!';
+    statusBox.style.background = 'var(--green)';
+    statusBox.style.color = '#fff';
+    statusBox.style.boxShadow = '0 0 15px var(--green)';
+  }
+
+  const xpToAward = state.xpBlockedScenes.includes(sceneId) ? 0 : currentScenePoints;
+  state.correctCount++; state.xp += xpToAward;
+  logAnswer(`✅ Scene ${sceneId + 1}: Voice Approved, +${xpToAward} XP`, true);
+  if (!state.scenesDone.includes(state.currentScene)) state.scenesDone.push(state.currentScene);
+  showXPBurst(xpToAward > 0 ? `+${xpToAward} XP ⭐` : '✅ Correct!');
+  updateDashboard(); renderScene();
+}
+
+// =========================================================
+// SEQUENCING
+// =========================================================
+function selectSeqItem(idx) {
+  if (state.questionStates[`scene_${state.currentScene}`]) return;
+  let el = document.getElementById(`seq-item-${idx}`);
+  if (el.style.opacity === '0.4') return;
+  document.querySelectorAll('.seq-item').forEach(i => { i.style.borderColor = 'var(--bg4)'; i.style.transform = 'scale(1)'; });
+  el.style.borderColor = 'var(--gold)'; el.style.transform = 'scale(1.02)';
+  selectedSeqItem = { idx: idx, text: el.innerText };
+}
+
+function placeSeqItem(slotNum) {
+  if (!selectedSeqItem || state.questionStates[`scene_${state.currentScene}`]) return;
+  if (seqSlots[slotNum] !== null) { document.getElementById(`seq-item-${seqSlots[slotNum]}`).style.opacity = '1'; }
+
+  seqSlots[slotNum] = selectedSeqItem.idx;
+  let slotEl = document.getElementById(`seq-slot-${slotNum}`);
+  slotEl.style.background = 'var(--bg3)'; slotEl.style.borderColor = 'var(--primary)'; slotEl.style.color = 'var(--text)';
+  document.getElementById(`s-text-${slotNum}`).innerText = selectedSeqItem.text;
+
+  document.getElementById(`seq-item-${selectedSeqItem.idx}`).style.opacity = '0.4';
+  selectedSeqItem = null;
+}
+
+function validateSequence(sceneId) {
+  const qKey = `scene_${sceneId}`;
+  if (state.questionStates[qKey]) return;
+
+  let currentOrder = [seqSlots[1], seqSlots[2], seqSlots[3], seqSlots[4]];
+  if (currentOrder.includes(null)) { alert("Please fill all 4 sequence slots!"); return; }
+
+  let textOrder = currentOrder.map(idx => document.getElementById(`seq-item-${idx}`).innerText);
+  let correct = SCENES[sceneId].question.correctOrder;
+
+  if (JSON.stringify(textOrder) === JSON.stringify(correct)) {
+    const xpToAward = state.xpBlockedScenes.includes(sceneId) ? 0 : currentScenePoints;
+    state.questionStates[qKey] = { correct: true };
+    state.correctCount++; state.xp += xpToAward;
+    logAnswer(`✅ Scene ${sceneId + 1}: Sequence Correct, +${xpToAward} XP`, true);
+    if (!state.scenesDone.includes(state.currentScene)) state.scenesDone.push(state.currentScene);
+    showXPBurst(xpToAward > 0 ? `+${xpToAward} XP ⭐` : '✅ Correct!');
+  } else {
+    state.questionStates[qKey] = { correct: false };
+    state.wrongCount++; if (!state.xpBlockedScenes.includes(sceneId)) state.xpBlockedScenes.push(sceneId);
+    logAnswer(`❌ Scene ${sceneId + 1}: Sequence Error`, false);
+  }
+  updateDashboard(); renderScene();
+}
+
+function resetQuestion(sceneId) {
+  const qKey = `scene_${sceneId}`;
+  delete state.questionStates[qKey];
+  if (SCENES[sceneId].type === 'wordbuilder') { delete state.wordBuilder[sceneId]; }
+  if (SCENES[sceneId].type === 'sequence') { seqSlots = {1:null, 2:null, 3:null, 4:null}; selectedSeqItem = null; }
+  renderScene();
+}
+
+function advanceScene() {
+  if (state.currentScene < SCENES.length - 1) { goScene(1); }
+}
+
+function goScene(dir) {
+  let next = typeof dir === 'number' && (dir === 1 || dir === -1) ? state.currentScene + dir : dir;
+  if (next >= 0 && next < SCENES.length) {
+    state.currentScene = next;
+    currentScenePoints = SCENES[state.currentScene].question ? SCENES[state.currentScene].question.xp : 0;
+    if (SCENES[state.currentScene].type === 'sequence') { seqSlots = {1:null, 2:null, 3:null, 4:null}; }
+    window.scrollTo({top: 0, behavior: 'smooth'});
+    renderScene();
+  }
+}
+
+// =========================================================
+// UI HELPERS
+// =========================================================
+function showIdiom(key) {
+  const displayBox = document.getElementById('idiom-display');
+  if (displayBox && IDIOM_DEFS[key]) {
+    displayBox.innerHTML = IDIOM_DEFS[key];
+    displayBox.classList.add('active');
+  }
+  if (!state.idiomsClicked.includes(key)) {
+    state.idiomsClicked.push(key);
+    document.getElementById('t-idiom-log').innerHTML = `Clues clicked: <span>${state.idiomsClicked.join(', ')}</span>`;
+  }
+}
+
+function fireHint(msg) {
+  const banner = document.getElementById('hint-banner');
+  if (banner) {
+    banner.querySelector('#hint-text').textContent = msg;
+    banner.classList.add('active');
+  }
+  logAnswer(`💡 Hint fired: "${msg}"`, null);
+}
+
+function updateDashboard() {
+  document.getElementById('xp-display').textContent = state.xp;
+  document.getElementById('t-xp').textContent = state.xp;
+  document.getElementById('t-correct').textContent = state.correctCount;
+  document.getElementById('t-wrong').textContent = state.wrongCount;
+}
+
+function logAnswer(msg, correct) {
+  state.answerLog.push(msg);
+  const log = document.getElementById('t-log');
+  const div = document.createElement('div');
+  div.style.padding = "4px 0"; div.style.borderBottom = "1px dashed var(--bg4)";
+  div.style.color = correct === true ? 'var(--green)' : correct === false ? 'var(--red)' : 'var(--text3)';
+  div.textContent = msg;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+function showXPBurst(msg) {
+  const el = document.getElementById('xp-burst');
+  el.textContent = msg; el.style.display = 'block'; el.style.transform = 'translate(-50%,-50%) scale(1)'; el.style.opacity = '1';
+  setTimeout(() => { el.style.transform = 'translate(-50%,-70%) scale(1.2)'; el.style.opacity = '0'; }, 700);
+  setTimeout(() => { el.style.display = 'none'; }, 1200);
+}
+
+function setMode(m) {
+  document.getElementById('student-view').classList.remove('active');
+  document.getElementById('telemetry-view').classList.remove('active');
+  document.getElementById('parent-view').classList.remove('active');
+  if (m === 'student') document.getElementById('student-view').classList.add('active');
+  if (m === 'telemetry') document.getElementById('telemetry-view').classList.add('active');
+  if (m === 'summary') document.getElementById('parent-view').classList.add('active');
+
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  if (m === 'student') document.querySelectorAll('.mode-btn')[0].classList.add('active');
+  if (m === 'telemetry') document.querySelectorAll('.mode-btn')[1].classList.add('active');
+  if (m === 'summary') document.querySelectorAll('.mode-btn')[2].classList.add('active');
+
+  document.body.style.background = m === 'summary' ? '#e2e8f0' : 'var(--bg)';
+}
+
+function showSummary() {
+  document.getElementById('ps-xp').textContent = state.xp;
+  document.getElementById('ps-correct').textContent = state.correctCount;
+  document.getElementById('ps-attempts').textContent = state.wrongCount;
+  document.getElementById('ps-scenes').textContent = state.scenesDone.length + ' / ' + (SCENES.length - 1);
+  document.getElementById('ps-idioms').textContent = state.idiomsClicked.length > 0 ? state.idiomsClicked.length + ' viewed' : 'None';
+
+  const formattedLogs = state.answerLog.map(log => {
+    let icon = log.includes('✅') ? '✅' : (log.includes('❌') ? '❌' : '💡');
+    return `<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed #cbd5e1;">${icon} ${log.replace(/[✅❌💡]/g, '')}</div>`;
+  }).join('');
+  document.getElementById('ps-log').innerHTML = formattedLogs || 'No actions logged yet.';
+
+  const dateSpan = document.getElementById('print-date');
+  if (dateSpan) dateSpan.textContent = new Date().toLocaleDateString();
+  setMode('summary');
+}
+
+function downloadReport() {
+  let date = new Date().toLocaleDateString();
+  const formattedLogs = state.answerLog.map(log => {
+    let icon = log.includes('✅') ? '✅' : (log.includes('❌') ? '❌' : '💡');
+    return `<div style="margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed #cbd5e1;">${icon} ${log.replace(/[✅❌💡]/g, '')}</div>`;
+  }).join('');
+
+  let reportContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Melek | Session Report Ep 3</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  body { background: #e2e8f0; font-family: 'Nunito', sans-serif; color: #1e293b; padding: 40px 20px; }
+  .report-box { max-width: 800px; margin: 0 auto; background: #fff; border-radius: 16px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); border-top: 10px solid #4ade80; }
+  h2 { font-family: 'Bangers', cursive; font-size: 2.8rem; color: #0f172a; border-bottom: 3px solid #f1f5f9; padding-bottom: 16px; margin-bottom: 24px; letter-spacing: 1px; margin-top: 0; }
+  p.date { margin-bottom: 24px; font-weight: 800; font-size: 1.2rem; color: #64748b; }
+  table { width: 100%; border-collapse: collapse; font-size: 1.15rem; margin-bottom: 30px; }
+  th, td { border: 2px solid #e2e8f0; padding: 16px 20px; text-align: left; }
+  th { background: #f8fafc; font-weight: 800; color: #16a34a; width: 35%; }
+  td { font-weight: 600; }
+  h3 { font-family: 'Bangers', cursive; font-size: 1.8rem; color: #0f172a; margin-bottom: 12px; letter-spacing: 1px; }
+  .log-box { font-size: 1.1rem; color: #475569; font-weight: 600; line-height: 1.8; background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; }
+  @media print { body { background: #fff; padding: 0; } .report-box { box-shadow: none; border-top: none; padding: 0; } }
+</style>
+</head>
+<body>
+  <div class="report-box">
+    <h2>📋 Session Report: Melek | Volleyball Showdown Ep 3</h2>
+    <p class="date"><strong>Date: </strong>${date}</p>
+    <table>
+      <tr><th>Total XP Earned</th><td>${state.xp} XP</td></tr>
+      <tr><th>Correct Answers</th><td>${state.correctCount}</td></tr>
+      <tr><th>Attempts Needed</th><td>${state.wrongCount}</td></tr>
+      <tr><th>Scenes Completed</th><td>${state.scenesDone.length} / ${SCENES.length - 1}</td></tr>
+      <tr><th>Vocab Explored</th><td>${state.idiomsClicked.length} items</td></tr>
+      <tr><th>Focus Areas</th><td>Past Simple, Second Conditional, Rally Sequencing, Phrasal Verbs, Tactical Reading</td></tr>
+    </table>
+    <h3>Activity Log:</h3>
+    <div class="log-box">${formattedLogs || 'No actions logged.'}</div>
+  </div>
+  <script>window.onload = function() { setTimeout(function() { window.print(); }, 500); };<\/script>
+</body>
+</html>`;
+
+  let blob = new Blob([reportContent], { type: "text/html" });
+  let link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `Melek_Report_Ep3_${date.replace(/\//g, '-')}.html`;
+  document.body.appendChild(link); link.click(); document.body.removeChild(link);
+}
+
+// INIT
+currentScenePoints = SCENES[0].question.xp;
+goScene(0);
+</script>
+<div id="xp-burst" class="xp-burst"></div>
+</body>
+</html>

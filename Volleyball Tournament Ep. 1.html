@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Melek | Episode 1: The First Serve</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  /* ── MELEK B1 VARIABLES (Turkish Volleyball Theme) ── */
+  :root {
+    --bg: #0f172a;        /* Deep Slate */
+    --bg2: #1e293b;       /* Slate */
+    --bg3: #334155;
+    --bg4: #475569;
+    --primary: #e11d48;   /* Turkish Crimson Red */
+    --primary2: #fb7185;  /* Bright Pink/Red */
+    --primary-dim: #be123c;
+    --text: #f8fafc;
+    --text2: #e2e8f0;
+    --text3: #cbd5e1;
+    --gold: #fbbf24;      /* Gold Medal */
+    --gold-bg: rgba(251, 191, 36, 0.1);
+    --red: #ef4444;       
+    --red-bg: rgba(239, 68, 68, 0.1);
+    --green: #10b981;
+    --green-bg: rgba(16, 185, 129, 0.15);
+    --radius: 16px;
+    --shadow: 0 10px 40px rgba(0,0,0,0.5);
+    --font: 'Nunito', sans-serif;
+    --font-display: 'Bangers', cursive;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font); background: var(--bg); color: var(--text);
+    min-height: 100vh; overflow-x: hidden; transition: background 0.3s ease;
+  }
+
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background: radial-gradient(circle at 15% 20%, rgba(225, 29, 72, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 85% 80%, rgba(251, 191, 36, 0.1) 0%, transparent 50%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── TOP NAV BAR ── */
+  .top-bar-container {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px);
+    border-bottom: 2px solid var(--primary); padding: 10px 20px;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  }
+  .top-bar-container .brand-logo {
+    display: flex; align-items: center; gap: 8px; font-family: var(--font); font-weight: 800; font-size: 1.1rem; color: var(--text); letter-spacing: 0.5px; text-transform: uppercase;
+  }
+  .top-bar-container .brand-logo svg { width: 22px; height: 22px; fill: var(--primary); }
+  
+  .top-btn {
+    background: var(--bg2); border: 1px solid var(--bg3); border-radius: 8px; padding: 8px 16px;
+    font-weight: 800; cursor: pointer; color: var(--text); transition: all 0.2s; font-family: var(--font);
+  }
+  .top-btn:hover { border-color: var(--primary2); color: var(--primary2); }
+  .mode-btn.active { background: var(--primary-dim); color: #fff; border-color: var(--primary); }
+  .top-btn.print-btn { background: var(--gold); color: #000; border-color: var(--gold); }
+  .top-btn.print-btn:hover { background: #f59e0b; color:#000; }
+
+  /* ── VIEW PANES ── */
+  #student-view, #teacher-view, #parent-view { display: none; }
+  #student-view.active, #teacher-view.active, #parent-view.active { display: block; animation: fadeUp 0.4s ease; }
+
+  /* ── LAYOUT ── */
+  #app { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 80px 16px 80px; }
+
+  /* ── SLEEK HERO BANNER ── */
+  .hero-banner {
+    background: linear-gradient(135deg, var(--bg2), var(--bg)); border: 1px solid var(--bg3);
+    border-radius: var(--radius); padding: 30px; margin-bottom: 24px; display: flex; align-items: center; gap: 24px; position: relative; overflow: hidden; box-shadow: 0 0 20px rgba(225, 29, 72, 0.1);
+  }
+  .hero-badge {
+    width: 80px; height: 80px; border-radius: 50%; border: 2px solid var(--primary); background: rgba(225, 29, 72, 0.1);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 0 15px rgba(225, 29, 72, 0.4), inset 0 0 10px rgba(225, 29, 72, 0.2);
+  }
+  .hero-badge svg { width: 45px; height: 45px; fill: var(--primary); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));}
+  .hero-content { position: relative; z-index: 2; flex: 1; }
+  .hero-pill {
+    display: inline-block; background: var(--primary); color: #fff; font-size: 0.75rem; font-weight: 900;
+    padding: 4px 10px; border-radius: 6px; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;
+  }
+  .hero-title { font-family: var(--font-display); font-size: 2.8rem; color: var(--text); letter-spacing: 1px; line-height: 1; margin-bottom: 8px; text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
+  .hero-sub { font-size: 0.95rem; color: var(--text3); font-weight: 800; letter-spacing: 0.5px; }
+  .hero-xp {
+    position: relative; z-index: 2; background: var(--gold); border-radius: 16px; padding: 16px 24px; text-align: center; box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
+  }
+  .hero-xp-val { font-family: var(--font-display); font-size: 2rem; color: #000; line-height: 1; }
+  .hero-xp-lbl { font-size: 0.85rem; font-weight: 900; color: #000; text-transform: uppercase; margin-top: 4px; }
+
+  /* ── SCENE PROGRESS DOTS ── */
+  .scene-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+  .scene-dot {
+    width: 36px; height: 36px; border-radius: 50%; border: 1px solid var(--bg3); background: var(--bg2);
+    cursor: pointer; transition: all 0.3s; font-size: 1rem; font-weight: 900; color: var(--text3);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .scene-dot.active { border-color: var(--primary2); background: rgba(225, 29, 72, 0.1); color: var(--primary2); box-shadow: 0 0 15px rgba(225, 29, 72, 0.4); transform: scale(1.1);}
+  .scene-dot.done { border-color: var(--primary); background: var(--primary); color: #fff; }
+  .nav-arrows { display: flex; gap: 10px; margin-left: auto; }
+  .nav-btn {
+    background: var(--bg2); border: 1px solid var(--bg3); border-radius: 10px; color: var(--text);
+    font-size: 1rem; padding: 8px 20px; cursor: pointer; transition: all 0.2s; font-weight: 800; font-family: var(--font);
+  }
+  .nav-btn:hover:not(:disabled) { border-color: var(--primary2); color: var(--primary2); background: var(--bg3); }
+  .nav-btn:disabled { opacity: 0.4; cursor: default; }
+
+  /* ── SCENE CARD ── */
+  .scene-card {
+    background: linear-gradient(180deg, var(--bg2), var(--bg)); border: 1px solid var(--bg3);
+    border-radius: var(--radius); padding: 36px; margin-bottom: 24px; animation: fadeUp 0.4s ease; box-shadow: var(--shadow);
+  }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+  .scene-label {
+    font-family: var(--font-display); font-size: 1.2rem; letter-spacing: 2px; color: var(--primary2);
+    text-transform: uppercase; margin-bottom: 12px; display: inline-block; border-bottom: 2px solid var(--primary-dim); padding-bottom: 8px;
+  }
+  .scene-title { font-family: var(--font-display); font-size: 2.6rem; color: #fff; margin-bottom: 20px; line-height: 1.2; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+  .scene-body { font-size: 1.15rem; line-height: 1.8; color: var(--text); margin-bottom: 24px; font-weight: 600; }
+  .scene-body strong { color: var(--primary2); font-weight: 900; }
+  .scene-body em { color: var(--gold); font-style: normal; font-weight: 900; }
+
+  /* ── INLINE CLUES ── */
+  .ipill {
+    display: inline-block; background: var(--gold-bg); border: 1px solid var(--gold); color: var(--gold);
+    padding: 2px 10px; border-radius: 8px; cursor: pointer; font-weight: 800; font-size: 1.15rem; transition: all 0.2s;
+  }
+  .ipill:hover { background: var(--gold); color: #000; transform: translateY(-2px); box-shadow: 0 4px 10px rgba(251, 191, 36, 0.3); }
+  .idiom-display {
+    display: none; background: var(--bg2); border-left: 4px solid var(--gold); padding: 16px 20px; margin-top: 16px;
+    border-radius: 0 12px 12px 0; font-size: 1.1rem; color: var(--text); font-weight: 700; animation: fadeUp 0.3s ease;
+  }
+  .idiom-display.active { display: block; }
+  .idiom-display strong { color: var(--gold); font-size: 1.2rem;}
+
+  /* ── GRAMMAR SPOTLIGHT ── */
+  .grammar-box { background: rgba(0,0,0,0.2); border-left: 4px solid var(--primary); border-radius: 0 12px 12px 0; padding: 20px; margin: 24px 0; }
+  .grammar-box .g-label { font-family: var(--font-display); font-size: 1.2rem; letter-spacing: 1px; color: var(--primary2); margin-bottom: 10px; text-transform: uppercase; }
+  .grammar-box p { font-size: 1.1rem; line-height: 1.7; color: #fff; font-weight: 700; }
+  .grammar-box code { background: rgba(0,0,0,0.4); border-radius: 6px; padding: 4px 10px; font-family: var(--font); color: var(--gold); font-size: 1.1rem; font-weight: 900; }
+
+  /* ── HINT BANNER ── */
+  .hint-banner {
+    display: none; background: rgba(0,0,0,0.3); border: 1px solid var(--primary-dim); border-left: 6px solid var(--primary);
+    padding: 18px; font-size: 1.1rem; color: var(--primary2); font-weight: 800; margin-top: 20px; margin-bottom: 20px; border-radius: 0 12px 12px 0;
+  }
+  .hint-banner.active { display: block; animation: fadeUp 0.3s ease; }
+
+  /* ── QUESTIONS HEADER ── */
+  .question-block { margin-top: 10px; padding-top: 24px; border-top: 1px dashed var(--bg3); }
+  .q-label { font-family: var(--font-display); font-size: 1.2rem; letter-spacing: 1px; color: var(--gold); text-transform: uppercase; margin-bottom: 12px; }
+  .q-text { font-size: 1.25rem; font-weight: 800; margin-bottom: 20px; line-height: 1.6; }
+
+  /* ── MECHANIC 1: DROPDOWN MATCH ── */
+  .dd-row { display: flex; gap: 16px; margin-bottom: 12px; align-items: center; flex-wrap:wrap;}
+  .dd-cause { flex: 1; min-width: 250px; background: rgba(0,0,0,0.2); padding: 14px 18px; border: 1px solid var(--bg3); border-radius: 12px; font-size: 1.05rem; font-weight:600;}
+  .dd-effect { flex: 1; min-width: 250px; background: var(--bg2); color: var(--text); padding: 14px 18px; border: 2px solid var(--bg4); border-radius: 12px; font-size: 1.05rem; cursor: pointer; outline: none; font-family: var(--font); font-weight: 700; transition:0.2s;}
+  .dd-effect:focus { border-color: var(--primary2); }
+  .dd-effect.correct { border-color: var(--green); color: var(--green); background: var(--green-bg);}
+  .dd-effect.wrong { border-color: var(--red); color: var(--red); background: var(--red-bg);}
+
+  /* ── MECHANIC 2: COURT GRID (SPATIAL LOGIC) ── */
+  .court-wrapper { background: #d97706; padding: 12px; border-radius: 12px; border: 4px solid #fef3c7; max-width: 500px; margin: 0 auto; position: relative;}
+  .court-net { position: absolute; top: -10px; bottom: -10px; left: 50%; width: 4px; background: #fff; margin-left: -2px; z-index: 2;}
+  .court-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; background: #fed7aa; padding: 8px; border-radius: 4px; }
+  .court-zone { background: #fca5a5; padding: 30px 10px; text-align: center; font-weight: 900; color: #881337; font-size: 1.1rem; cursor: pointer; border-radius: 8px; border: 4px solid transparent; transition: 0.2s; display: flex; align-items: center; justify-content: center; min-height: 100px; font-family: var(--font-display); letter-spacing: 1px;}
+  .court-zone:hover:not(:disabled) { border-color: #e11d48; transform: scale(1.02); background: #fecdd3; }
+  .court-zone.blocked { background: #94a3b8; color: #475569; border-color: #475569; }
+  .court-zone.blocked::after { content: '❌ Blocked'; display: block; font-size: 0.8rem; margin-top: 5px; color: #475569; }
+  .court-zone.correct { background: var(--green); color: #fff; border-color: #059669; }
+  .court-zone.wrong { background: var(--red); color: #fff; border-color: #991b1b; }
+  .court-zone:disabled { cursor: not-allowed; transform: none; }
+
+  /* ── MECHANIC 3: WORD BUILDER ── */
+  .wb-container { background: rgba(0,0,0,0.2); border: 2px dashed var(--bg4); border-radius: 16px; padding: 20px; }
+  .wb-line { min-height: 70px; border-bottom: 2px solid var(--primary2); margin-bottom: 24px; padding-bottom: 10px; display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end;}
+  .wb-pool { display: flex; flex-wrap: wrap; gap: 10px; min-height: 50px; }
+  .wb-word { background: var(--bg3); border: 2px solid var(--bg4); color: var(--text); padding: 10px 18px; border-radius: 8px; font-size: 1.1rem; font-weight: 800; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.2); user-select: none; }
+  .wb-word:hover { border-color: var(--primary2); transform: translateY(-2px); box-shadow: 0 6px 12px rgba(225, 29, 72, 0.3); }
+  .wb-word.in-line { background: var(--primary); border-color: var(--primary-dim); color: #fff; }
+
+  /* ── MECHANIC 4: VOICE LOCK ── */
+  .voice-lock-box { background: rgba(0,0,0,0.2); border: 1px dashed var(--gold); border-radius: var(--radius); padding: 24px; text-align: center; margin-bottom: 20px; }
+  .voice-icon { width:60px; height:60px; margin: 0 auto 12px; fill:var(--text); animation: pulse 2s infinite; }
+  @keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.1); fill:var(--gold);} 100% {transform: scale(1);} }
+  .read-text { font-size: 24px; font-weight: 800; color: #fff; font-style: italic; line-height: 1.5; margin: 15px 0; padding: 20px; background: rgba(0,0,0,0.4); border-radius: 12px; border-left: 6px solid var(--primary); }
+  .voice-status { display: inline-block; padding: 10px 20px; border-radius: 24px; font-weight: 900; font-size: 16px; background: var(--bg3); color: var(--text2); }
+  .voice-status.approved { background: var(--green); color: #fff; box-shadow: 0 0 15px var(--green); }
+
+  /* ── MECHANIC 5: SEQUENCING ── */
+  .seq-pool{display:flex;flex-direction:column;gap:8px;margin-bottom:15px}
+  .seq-item{background:var(--bg3);border:1px solid var(--bg4);border-radius:10px;padding:14px 18px;font-size:16px;cursor:pointer;display:flex;align-items:center;gap:12px; font-weight:700; transition:0.2s; margin-bottom:8px;}
+  .seq-item:hover{border-color:var(--gold); transform:scale(1.01);}
+  .seq-item.selected{border-color:var(--gold);background:var(--bg4);color:var(--gold); transform:scale(1.02);}
+  .seq-item.placed{opacity:.4;cursor:not-allowed; border-color:var(--bg3); transform:scale(1);}
+  .seq-slots{display:flex;flex-direction:column;gap:8px}
+  .seq-slot{background:rgba(0,0,0,0.2);border:1px dashed var(--text3);border-radius:10px;padding:14px 18px;font-size:16px;color:var(--text3);min-height:56px;cursor:pointer;display:flex;align-items:center;gap:12px; font-weight:700; margin-bottom:8px;}
+  .seq-slot.filled{background:var(--bg3);border:1px solid var(--primary);color:var(--text); border-style:solid;}
+  .slot-num{width:28px;height:28px;border-radius:50%;background:var(--gold-bg);color:var(--gold);font-size:14px;font-weight:900;display:flex;align-items:center;justify-content:center; border:1px solid var(--gold); flex-shrink:0;}
+
+  /* Action Buttons */
+  .check-btn {
+    background: var(--primary); color: #fff; border: none; border-radius: 12px; padding: 16px 32px; font-family: var(--font-display); 
+    font-size: 1.4rem; cursor: pointer; transition: all 0.2s; box-shadow: 0 4px 15px rgba(225,29,72,0.3); margin-top: 20px; letter-spacing: 1px; width: 100%;
+  }
+  .check-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(225,29,72,0.5); background: var(--primary2); color:#000;}
+
+  /* ── FEEDBACK & TRY AGAIN ── */
+  .feedback { display: none; margin-top: 20px; padding: 18px 24px; border-radius: 12px; font-weight: 800; font-size: 1.1rem; line-height: 1.5; animation: fadeUp 0.3s ease; }
+  .feedback.correct { display: block; background: var(--green-bg); border-left: 4px solid var(--green); color: var(--green); }
+  .feedback.wrong   { display: block; background: var(--red-bg); border-left: 4px solid var(--red); color: #fca5a5; }
+
+  .try-again-btn {
+    display: none; margin-top: 20px; background: var(--red-bg); color: var(--red); border: 2px solid var(--red);
+    border-radius: 50px; padding: 14px 36px; font-family: var(--font-display); font-size: 1.6rem; cursor: pointer; transition: all 0.2s;
+    letter-spacing: 2px; width: 100%; text-transform: uppercase;
+  }
+  .try-again-btn:hover { background: var(--red); color: #fff; transform: translateY(-3px); box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4); }
+  .try-again-btn.visible { display: block; }
+
+  .continue-btn {
+    display: none; margin-top: 24px; background: linear-gradient(135deg, var(--gold), var(--primary-dim)); color: #000; border: none;
+    border-radius: 50px; padding: 16px 36px; font-family: var(--font-display); font-size: 1.8rem; cursor: pointer; transition: all 0.2s;
+    box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4); letter-spacing: 2px; width: 100%; text-transform: uppercase; animation: pulse-btn 2s infinite;
+  }
+  @keyframes pulse-btn { 0% { transform: scale(1); box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4); } 50% { transform: scale(1.02); box-shadow: 0 8px 25px rgba(251, 191, 36, 0.7); } 100% { transform: scale(1); box-shadow: 0 6px 20px rgba(251, 191, 36, 0.4); } }
+  .continue-btn:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 25px rgba(251, 191, 36, 0.8); animation: none; }
+  .continue-btn.visible { display: block; }
+
+  /* ── REWARD SCREEN ── */
+  .s-reward { text-align: center; padding: 40px 20px; }
+  .s-reward-icon { font-size: 80px; margin: 0 auto 20px; animation: float 3s infinite ease-in-out; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.3));}
+  @keyframes float { 0%, 100% {transform:translateY(0)} 50% {transform:translateY(-15px)} }
+  .s-reward-title { font-family: var(--font-display); font-size: 3.5rem; color: var(--gold); letter-spacing: 2px; margin-bottom: 10px; }
+  .s-reward-xp { font-size: 2.5rem; font-weight: 900; color: var(--primary2); margin-bottom: 20px; text-shadow: 0 0 20px rgba(251, 113, 133, 0.4); }
+  .s-reward-sub { font-size: 1.2rem; color: var(--text); line-height: 1.6; font-weight: 700; background: rgba(0,0,0,0.2); padding: 24px; border-radius: 16px; border: 1px solid var(--bg3); }
+
+  /* ── TEACHER DASHBOARD ── */
+  #teacher-panel { background: var(--bg2); border: 1px solid var(--bg3); border-radius: var(--radius); padding: 24px; margin-top: 40px; box-shadow: var(--shadow); }
+  .t-header { font-family: var(--font-display); font-size: 2rem; color: var(--primary2); margin-bottom: 20px; letter-spacing: 1px; }
+  .t-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin-bottom: 24px; }
+  .t-stat { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 16px; border: 1px solid var(--bg3); text-align: center; }
+  .t-stat .t-val { font-family: var(--font-display); font-size: 2.6rem; color: var(--gold); }
+  .t-stat .t-key { font-size: 0.85rem; font-weight: 900; letter-spacing: 1px; color: var(--text3); text-transform: uppercase; margin-top: 6px; }
+  .t-log { background: rgba(0,0,0,0.2); border-radius: 12px; padding: 16px; border: 1px solid var(--bg3); max-height: 200px; overflow-y: auto; font-size: 1rem; font-weight: 700; line-height: 1.8; margin-bottom: 20px; }
+  .t-log .log-correct { color: var(--green); }
+  .t-log .log-wrong   { color: var(--red); }
+  .t-hint-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+  .t-hint-btn { background: rgba(0,0,0,0.2); border: 1px solid var(--primary-dim); border-radius: 8px; padding: 10px 18px; font-size: 0.95rem; font-weight: 800; color: var(--primary2); cursor: pointer; transition: all 0.2s; }
+  .t-hint-btn:hover { background: var(--primary-dim); color: #fff; }
+
+  /* ── MODALS & EFFECTS ── */
+  .xp-burst {
+    display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%) scale(0.5);
+    font-family: var(--font-display); font-size: 5rem; color: var(--primary2); text-shadow: 0 0 40px rgba(225, 29, 72, 0.6);
+    z-index: 9999; pointer-events: none; transition: all 0.5s cubic-bezier(0.175,0.885,0.32,1.275);
+  }
+  .xp-burst.pop { display: block; transform: translate(-50%,-50%) scale(1); }
+  .xp-burst.fade { opacity: 0; transform: translate(-50%,-70%) scale(1.2); }
+
+  /* ── PARENT REPORT STYLING ── */
+  .parent-report-box { background: #fff; color: #1e293b; border-radius: 16px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); margin-top: 20px; }
+  .parent-report-box h2 { font-family: var(--font-display); font-size: 2.8rem; color: #0f172a; border-bottom: 3px solid #f1f5f9; padding-bottom: 16px; margin-bottom: 24px; letter-spacing: 1px;}
+  .parent-report-box table { width: 100%; border-collapse: collapse; font-size: 1.15rem; margin-bottom: 30px; }
+  .parent-report-box th, .parent-report-box td { border: 2px solid #e2e8f0; padding: 16px 20px; text-align: left; }
+  .parent-report-box th { background: #f8fafc; font-weight: 800; color: #e11d48; width: 30%; }
+  .parent-report-box td { font-weight: 600; }
+  .parent-report-box h3 { font-family: var(--font-display); font-size: 1.8rem; color: #0f172a; margin-bottom: 12px; letter-spacing: 1px;}
+  .download-btn {
+    background: #0f172a; color: #fff; border: 1px solid #334155; border-radius: 8px; padding: 16px 32px; font-family: var(--font);
+    font-weight: 900; font-size: 1.1rem; cursor: pointer; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4); display: inline-flex; align-items: center; gap: 10px; margin-bottom: 30px; transition: 0.2s;
+  }
+  .download-btn:hover { background: #1e293b; transform: translateY(-2px); }
+  .download-btn svg { width: 20px; height: 20px; }
+
+  /* ── LIGHT MODE ── */
+  body.light-mode {
+    --bg: #F8FAFC; --bg2: #FFFFFF; --bg3: #e2e8f0; --bg4: #cbd5e1;
+    --text: #0f172a; --text2: #1e293b; --text3: #475569;
+  }
+  body.light-mode::before { background: radial-gradient(circle at 15% 20%, rgba(225,29,72,0.05) 0%, transparent 40%), radial-gradient(circle at 85% 80%, rgba(251,191,36,0.05) 0%, transparent 50%); }
+  body.light-mode .top-bar-container { background: rgba(248,250,252,0.97); }
+  body.light-mode .hero-banner { background: linear-gradient(135deg, #fff, #f1f5f9); }
+  body.light-mode .scene-card { background: linear-gradient(180deg, #fff, #f1f5f9); }
+  body.light-mode .grammar-box { background: rgba(0,0,0,0.04); }
+  body.light-mode .wb-word { background: #e2e8f0; border-color: #cbd5e1; color: #0f172a; }
+  body.light-mode .wb-word.in-line { background: var(--primary); color: #fff; }
+  body.light-mode .dd-effect { background: #fff; color: #0f172a; }
+  body.light-mode .seq-item { background: #e2e8f0; border-color: #cbd5e1; color: #0f172a; }
+  body.light-mode .voice-lock-box { background: rgba(0,0,0,0.04); }
+  body.light-mode .hint-banner { background: rgba(0,0,0,0.04); }
+  body.light-mode .idiom-display { background: #fff; }
+  body.light-mode #teacher-panel { background: #fff; }
+  body.light-mode .t-stat { background: rgba(0,0,0,0.04); }
+  body.light-mode .t-log { background: rgba(0,0,0,0.04); }
+
+  /* ── PEN TOOL ── */
+  #pen-toolbar { position: fixed; bottom: 20px; right: 20px; z-index: 1000; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+  .pen-btn { width: 48px; height: 48px; border-radius: 50%; border: 2px solid #4ade80; background: #0f172a; color: #4ade80; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.4); }
+  .pen-btn:hover { transform: scale(1.1); background: #1e293b; }
+  .pen-btn.active { background: #4ade80; color: #000; border-color: #16a34a; }
+  #pen-color-picker { display: none; flex-direction: row; gap: 6px; background: rgba(15,23,42,0.95); padding: 8px 12px; border-radius: 30px; border: 1px solid #334155; }
+  #pen-color-picker.visible { display: flex; }
+  .color-dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+  .color-dot.selected { border-color: #fff; transform: scale(1.2); box-shadow: 0 0 8px rgba(255,255,255,0.5); }
+  #draw-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999; }
+  #draw-canvas.active { pointer-events: all; cursor: crosshair; }
+</style>
+</head>
+<body>
+
+<svg style="display:none;">
+  <symbol id="icon-volleyball" viewBox="0 0 24 24">
+    <circle cx="12" cy="12" r="10" stroke-width="2" stroke="currentColor" fill="none"/>
+    <path d="M12 2a15.3 15.3 0 0 1 7 10 15.3 15.3 0 0 1-7 10M12 2a15.3 15.3 0 0 0-7 10 15.3 15.3 0 0 0 7 10" stroke-width="2" stroke="currentColor" fill="none"/>
+    <path d="M2 12h20" stroke-width="2" stroke="currentColor" fill="none"/>
+  </symbol>
+  <symbol id="icon-mic" viewBox="0 0 24 24">
+    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/>
+    <path d="M19 10v2a7 7 0 0 1-14 0v-2M12 18.4v3.3M8 22h8"/>
+  </symbol>
+</svg>
+
+<div class="top-bar-container">
+  <div class="brand-logo">
+    <svg><use href="#icon-volleyball"></use></svg> VOLLEYBALL SHOWDOWN
+  </div>
+  <div class="mode-btns" style="display:flex; gap:8px;">
+    <button class="top-btn active mode-btn" onclick="setMode('student')">Student View</button>
+    <button class="top-btn mode-btn" onclick="setMode('teacher')">Teacher Dashboard</button>
+    <button class="top-btn mode-btn" onclick="showSummary()">Parent Report</button>
+    <button class="top-btn print-btn" onclick="downloadReport()">📥 Download Visual Report</button>
+    <button class="top-btn" id="theme-toggle" onclick="toggleTheme()" title="Toggle light/dark mode">☀️</button>
+  </div>
+</div>
+
+<div id="app">
+
+  <!-- STUDENT VIEW -->
+  <div id="student-view" class="active">
+
+  <div class="hero-banner">
+    <div class="hero-badge"><svg><use href="#icon-volleyball"></use></svg></div>
+    <div class="hero-content">
+      <span class="hero-pill">VOLLEYBALL SHOWDOWN SERIES: EP 1 OF 6</span>
+      <h1 class="hero-title">The First Serve</h1>
+      <p class="hero-sub">B1 Advanced ESL · Interactive Mechanics · Hero: Melek</p>
+    </div>
+    <div class="hero-xp">
+      <div class="hero-xp-val">⭐ <span id="xp-display">0</span></div>
+      <div class="hero-xp-lbl">XP Earned</div>
+    </div>
+  </div>
+
+  <div class="scene-nav" id="scene-nav">
+    <div class="nav-arrows">
+      <button class="nav-btn" id="prev-btn" onclick="goScene('prev')">◀ Back</button>
+      <button class="nav-btn" id="next-btn" onclick="goScene('next')">Next ▶</button>
+    </div>
+  </div>
+
+  <div id="scene-container"></div>
+
+  </div> <!-- END STUDENT VIEW -->
+
+  <!-- TEACHER DASHBOARD -->
+  <div id="teacher-view">
+  <div id="teacher-panel" style="margin-top: 0;">
+    <div class="t-header">👨‍🏫 Teacher Dashboard</div>
+    <p style="color:var(--text3); font-size:1.1rem; margin-bottom:20px; font-weight:600;">
+      <em>Teacher Note: Episode 1 is now completely free of standard MCQs! Melek will use Dropdowns, Word Builders, Voice Locks, and Grid Logic.</em>
+    </p>
+    <div class="t-grid">
+      <div class="t-stat"><div class="t-val" id="t-xp">0</div><div class="t-key">Total XP</div></div>
+      <div class="t-stat"><div class="t-val" id="t-correct">0</div><div class="t-key">Correct</div></div>
+      <div class="t-stat"><div class="t-val" style="color:var(--red);" id="t-wrong">0</div><div class="t-key">Errors</div></div>
+      <div class="t-stat"><div class="t-val" id="t-scene">1</div><div class="t-key">Scene / 5</div></div>
+    </div>
+    <div class="t-log" id="t-log">Activity log will appear here...</div>
+    <div style="font-size:0.85rem; font-weight:900; letter-spacing:1px; color:var(--text3); text-transform:uppercase; margin-bottom:10px;">✨ Fire a Live Hint</div>
+    <div class="t-hint-row">
+      <button class="t-hint-btn" onclick="fireHint('Vocabulary: Warming up means getting your body ready before a big game!')">Warm Up Hint</button>
+      <button class="t-hint-btn" onclick="fireHint('Grammar: Use Present Perfect Continuous (has been + ing) for an action that started in the past and is still happening now.')">Present Perfect Cont. Hint</button>
+      <button class="t-hint-btn" onclick="fireHint('Pronunciation: Speak clearly! Emphasize the IF at the beginning of the sentence.')">Pronunciation Hint</button>
+      <button class="t-hint-btn" onclick="fireHint('Grid Hint: Look at the edges. If the blockers are on the left and right, the middle is open!')">Grid Logic Hint</button>
+      <button class="t-hint-btn" onclick="fireHint('Sequencing: In volleyball, the ball goes from the Server -> Libero (Bump) -> Setter (Set) -> Spiker (Spike).')">Sequence Hint</button>
+    </div>
+    <div style="font-size:0.95rem; color:var(--text3); margin-top:10px; font-weight:700;" id="t-idiom-log">Clues clicked: <span>none yet</span></div>
+  </div>
+  </div> <!-- END TEACHER DASHBOARD -->
+
+  <!-- PARENT REPORT UI -->
+  <div id="parent-view">
+    <button class="download-btn" onclick="downloadReport()">
+      <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+      Download Visual Report (.html)
+    </button>
+    
+    <div class="parent-report-box">
+      <h2>📋 Lesson Report: Melek | Volleyball Showdown Ep 1</h2>
+      <p style="margin-bottom: 24px; font-weight: 800; font-size: 1.2rem; color: #64748b;"><strong>Date: </strong><span id="print-date"></span></p>
+      <table>
+        <tr><th>Total XP Earned</th><td id="ps-xp">...</td></tr>
+        <tr><th>Correct Answers</th><td id="ps-correct">...</td></tr>
+        <tr><th>Attempts Needed</th><td id="ps-attempts">...</td></tr>
+        <tr><th>Scenes Completed</th><td id="ps-scenes">...</td></tr>
+        <tr><th>Sports Vocab Explored</th><td id="ps-idioms">...</td></tr>
+        <tr><th>Learning Focus</th><td>Phrasal Verbs, Present Perfect Continuous, First Conditional, Spatial Logic, Sequencing</td></tr>
+      </table>
+      <h3>Teacher Activity Log:</h3>
+      <div id="ps-log" style="margin-top:16px; font-size:1.1rem; color:#475569; font-weight: 600; line-height: 1.8; background:#f8fafc; padding:20px; border-radius:12px; border:1px solid #e2e8f0;"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+let state = {
+  xp: 0,
+  currentScene: 0,
+  scenesDone: [],
+  correctCount: 0,
+  wrongCount: 0,
+  answerLog: [],
+  idiomsClicked: [],
+  xpBlockedScenes: [],
+  questionStates: {},     
+  shuffledChoices: {},
+  wordBuilder: {} // { sceneId: { pool: [], line: [] } }
+};
+
+let currentScenePoints = 0; 
+
+// ═══════════════════════════════════════════════════════
+// DICTIONARY FOR INLINE "SPORTS CLUES"
+// ═══════════════════════════════════════════════════════
+const IDIOM_DEFS = {
+  'home_court': '💡 <strong>"Home Court Advantage"</strong><br>When a sports team plays in their own city. The fans cheer for them, giving them extra energy!',
+  'warm_up': '💡 <strong>"Warm up"</strong><br>A phrasal verb meaning to do light exercises before a big match to prepare your muscles.',
+  'give_up': '💡 <strong>"Give up"</strong><br>A phrasal verb meaning to stop trying or quit. The Turkish team never gives up!',
+  'spike': '💡 <strong>"Spike"</strong><br>Hitting the volleyball down very hard over the net into the other team\'s side.'
+};
+
+// ═══════════════════════════════════════════════════════
+// 5 SCENES DATA (Melek Ep 1 - Fully Interactive)
+// ═══════════════════════════════════════════════════════
+const SCENES = [
+  {
+    id: 0,
+    type: 'dropdown',
+    label: "Scene 1 · Vocabulary 🔄",
+    title: "Welcome to Istanbul",
+    icon: "icon-volleyball",
+    body: `The stadium in Istanbul is completely full. The Turkish National Women's Volleyball Team is playing against Italy! <br><br>
+Melissa steps onto the court. She can hear thousands of fans chanting her name. It is amazing to have the <span class="ipill" onclick="showIdiom('home_court')">home court advantage</span>.<br><br>
+Before the match begins, the team does several important activities.`,
+    grammar: {
+      label: "✨ B1 Vocabulary: Phrasal Verbs",
+      text: `<strong>Phrasal Verbs</strong> are made of a verb + a small word (preposition). Together, they make a new meaning!<br><br>
+      <code>Work out</code> = to exercise heavily<br>
+      <code>Warm up</code> = to prepare your body with light stretches<br>
+      <code>Give up</code> = to quit or surrender`
+    },
+    question: {
+      text: "Match the volleyball actions to their correct phrasal verbs:",
+      pairs: [
+        { cause: "To do light stretches before the match starts", effectCorrect: "Warm up", options: ["Work out", "Give up", "Warm up"] },
+        { cause: "To quit or stop trying during a hard game", effectCorrect: "Give up", options: ["Work out", "Give up", "Warm up"] },
+        { cause: "To do heavy physical exercise to get stronger", effectCorrect: "Work out", options: ["Work out", "Give up", "Warm up"] }
+      ],
+      xp: 20,
+      correctMsg: "🔪 Brilliant matching! Melissa is definitely warming up right now.",
+      wrongMsg: "Think carefully. Light stretching is warming up. Quitting is giving up."
+    }
+  },
+  {
+    id: 1,
+    type: 'wordbuilder',
+    label: "Scene 2 · B1 Grammar 🧩",
+    title: "Years of Practice",
+    icon: "icon-whistle",
+    body: `The referee blows the whistle. The match is about to begin! The TV announcer talks about Melissa's amazing career.<br><br>
+"Melissa is the star player today," the announcer says. "She is incredible. Her dedication to the sport is inspiring!"`,
+    grammar: {
+      label: "✨ Grammar: Present Perfect Continuous",
+      text: `We use the <strong>Present Perfect Continuous (has/have + been + verb-ing)</strong> to talk about an action that started in the past and is <strong>still continuing right now</strong>.<br><br>
+      <em>She <strong>has been playing</strong> for 10 years.</em> (She started 10 years ago, and she still plays today!)`
+    },
+    question: {
+      text: "Construct the correct grammatical sentence to describe Melissa's experience:",
+      words: ["She", "has", "been", "playing", "for", "ten", "years."],
+      correctSentence: "She has been playing for ten years.",
+      xp: 20,
+      correctMsg: "🧩 Sentence Built! Perfect use of 'has been playing' to show an ongoing action.",
+      wrongMsg: "Syntax error! Remember the structure: Subject + has/have + been + verb-ing + time duration."
+    }
+  },
+  {
+    id: 2,
+    type: 'voice',
+    label: "Scene 3 · Pronunciation 🗣️",
+    title: "The Team Huddle",
+    icon: "icon-mic",
+    body: `Italy scores the first two points. The Turkish coach calls a quick timeout.<br><br>
+Melissa brings the team into a circle. She wants to use a <strong>First Conditional</strong> sentence to motivate her teammates. She knows that their teamwork will lead to a win!`,
+    grammar: {
+      label: "✨ Grammar: First Conditional",
+      text: `We use the First Conditional to talk about a real possibility in the future.<br><br>
+      Structure: <code>If + Present Simple, will + base verb</code><br>
+      <em><strong>If</strong> we pass the ball well, we <strong>will</strong> score a point!</em>`
+    },
+    question: {
+      text: "Voice Lock Challenge: Say Melissa's motivational sentence out loud to your teacher!",
+      sentence: '"If we pass the ball well, we will score a point!"',
+      xp: 20,
+      correctMsg: "🎤 Beautiful pronunciation! The team is fired up and ready to win!",
+      wrongMsg: "Try speaking a bit louder and clearer. Don't forget the pause at the comma!"
+    }
+  },
+  {
+    id: 3,
+    type: 'grid',
+    label: "Scene 4 · Spatial Logic 🏐",
+    title: "The Diving Save",
+    icon: "icon-volleyball",
+    body: `The match is very close! The score is 23 to 24. Italy only needs one more point to win the first set.<br><br>
+The Italian spiker hits the ball extremely hard over the net! The Turkish blockers jump, but the ball flies right over them towards the back of the court. The Turkish team refuses to <span class="ipill" onclick="showIdiom('give_up')">give up</span>!`,
+    grammar: {
+      label: "✨ Tactical Reading Challenge",
+      text: `Gizem, the Turkish Libero, needs to dive to save the ball. Look at the radar map of the Turkish court.`
+    },
+    question: {
+      text: "The Italian spiker aims for the exact center of the court! The front edges and back corners are covered by other players. Which empty zone must Gizem dive to?",
+      xp: 20,
+      gridConfig: { cols: 3, labels: ["Front Left", "Front Center", "Front Right", "Back Left", "Back Center", "Back Right"] },
+      blockedZones: [0, 2, 3, 5], // Corners are blocked by players.
+      correctZone: 4, // Back Center is open for the dive
+      correctMsg: "🎯 Incredible dive! You correctly identified the empty Back Center zone and saved the point!",
+      wrongMsg: "Oops! Gizem bumped into another player! Read the text: the edges and corners are covered. Find the empty center!"
+    }
+  },
+  {
+    id: 4,
+    type: 'sequence',
+    label: "Scene 5 · Sequencing 🔄",
+    title: "The Perfect Play",
+    icon: "icon-volleyball",
+    body: `The ball is still in the air after Gizem's amazing diving save in the center. Now, the Turkish team has the chance to run the perfect volleyball play and score!<br><br>
+To score the point, the players must touch the ball in the correct order. Can you build the perfect play?`,
+    question: {
+      text: "Place the volleyball actions in the correct chronological order to score the point:",
+      correctOrder: ["1. The Italian player serves the ball over the net.", "2. Gizem (the Libero) bumps the ball up.", "3. Cansu (the Setter) sets the ball high in the air.", "4. Melissa jumps and spikes the ball down!"],
+      xp: 20,
+      correctMsg: "🥇 Sequence Locked! Bump, Set, Spike! You executed the perfect play and scored the point!",
+      wrongMsg: "Chronology error! A play goes: The serve comes over -> Someone bumps it -> The setter sets it -> The spiker spikes it!"
+    }
+  },
+  {
+    id: 5,
+    type: 'reward',
+    label: "Scene 6 · Set Point! 🏆",
+    title: "Taking the Lead!",
+    icon: "icon-medal",
+    body: `WHAAAM! Melissa <span class="ipill" onclick="showIdiom('spike')">spikes</span> the ball past the Italian blockers. The ball hits the floor. POINT FOR TÜRKİYE!<br><br>
+The crowd in Istanbul goes wild! The Turkish team wins the first set 26 to 24.<br><br>
+Great job, Melek! You mastered <strong>Interactive Word Building, Spatial Logic, and Phrasal Verbs</strong>!<br><br>
+<em>Are you ready for Set 2 in Episode 2?</em>`,
+    isLast: true
+  }
+];
+
+// ═══════════════════════════════════════════════════════
+// RENDER FUNCTIONS
+// ═══════════════════════════════════════════════════════
+function renderSceneNav() {
+  const nav = document.getElementById('scene-nav');
+  const arrows = nav.querySelector('.nav-arrows');
+  nav.innerHTML = '';
+  SCENES.forEach((s, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'scene-dot' +
+      (i === state.currentScene ? ' active' : '') +
+      (state.scenesDone.includes(i) ? ' done' : '');
+    dot.textContent = 'S' + (i + 1);
+    dot.title = s.title;
+    dot.onclick = () => { goScene(i); };
+    nav.appendChild(dot);
+  });
+  nav.appendChild(arrows);
+  document.getElementById('prev-btn').disabled = state.currentScene === 0;
+  document.getElementById('next-btn').disabled = state.currentScene === SCENES.length - 1;
+  document.getElementById('t-scene').textContent = state.currentScene + 1;
+}
+
+function renderScene() {
+  renderSceneNav();
+  const scene = SCENES[state.currentScene];
+  const container = document.getElementById('scene-container');
+  
+  if (scene.type === 'reward') {
+    container.innerHTML = `
+      <div class="scene-card" style="text-align: center;">
+        <svg style="width: 100px; height: 100px; fill: var(--gold); margin: 0 auto 20px; animation: float 3s infinite ease-in-out; filter: drop-shadow(0 10px 10px rgba(0,0,0,0.3));"><use href="#${scene.icon}"></use></svg>
+        <div class="scene-title" style="font-size: 3.5rem;">${scene.title}</div>
+        <div style="font-size: 2.5rem; font-weight: 900; color: var(--gold); margin-bottom: 20px;">${state.xp} XP Earned!</div>
+        <div class="scene-body" style="background: rgba(0,0,0,0.2); padding: 24px; border-radius: 16px; border: 1px solid var(--bg3);">${scene.body}</div>
+      </div>`;
+    const hb = document.getElementById('hint-banner'); if(hb) hb.classList.remove('active');
+    return;
+  }
+
+  let html = `
+    <div class="scene-card">
+      <div class="scene-label"><svg style="width: 20px; height: 20px; fill: var(--primary2);"><use href="#${scene.icon}"></use></svg> ${scene.label}</div>
+      <div class="scene-title">${scene.title}</div>
+      <div class="scene-body">${scene.body}</div>
+      <div id="idiom-display" class="idiom-display"></div>
+      ${scene.grammar ? `<div class="grammar-box"><div class="g-label">${scene.grammar.label}</div><p>${scene.grammar.text}</p></div>` : ''}
+      <div class="hint-banner" id="hint-banner">💡 <span id="hint-text"></span></div>
+  `;
+
+  const qKey = `scene_${scene.id}`;
+  const answered = state.questionStates[qKey] || null;
+  let feedbackHTML = '';
+  let tryAgainHTML = '';
+  let continueHTML = '';
+
+  if (answered) {
+    if (answered.correct) {
+      feedbackHTML = `<div class="feedback correct show">✅ ${escapeStr(scene.question.correctMsg)}</div>`;
+      continueHTML = `<button class="continue-btn visible" onclick="advanceScene()">⭐ AWESOME! NEXT SCENE ➔</button>`;
+    } else {
+      feedbackHTML = `<div class="feedback wrong show">❌ ${escapeStr(scene.question.wrongMsg)}</div>`;
+      tryAgainHTML = `<button class="try-again-btn visible" onclick="resetQuestion(${scene.id})">🔄 TRY AGAIN</button>`;
+    }
+  }
+
+  // ── MECHANIC: COURT GRID ──
+  if (scene.type === 'grid') {
+    let zonesHtml = scene.question.gridConfig.labels.map((lbl, idx) => {
+      let isBlocked = scene.question.blockedZones.includes(idx);
+      let isCorrectAns = scene.question.correctZone === idx;
+      let btnClass = 'court-zone';
+      let disabled = '';
+      
+      if (isBlocked) { 
+        btnClass += ' blocked'; disabled = 'disabled'; 
+      } else if (answered) {
+        disabled = 'disabled';
+        if (isCorrectAns && answered.correct) btnClass += ' correct';
+        if (!isCorrectAns && answered.pickedIndex === idx) btnClass += ' wrong';
+      }
+
+      return `<button class="${btnClass}" ${disabled} onclick="checkGridAnswer(${isCorrectAns}, ${idx}, ${scene.id})">${lbl}</button>`;
+    }).join('');
+
+    html += `
+      <div class="question-block">
+        <div class="q-label">🏐 Tactical Map Challenge</div>
+        <div class="q-text">${scene.question.text}</div>
+        <div class="court-wrapper">
+          <div class="court-net"></div>
+          <div class="court-grid">${zonesHtml}</div>
+        </div>
+        ${feedbackHTML}${tryAgainHTML}${continueHTML}
+      </div>`;
+  }
+  // ── MECHANIC: WORD BUILDER ──
+  else if (scene.type === 'wordbuilder') {
+    if (!state.wordBuilder[scene.id]) {
+       let arr = [...scene.question.words].sort(() => Math.random() - 0.5);
+       state.wordBuilder[scene.id] = { pool: arr, line: [] };
+    }
+    let wbState = state.wordBuilder[scene.id];
+    
+    let lineHtml = wbState.line.map((w, i) => `<div class="wb-word in-line" onclick="${answered ? '' : `wbRemove(${scene.id}, ${i})`}">${escapeStr(w)}</div>`).join('');
+    let poolHtml = wbState.pool.map((w, i) => `<div class="wb-word" onclick="${answered ? '' : `wbAdd(${scene.id}, ${i})`}">${escapeStr(w)}</div>`).join('');
+
+    html += `
+      <div class="question-block">
+        <div class="q-label">🧩 Sentence Construction</div>
+        <div class="q-text">${scene.question.text}</div>
+        <div class="wb-container">
+          <div class="wb-line">${lineHtml}</div>
+          <div class="wb-pool">${poolHtml}</div>
+        </div>
+        <button class="check-btn" onclick="validateWordBuilder(${scene.id})" ${answered ? 'style="display:none;"' : ''}>Verify Sentence</button>
+        ${feedbackHTML}${tryAgainHTML}${continueHTML}
+      </div>`;
+  }
+  // ── MECHANIC: DROPDOWN ──
+  else if (scene.type === 'dropdown') {
+    let ddHtml = scene.question.pairs.map((p, i) => {
+      let opts = `<option value="">Select meaning...</option>` + p.options.map(o => `<option value="${escapeStr(o)}">${escapeStr(o)}</option>`).join('');
+      let disabled = answered ? 'disabled' : '';
+      return `<div class="dd-row">
+                <div class="dd-cause">${p.cause}</div>
+                <div style="color:var(--primary2); font-weight:bold;">→</div>
+                <select class="dd-effect" id="dd-${scene.id}-${i}" ${disabled} onchange="checkDropdowns(${scene.id})">${opts}</select>
+              </div>`;
+    }).join('');
+
+    html += `
+      <div class="question-block">
+        <div class="q-label">🔄 Tactical Translation</div>
+        <div class="q-text">${scene.question.text}</div>
+        ${ddHtml}
+        <button class="check-btn" onclick="validateDropdowns(${scene.id})" ${answered ? 'style="display:none;"' : ''}>Verify Matches</button>
+        ${feedbackHTML}${tryAgainHTML}${continueHTML}
+      </div>`;
+  }
+  // ── MECHANIC: VOICE ──
+  else if (scene.type === 'voice') {
+    html += `
+      <div class="question-block">
+        <div class="q-label" style="color:var(--gold);">🎙️ Voice Lock Challenge</div>
+        <div class="q-text">${scene.question.text}</div>
+        <div class="voice-lock-box" style="background: rgba(0,0,0,0.2); border: 1px dashed var(--gold); border-radius: var(--radius); padding: 24px; text-align: center; margin-bottom: 20px;">
+          <svg class="voice-icon"><use href="#icon-mic"></use></svg>
+          <div class="read-text">${scene.question.sentence}</div>
+          <div id="voice-status" class="voice-status">⏳ Awaiting Teacher Approval...</div>
+        </div>
+        ${feedbackHTML}${tryAgainHTML}${continueHTML}
+      </div>`;
+  }
+  // ── MECHANIC: SEQUENCING ──
+  else if (scene.type === 'sequence') {
+    let pool = [...scene.question.correctOrder];
+    let temp = pool[0]; pool[0] = pool[2]; pool[2] = pool[1]; pool[1] = pool[3]; pool[3] = temp; 
+    
+    let poolHtml = pool.map((item, i) => `<div class="seq-item" id="seq-item-${i}" onclick="selectSeqItem(${i})" style="background:var(--bg3); border:1px solid var(--bg4); border-radius:10px; padding:14px 18px; font-size:16px; cursor:pointer; display:flex; align-items:center; gap:12px; font-weight:700; transition:0.2s; margin-bottom:8px;">${item}</div>`).join('');
+    let slotsHtml = [1,2,3,4].map(num => `<div class="seq-slot" id="seq-slot-${num}" onclick="placeSeqItem(${num})" style="background:rgba(0,0,0,0.2); border:1px dashed var(--text3); border-radius:10px; padding:14px 18px; font-size:16px; color:var(--text3); min-height:56px; cursor:pointer; display:flex; align-items:center; gap:12px; font-weight:700; margin-bottom:8px;"><div style="width:28px; height:28px; border-radius:50%; background:var(--gold-bg); color:var(--gold); font-size:14px; font-weight:900; display:flex; align-items:center; justify-content:center; border:1px solid var(--gold); flex-shrink:0;">${num}</div> <span id="s-text-${num}">Click action, then click here</span></div>`).join('');
+    
+    html += `
+      <div class="question-block">
+        <div class="q-label">🔐 Volleyball Sequencing</div>
+        <div class="q-text">${scene.question.text}</div>
+        <div class="seq-pool">${poolHtml}</div>
+        <div class="seq-slots" style="margin-top:15px;">${slotsHtml}</div>
+        <button id="check-${scene.id}" onclick="validateSequence(${scene.id})" ${answered ? 'style="display:none;"' : ''} style="background:var(--primary); border:none; border-radius:50px; padding:14px 28px; color:#fff; cursor:pointer; font-weight:900; font-size:1.4rem; font-family:var(--font-display); letter-spacing:1px; display:block; margin: 20px 0 0; box-shadow: 0 4px 10px rgba(225, 29, 72, 0.3); transition:0.2s; width:100%;">Verify Play</button>
+        ${feedbackHTML}${tryAgainHTML}${continueHTML}
+      </div>`;
+  }
+
+  html += `</div>`;
+  container.innerHTML = html;
+  
+  if(scene.type === 'voice' && !answered) {
+      document.getElementById('t-log').innerHTML = `
+        <div style="background:var(--gold-bg); padding:15px; border-radius:12px; border:1px solid var(--gold); text-align:center; margin-bottom:15px;">
+           <div style="color:var(--gold); font-weight:800; margin-bottom:10px;">🎙️ VOICE LOCK PENDING</div>
+           <button class="top-btn print-btn" onclick="approveVoiceLock(${scene.id})" style="border-color:var(--gold);">Approve Pronunciation</button>
+        </div>` + document.getElementById('t-log').innerHTML;
+  }
+}
+
+function escapeStr(s) { return String(s).replace(/'/g, "\\'").replace(/"/g, '&quot;'); }
+
+// ═══════════════════════════════════════════════════════
+// NEW MECHANIC LOGIC: WORD BUILDER
+// ═══════════════════════════════════════════════════════
+function wbAdd(sceneId, poolIdx) {
+  let stateObj = state.wordBuilder[sceneId];
+  let word = stateObj.pool.splice(poolIdx, 1)[0];
+  stateObj.line.push(word);
+  renderScene();
+}
+
+function wbRemove(sceneId, lineIdx) {
+  let stateObj = state.wordBuilder[sceneId];
+  let word = stateObj.line.splice(lineIdx, 1)[0];
+  stateObj.pool.push(word);
+  renderScene();
+}
+
+function validateWordBuilder(sceneId) {
+  const qKey = `scene_${sceneId}`;
+  if(state.questionStates[qKey]) return;
+  
+  let wbState = state.wordBuilder[sceneId];
+  if(wbState.pool.length > 0) {
+      alert("Please use all the words to build the sentence!");
+      return;
+  }
+
+  let builtStr = wbState.line.join(' ');
+  let correctStr = SCENES[sceneId].question.correctSentence;
+
+  if (builtStr === correctStr) {
+    const xpToAward = state.xpBlockedScenes.includes(sceneId) ? 0 : currentScenePoints;
+    state.questionStates[qKey] = { correct: true };
+    state.correctCount++; state.xp += xpToAward;
+    logAnswer(`✅ Scene ${sceneId + 1}: Sentence Built, +${xpToAward} XP`, true);
+    if (!state.scenesDone.includes(state.currentScene)) state.scenesDone.push(state.currentScene);
+    showXPBurst(xpToAward > 0 ? `+${xpToAward} XP ⭐` : '✅ Correct!');
+  } else {
+    state.questionStates[qKey] = { correct: false };
+    state.wrongCount++; if (!state.xpBlockedScenes.includes(sceneId)) state.xpBlockedScenes.push(sceneId);
+    logAnswer(`❌ Scene ${sceneId + 1}: Sentence Error`, false);
+  }
+  updateDashboard(); renderScene();
+}
+
+// ═══════════════════════════════════════════════════════
+// NEW MECHANIC LOGIC: GRID CLICKER
+// ═══════════════════════════════════════════════════════
+function checkGridAnswer(isCorrect, pickedIndex, sceneId) {
+  const qKey = `scene_${sceneId}`;
+  if (state.questionStates[qKey]) return; 
+
+  state.questionStates[qKey] = { correct: isCorrect, pickedIndex };
+
+  if (isCorrect) {
+    const xpToAward = state.xpBlockedScenes.includes(sceneId) ? 0 : currentScenePoints;
+    state.correctCount++; state.xp += xpToAward;
+    logAnswer(`✅ Scene ${sceneId + 1}: Grid Read Correct, +${xpToAward} XP`, true);
+    if (!state.scenesDone.includes(state.currentScene)) state.scenesDone.push(state.currentScene);
+    showXPBurst(xpToAward > 0 ? `+${xpToAward} XP ⭐` : '✅ Correct!');
+  } else {
+    state.wrongCount++; if (!state.xpBlockedScenes.includes(sceneId)) state.xpBlockedScenes.push(sceneId);
+    logAnswer(`❌ Scene ${sceneId + 1}: Clicked wrong court zone`, false);
+  }
+  updateDashboard(); renderScene();
+}
+
+// ═══════════════════════════════════════════════════════
+// EXISTING LOGIC (Dropdowns, Voice, Sequencing, Navigation)
+// ═══════════════════════════════════════════════════════
+function checkDropdowns(sceneId) {
+  if (state.questionStates[`scene_${sceneId}`]) return;
+  SCENES[sceneId].question.pairs.forEach((p, i) => {
+    let sel = document.getElementById(`dd-${sceneId}-${i}`);
+    if (sel.classList.contains('wrong')) sel.classList.remove('wrong');
+  });
+}
+
+function validateDropdowns(sceneId) {
+  const qKey = `scene_${sceneId}`;
+  if(state.questionStates[qKey]) return;
+  let allCorrect = true;
+  
+  SCENES[sceneId].question.pairs.forEach((p, i) => {
+    let sel = document.getElementById(`dd-${sceneId}-${i}`);
+    if (sel.value === p.effectCorrect) { sel.className = 'dd-effect correct'; } 
+    else { sel.className = 'dd-effect wrong'; allCorrect = false; }
+  });
+
+  if(allCorrect) {
+    const xpToAward = state.xpBlockedScenes.includes(sceneId) ? 0 : currentScenePoints;
+    state.questionStates[qKey] = { correct: true };
+    state.correctCount++; state.xp += xpToAward;
+    logAnswer(`✅ Scene ${sceneId + 1}: Matches Correct, +${xpToAward} XP`, true);
+    if (!state.scenesDone.includes(state.currentScene)) state.scenesDone.push(state.currentScene);
+    showXPBurst(xpToAward > 0 ? `+${xpToAward} XP ⭐` : '✅ Correct!');
+  } else {
+    state.questionStates[qKey] = { correct: false };
+    state.wrongCount++; if (!state.xpBlockedScenes.includes(sceneId)) state.xpBlockedScenes.push(sceneId);
+    logAnswer(`❌ Scene ${sceneId + 1}: Matching Error`, false);
+  }
+  updateDashboard(); renderScene();
+}
+
+function approveVoiceLock(sceneId) {
+  const qKey = `scene_${sceneId}`;
+  if (state.questionStates[qKey]) return;
+  state.questionStates[qKey] = { correct: true };
+  
+  var statusBox = document.getElementById('voice-status');
+  if(statusBox) {
+      statusBox.textContent = '✅ Voice Approved!';
+      statusBox.style.background = 'var(--green)';
+      statusBox.style.color = '#fff';
+      statusBox.style.boxShadow = '0 0 15px var(--green)';
+  }
+  
+  const xpToAward = state.xpBlockedScenes.includes(sceneId) ? 0 : currentScenePoints;
+  state.correctCount++; state.xp += xpToAward;
+  logAnswer(`✅ Scene ${sceneId + 1}: Voice Approved, +${xpToAward} XP`, true);
+  if (!state.scenesDone.includes(state.currentScene)) state.scenesDone.push(state.currentScene);
+  showXPBurst(xpToAward > 0 ? `+${xpToAward} XP ⭐` : '✅ Correct!');
+  updateDashboard(); renderScene();
+}
+
+let selectedSeqItem = null;
+let seqSlots = {1:null, 2:null, 3:null, 4:null};
+
+function selectSeqItem(idx) {
+  if(state.questionStates[`scene_${state.currentScene}`]) return;
+  let el = document.getElementById(`seq-item-${idx}`);
+  if(el.style.opacity === '0.4') return;
+  document.querySelectorAll('.seq-item').forEach(i => { i.style.borderColor = 'var(--bg4)'; i.style.transform = 'scale(1)'; });
+  el.style.borderColor = 'var(--gold)'; el.style.transform = 'scale(1.02)';
+  selectedSeqItem = { idx: idx, text: el.innerText };
+}
+
+function placeSeqItem(slotNum) {
+  if(!selectedSeqItem || state.questionStates[`scene_${state.currentScene}`]) return;
+  if(seqSlots[slotNum] !== null) { document.getElementById(`seq-item-${seqSlots[slotNum]}`).style.opacity = '1'; }
+  
+  seqSlots[slotNum] = selectedSeqItem.idx;
+  let slotEl = document.getElementById(`seq-slot-${slotNum}`);
+  slotEl.style.background = 'var(--bg3)'; slotEl.style.borderColor = 'var(--primary)'; slotEl.style.color = 'var(--text)';
+  document.getElementById(`s-text-${slotNum}`).innerText = selectedSeqItem.text;
+  
+  let oldEl = document.getElementById(`seq-item-${selectedSeqItem.idx}`);
+  oldEl.style.borderColor = 'var(--bg3)'; oldEl.style.transform = 'scale(1)'; oldEl.style.opacity = '0.4';
+  selectedSeqItem = null;
+}
+
+function validateSequence(sceneId) {
+  const qKey = `scene_${sceneId}`;
+  if(state.questionStates[qKey]) return;
+
+  let currentOrder = [seqSlots[1], seqSlots[2], seqSlots[3], seqSlots[4]];
+  if(currentOrder.includes(null)) { alert("Please fill all 4 sequence slots!"); return; }
+  
+  let textOrder = currentOrder.map(idx => document.getElementById(`seq-item-${idx}`).innerText);
+  let correct = SCENES[sceneId].question.correctOrder;
+  
+  if(JSON.stringify(textOrder) === JSON.stringify(correct)) {
+    const xpToAward = state.xpBlockedScenes.includes(sceneId) ? 0 : currentScenePoints;
+    state.questionStates[qKey] = { correct: true };
+    state.correctCount++; state.xp += xpToAward;
+    logAnswer(`✅ Scene ${sceneId + 1}: Sequence Correct, +${xpToAward} XP`, true);
+    if (!state.scenesDone.includes(state.currentScene)) state.scenesDone.push(state.currentScene);
+    showXPBurst(xpToAward > 0 ? `+${xpToAward} XP ⭐` : '✅ Correct!');
+  } else {
+    state.questionStates[qKey] = { correct: false };
+    state.wrongCount++; if (!state.xpBlockedScenes.includes(sceneId)) state.xpBlockedScenes.push(sceneId);
+    logAnswer(`❌ Scene ${sceneId + 1}: Sequence Error`, false);
+  }
+  updateDashboard(); renderScene();
+}
+
+function resetQuestion(sceneId) {
+  const qKey = `scene_${sceneId}`;
+  delete state.questionStates[qKey];
+  if(SCENES[sceneId].type === 'wordbuilder') { delete state.wordBuilder[sceneId]; }
+  if(SCENES[sceneId].type === 'sequence') { seqSlots = {1:null, 2:null, 3:null, 4:null}; selectedSeqItem = null; }
+  renderScene();
+}
+
+function advanceScene() {
+  if (state.currentScene < SCENES.length - 1) { goScene('next'); }
+}
+
+function goScene(dir) {
+  let next;
+  if (dir === 'prev') next = state.currentScene - 1;
+  else if (dir === 'next') next = state.currentScene + 1;
+  else next = dir;
+  clearCanvas();
+  if (next >= 0 && next < SCENES.length) {
+    state.currentScene = next;
+    currentScenePoints = SCENES[state.currentScene].question ? SCENES[state.currentScene].question.xp : 0;
+    if (SCENES[state.currentScene].type === 'sequence') { seqSlots = {1:null, 2:null, 3:null, 4:null}; }
+    window.scrollTo({top: 0, behavior: 'smooth'});
+    renderScene();
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// INLINE CLUES & UI HANDLERS
+// ═══════════════════════════════════════════════════════
+function showIdiom(key) {
+  const displayBox = document.getElementById('idiom-display');
+  if (displayBox && IDIOM_DEFS[key]) {
+    displayBox.innerHTML = IDIOM_DEFS[key];
+    displayBox.classList.add('active');
+  }
+  if (!state.idiomsClicked.includes(key)) {
+    state.idiomsClicked.push(key);
+    document.getElementById('t-idiom-log').innerHTML = `Clues clicked: <span>${state.idiomsClicked.join(', ')}</span>`;
+  }
+}
+
+function fireHint(msg) {
+  const banner = document.getElementById('hint-banner');
+  if(banner) {
+    banner.querySelector('#hint-text').textContent = msg;
+    banner.classList.add('active');
+  }
+  logAnswer(`💡 Hint fired: "${msg}"`, null);
+}
+
+function updateDashboard() {
+  document.getElementById('xp-display').textContent = state.xp;
+  document.getElementById('t-xp').textContent = state.xp;
+  document.getElementById('t-correct').textContent = state.correctCount;
+  document.getElementById('t-wrong').textContent = state.wrongCount;
+}
+
+function logAnswer(msg, correct) {
+  state.answerLog.push(msg);
+  const log = document.getElementById('t-log');
+  const div = document.createElement('div');
+  div.style.padding = "4px 0"; div.style.borderBottom = "1px dashed var(--bg4)";
+  div.style.color = correct === true ? 'var(--green)' : correct === false ? 'var(--red)' : 'var(--text3)';
+  div.textContent = msg;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+function showXPBurst(msg) {
+  const el = document.getElementById('xp-burst');
+  el.textContent = msg; el.style.display = 'block'; el.style.transform = 'translate(-50%,-50%) scale(1)'; el.style.opacity = '1';
+  setTimeout(() => { el.style.transform = 'translate(-50%,-70%) scale(1.2)'; el.style.opacity = '0'; }, 700);
+  setTimeout(() => { el.style.display = 'none'; }, 1200);
+}
+
+function setMode(m) {
+  document.getElementById('student-view').classList.remove('active');
+  document.getElementById('teacher-view').classList.remove('active');
+  document.getElementById('parent-view').classList.remove('active');
+  if(m === 'student') document.getElementById('student-view').classList.add('active');
+  if(m === 'teacher') document.getElementById('teacher-view').classList.add('active');
+  if(m === 'summary') document.getElementById('parent-view').classList.add('active');
+
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  if(m === 'student') document.querySelectorAll('.mode-btn')[0].classList.add('active');
+  if(m === 'teacher') document.querySelectorAll('.mode-btn')[1].classList.add('active');
+  if(m === 'summary') document.querySelectorAll('.mode-btn')[2].classList.add('active');
+  
+  document.body.style.background = m === 'summary' ? '#e2e8f0' : 'var(--bg)';
+}
+
+function showSummary() {
+  document.getElementById('ps-xp').textContent = state.xp;
+  document.getElementById('ps-correct').textContent = state.correctCount;
+  document.getElementById('ps-attempts').textContent = state.wrongCount;
+  document.getElementById('ps-scenes').textContent = state.scenesDone.length + ' / ' + (SCENES.length - 1);
+  document.getElementById('ps-idioms').textContent = state.idiomsClicked.length > 0 ? state.idiomsClicked.length + ' viewed' : 'None';
+  
+  const formattedLogs = state.answerLog.map(log => {
+      let icon = log.includes('✅') ? '✅' : (log.includes('❌') ? '❌' : '💡');
+      return `<div style="margin-bottom:8px; padding-bottom:8px; border-bottom:1px dashed #cbd5e1;">${icon} ${log.replace(/[✅❌💡]/g, '')}</div>`;
+  }).join('');
+  document.getElementById('ps-log').innerHTML = formattedLogs || 'No actions logged yet.';
+  
+  const dateSpan = document.getElementById('print-date');
+  if(dateSpan) dateSpan.textContent = new Date().toLocaleDateString();
+  setMode('summary');
+}
+
+function downloadReport() {
+  let date = new Date().toLocaleDateString();
+  const formattedLogs = state.answerLog.map(log => {
+      let icon = log.includes('✅') ? '✅' : (log.includes('❌') ? '❌' : '💡');
+      return `<div style="margin-bottom:8px; padding-bottom:8px; border-bottom:1px dashed #cbd5e1;">${icon} ${log.replace(/[✅❌💡]/g, '')}</div>`;
+  }).join('');
+
+  let reportContent = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Melek | Lesson Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  body { background: #e2e8f0; font-family: 'Nunito', sans-serif; color: #1e293b; padding: 40px 20px; }
+  .report-box { max-width: 800px; margin: 0 auto; background: #fff; border-radius: 16px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.15); border-top: 10px solid #e11d48; }
+  h2 { font-family: 'Bangers', cursive; font-size: 2.8rem; color: #0f172a; border-bottom: 3px solid #f1f5f9; padding-bottom: 16px; margin-bottom: 24px; letter-spacing: 1px; margin-top: 0; }
+  p.date { margin-bottom: 24px; font-weight: 800; font-size: 1.2rem; color: #64748b; }
+  table { width: 100%; border-collapse: collapse; font-size: 1.15rem; margin-bottom: 30px; }
+  th, td { border: 2px solid #e2e8f0; padding: 16px 20px; text-align: left; }
+  th { background: #f8fafc; font-weight: 800; color: #e11d48; width: 35%; }
+  td { font-weight: 600; }
+  h3 { font-family: 'Bangers', cursive; font-size: 1.8rem; color: #0f172a; margin-bottom: 12px; letter-spacing: 1px; }
+  .log-box { font-size: 1.1rem; color: #475569; font-weight: 600; line-height: 1.8; background: #f8fafc; padding: 20px; border-radius: 12px; border: 1px solid #e2e8f0; }
+  @media print { body { background: #fff; padding: 0; } .report-box { box-shadow: none; border-top: none; padding: 0; } }
+</style>
+</head>
+<body>
+  <div class="report-box">
+    <h2>📋 Lesson Report: Melek | Volleyball Showdown Ep 1</h2>
+    <p class="date"><strong>Date: </strong>${date}</p>
+    <table>
+      <tr><th>Total XP Earned</th><td>${state.xp} XP</td></tr>
+      <tr><th>Correct Answers</th><td>${state.correctCount}</td></tr>
+      <tr><th>Attempts Needed</th><td>${state.wrongCount}</td></tr>
+      <tr><th>Scenes Completed</th><td>${state.scenesDone.length} / ${SCENES.length - 1}</td></tr>
+      <tr><th>Sports Vocab Explored</th><td>${state.idiomsClicked.length}</td></tr>
+      <tr><th>Learning Focus</th><td>Phrasal Verbs, Present Perfect Continuous, Spatial Logic, Sentence Construction</td></tr>
+    </table>
+    <h3>Teacher Activity Log:</h3>
+    <div class="log-box">${formattedLogs || 'No actions logged.'}</div>
+  </div>
+  <script>window.onload = function() { setTimeout(function() { window.print(); }, 500); };<\/script>
+</body>
+</html>`;
+
+  let blob = new Blob([reportContent], { type: "text/html" });
+  let link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = `Melek_Report_Ep1_${date.replace(/\//g, '-')}.html`;
+  document.body.appendChild(link); link.click(); document.body.removeChild(link);
+}
+
+// INIT
+currentScenePoints = SCENES[0].question.xp;
+goScene(0);
+
+// ── THEME TOGGLE ──
+function toggleTheme() {
+  const isLight = document.body.classList.toggle('light-mode');
+  document.getElementById('theme-toggle').textContent = isLight ? '🌙' : '☀️';
+  localStorage.setItem('taqan-theme', isLight ? 'light' : 'dark');
+}
+(function() {
+  if (localStorage.getItem('taqan-theme') === 'light') {
+    document.body.classList.add('light-mode');
+    const btn = document.getElementById('theme-toggle');
+    if (btn) btn.textContent = '🌙';
+  }
+})();
+
+// ── PEN TOOL ──
+let penActive = false, isDrawing = false, penColor = '#4ade80';
+
+function clearCanvas() {
+  const c = document.getElementById('draw-canvas');
+  if (c) c.getContext('2d').clearRect(0, 0, c.width, c.height);
+}
+
+function togglePen() {
+  penActive = !penActive;
+  const c = document.getElementById('draw-canvas');
+  c.classList.toggle('active', penActive);
+  document.getElementById('pen-toggle-btn').classList.toggle('active', penActive);
+  document.getElementById('pen-color-picker').classList.toggle('visible', penActive);
+}
+
+function setPenColor(color, el) {
+  penColor = color;
+  document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+(function() {
+  const c = document.getElementById('draw-canvas');
+  if (!c) return;
+  function resize() { c.width = window.innerWidth; c.height = window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+  const ctx = c.getContext('2d');
+  function startDraw(x, y) { if (!penActive) return; isDrawing = true; ctx.beginPath(); ctx.moveTo(x, y); }
+  function doDraw(x, y) { if (!isDrawing || !penActive) return; ctx.lineTo(x, y); ctx.strokeStyle = penColor; ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.stroke(); }
+  function stopDraw() { isDrawing = false; }
+  c.addEventListener('mousedown', e => startDraw(e.clientX, e.clientY));
+  c.addEventListener('mousemove', e => doDraw(e.clientX, e.clientY));
+  c.addEventListener('mouseup', stopDraw);
+  c.addEventListener('mouseleave', stopDraw);
+  c.addEventListener('touchstart', e => { e.preventDefault(); startDraw(e.touches[0].clientX, e.touches[0].clientY); }, {passive:false});
+  c.addEventListener('touchmove', e => { e.preventDefault(); doDraw(e.touches[0].clientX, e.touches[0].clientY); }, {passive:false});
+  c.addEventListener('touchend', stopDraw);
+})();
+</script>
+<div id="xp-burst" class="xp-burst"></div>
+<canvas id="draw-canvas"></canvas>
+<div id="pen-toolbar">
+  <div id="pen-color-picker">
+    <div class="color-dot selected" style="background:#4ade80;" onclick="setPenColor('#4ade80',this)" title="Green"></div>
+    <div class="color-dot" style="background:#F8FAFC;" onclick="setPenColor('#F8FAFC',this)" title="White"></div>
+    <div class="color-dot" style="background:#c0392b;" onclick="setPenColor('#c0392b',this)" title="Ember"></div>
+  </div>
+  <div style="display:flex;gap:8px;">
+    <button class="pen-btn" id="eraser-btn" onclick="clearCanvas()" title="Clear Canvas">⌫</button>
+    <button class="pen-btn" id="pen-toggle-btn" onclick="togglePen()" title="Toggle Pen">✏️</button>
+  </div>
+</div>
+</body>
+</html>

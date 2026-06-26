@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Episode 4: The Orient Express | Yusuf</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f4ecd8; --bg2:#e9dfc4; --bg3:#dfd2b0; --bg4:#c2b28f;
+  --primary:#1e3a8a; /* Deep Navy Blue for Train */
+  --primary-lt:#3b82f6; --primary-bg:rgba(30,58,138,0.1); --primary-border:rgba(30,58,138,0.3);
+  --accent:#d4af37; /* Gold */
+  --accent-bg:rgba(212,175,55,0.15); --accent-border:rgba(212,175,55,0.5);
+  --ink:#1e293b; --ink-light:#334155;
+  --green:#166534;--green-bg:rgba(22,101,52,0.1);--green-border:rgba(22,101,52,0.3);
+  --error:#b91c1c;--error-bg:rgba(185,28,28,0.1);--error-border:rgba(185,28,28,0.3);
+  --r-md:8px;--r-lg:12px;--r-xl:20px;
+  --font:'Nunito',sans-serif; --font-serif:'Playfair Display',serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);min-height:100vh;overflow-x:hidden}
+
+#mode-bar{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(244,236,216,0.96);backdrop-filter:blur(8px);border-bottom:2px solid var(--primary);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;}
+#mode-bar .logo{font-family:var(--font-serif);font-size:18px;color:var(--primary);font-weight:800;white-space:nowrap;}
+.mode-btns{display:flex;gap:6px}
+.mode-btn{padding:8px 16px;border-radius:6px;border:2px solid var(--bg4);background:var(--bg2);color:var(--ink-light);font-family:var(--font);font-size:13px;font-weight:800;cursor:pointer;transition:all .2s}
+.mode-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.mode-btn:hover:not(.active){border-color:var(--primary);color:var(--ink)}
+
+#student-view,#teacher-view{display:none;padding-top:70px}
+#student-view.active,#teacher-view.active{display:block}
+
+.s-wrap{max-width:720px;margin:0 auto;padding:24px 16px 60px;display:flex;flex-direction:column;gap:20px}
+.s-hero{background:linear-gradient(135deg,var(--primary),#172554);border:3px solid var(--accent);border-radius:var(--r-xl);padding:30px;display:flex;align-items:center;gap:20px;position:relative;overflow:hidden; box-shadow: 0 10px 25px rgba(30,58,138,0.3);}
+.s-hero::before{content:'🚂';position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:80px;opacity:.15}
+.s-hero-icon{width:64px;height:64px;background:var(--accent-bg);border:2px solid var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0;}
+.s-hero-title{font-family:var(--font-serif);font-size:26px;color:var(--accent);line-height:1.2;}
+.s-hero-sub{font-size:14px;color:#fff;margin-top:6px; font-weight: 600;}
+.s-series-badge{display:inline-block; background:var(--accent); color:var(--primary); font-size:12px; font-weight:800; padding:4px 10px; border-radius:4px; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.08em;}
+
+.s-progress{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--r-md);padding:14px 18px;display:flex;align-items:center;gap:15px;}
+.s-prog-label{font-size:14px;font-weight:800;color:var(--ink-light);white-space:nowrap}
+.s-prog-bar{flex:1;height:12px;background:var(--bg4);border-radius:6px;overflow:hidden;}
+.s-prog-fill{height:100%;background:linear-gradient(90deg,var(--primary-lt),var(--primary));border-radius:6px;transition:width .6s ease}
+.s-xp{font-size:16px;font-weight:800;color:var(--primary);}
+
+.s-scene{display:none;flex-direction:column;gap:18px;animation:fadeUp .5s ease}
+.s-scene.active{display:flex}
+@keyframes fadeUp{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+
+.s-card{background:var(--bg);border:2px solid var(--bg4);border-radius:var(--r-lg);padding:26px; position:relative;}
+.s-card::after {content:''; position:absolute; top:4px; left:4px; right:4px; bottom:4px; border:1px solid var(--bg3); border-radius:var(--r-md); pointer-events:none;}
+
+.s-scene-tag{font-family:var(--font-serif);font-size:18px;font-weight:800;letter-spacing:.05em;color:var(--primary);text-transform:uppercase;margin-bottom:14px; border-bottom: 2px solid var(--bg4); padding-bottom:6px; display:inline-block;}
+.s-scene-tag.grammar{color:var(--accent); border-bottom-color:var(--accent);}
+.s-story{font-size:16px;line-height:1.8;color:var(--ink)}
+.s-story strong{font-weight:800;color:var(--primary)}
+
+.s-logic{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--r-md);padding:18px;margin-top:16px}
+.s-logic-title{font-size:14px;font-weight:800;color:var(--ink);text-transform:uppercase;margin-bottom:12px}
+.s-rule{display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid var(--bg3);font-size:15px; font-weight:600;}
+.s-rule:last-child{border-bottom:none}
+.s-tag{background:var(--accent);color:#000;border-radius:4px;padding:3px 10px;font-size:12px;font-weight:800;white-space:nowrap;margin-top:2px;flex-shrink:0}
+
+.s-quiz-tag{font-size:13px;font-weight:800;letter-spacing:.09em;color:var(--primary);text-transform:uppercase;margin-bottom:8px;margin-top:20px}
+.s-quiz-q{font-size:17px;font-weight:800;line-height:1.5;margin-bottom:16px; color:var(--ink);}
+.s-choices{display:flex;flex-direction:column;gap:10px}
+.s-choice{background:var(--bg);border:2px solid var(--bg4);border-radius:var(--r-md);padding:16px;font-family:var(--font);font-size:15px;font-weight:700;color:var(--ink);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:14px}
+.s-choice:hover{background:var(--bg2);border-color:var(--primary); transform: translateX(5px);}
+.s-choice .cl{width:32px;height:32px;border-radius:6px;background:var(--bg3);border:2px solid var(--bg4);color:var(--ink-light);font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.s-choice.correct{border-color:var(--green);background:var(--green-bg)}
+.s-choice.wrong{border-color:var(--error);background:var(--error-bg)}
+
+.tf-row{display:flex;gap:12px;margin-bottom:16px}
+.tf-btn{flex:1;padding:16px;font-family:var(--font-serif);font-size:20px;font-weight:800;border-radius:var(--r-md);border:2px solid var(--bg4);background:var(--bg);color:var(--ink);cursor:pointer;transition:all .2s;text-align:center;}
+.tf-btn:hover{background:var(--bg2); transform:translateY(-2px);}
+.tf-btn.correct{background:var(--green);color:#fff;border-color:var(--green);}
+.tf-btn.wrong{background:var(--error);color:#fff;border-color:var(--error);}
+
+.s-fb{border-radius:var(--r-md);padding:16px;font-size:15px;font-weight:700;line-height:1.6;border:2px solid;display:none; margin-top:14px;}
+.s-fb.ok{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+.s-fb.err{background:var(--error-bg);border-color:var(--error);color:var(--error)}
+.s-fb.show{display:block;animation:fadeUp .3s ease}
+
+.s-hint{background:var(--bg2);border:2px dashed var(--accent);border-radius:var(--r-md);padding:14px;font-size:14px;font-weight:700;color:var(--ink-light);display:none; margin-bottom:16px;}
+.s-hint.show{display:block;animation:fadeUp .3s ease}
+
+.vpill, .ipill{display:inline-block;border-radius:4px;padding:2px 8px;font-size:14px;font-weight:800;cursor:pointer;transition:all .2s;}
+.vpill{background:var(--accent-bg);border:1px solid var(--accent);color:var(--ink);}
+.ipill{background:var(--bg3);border:1px solid var(--bg4);color:var(--primary);}
+.vpill:hover{background:var(--accent); color:#fff;}
+.ipill:hover{background:var(--primary); color:#fff;}
+
+.s-nav{display:flex;justify-content:flex-end;margin-top:10px;}
+.s-next{background:var(--primary);border:none;border-radius:var(--r-md);padding:14px 28px;font-family:var(--font);font-size:16px;font-weight:800;color:#fff;cursor:pointer;transition:all .2s;display:none;}
+.s-next:hover{background:var(--primary-lt); transform:translateY(-2px);}
+.s-next.show{display:inline-block}
+
+.s-reward{background:linear-gradient(135deg,var(--bg),var(--bg2));border:3px solid var(--accent);border-radius:var(--r-xl);padding:40px 30px;text-align:center;}
+.s-reward-icon{font-size:60px;margin-bottom:16px;}
+.s-reward-title{font-family:var(--font-serif);font-size:32px;color:var(--primary);margin-bottom:10px; font-weight:800;}
+.s-reward-xp{font-size:38px;font-weight:800;color:var(--accent);margin:16px 0;}
+.s-reward-sub{font-size:16px;color:var(--ink);line-height:1.7; font-weight:600; background:var(--bg); padding:20px; border-radius:var(--r-md); border:2px dashed var(--bg4); margin-bottom:20px;}
+.cliffhanger {background:var(--primary); border-radius:var(--r-md); padding:20px; text-align:left; color:#fff;}
+.cliffhanger-title {font-family:var(--font-serif); font-size:20px; font-weight:800; color:var(--accent); margin-bottom:10px;}
+
+/* TEACHER DASHBOARD */
+.t-wrap{max-width:960px;margin:0 auto;padding:24px 20px 60px;display:flex;flex-direction:column;gap:20px}
+.t-header{background:var(--bg);border:2px solid var(--primary);border-radius:var(--r-xl);padding:24px;display:flex;justify-content:space-between;flex-wrap:wrap}
+.t-header-left h1{font-family:var(--font-serif);font-size:26px;color:var(--primary);font-weight:800;}
+.t-stats{display:flex;gap:12px}.t-stat{background:var(--bg2);border:2px solid var(--bg4);border-radius:var(--r-md);padding:14px 20px;text-align:center}
+.t-stat-val{font-size:28px;font-weight:800;color:var(--primary)}.t-stat-lbl{font-size:12px;color:var(--ink-light);font-weight:800;text-transform:uppercase;}
+.t-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:768px){.t-grid{grid-template-columns:1fr}}
+.t-card{background:var(--bg);border:2px solid var(--bg4);border-radius:var(--r-lg);padding:20px}
+.t-card-title{font-size:15px;font-weight:800;color:var(--primary);text-transform:uppercase;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--bg4)}
+.t-answer-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bg3);font-size:14px; font-weight:600;}
+.t-ans-badge{padding:4px 12px;border-radius:12px;font-size:12px;font-weight:800}.t-ans-badge.correct{background:var(--green);color:#fff;}.t-ans-badge.wrong{background:var(--error);color:#fff;}.t-ans-badge.pending{background:var(--bg3);color:var(--ink-light);}
+.t-hint-btn{background:var(--bg2);border:2px solid var(--accent);border-radius:var(--r-md);padding:12px 16px;color:var(--ink);cursor:pointer;width:100%;text-align:left;margin-bottom:10px;font-weight:800}
+.t-print-btn{background:var(--primary);border:none;border-radius:var(--r-md);padding:14px 28px;font-size:16px;font-weight:800;color:#fff;cursor:pointer;}
+@media print{ #mode-bar,.mode-btns,#teacher-view,.s-next,#student-view{display:none!important} #print-summary{display:block!important; padding:0; margin:0; background:#fff;} }
+#print-summary{display:none;padding:80px 32px 32px;font-family:var(--font);color:#111;background:#fff;min-height:100vh;}
+#print-summary.active{display:block;}
+#print-summary h1{font-family:var(--font-serif); font-size:28px;color:var(--primary);}
+#print-summary table{width:100%;border-collapse:collapse;font-size:14px;margin-top:12px}
+#print-summary td,#print-summary th{border:1px solid #ddd;padding:12px;text-align:left}
+</style>
+</head>
+<body>
+
+<div id="mode-bar">
+  <div class="logo">🚂 The Time-Traveling Historian: Ep 4</div>
+  <div class="mode-btns">
+    <button class="mode-btn active" onclick="setMode('student')">Student View</button>
+    <button class="mode-btn" onclick="setMode('teacher')">Teacher Dashboard</button>
+    <button class="mode-btn" onclick="showSummary()">Print Summary</button>
+  </div>
+</div>
+
+<div id="student-view" class="active">
+<div class="s-wrap">
+
+  <div class="s-hero">
+    <div class="s-hero-icon">🚂</div>
+    <div>
+      <span class="s-series-badge">Historical Comedy Series: Episode 4 of 5</span>
+      <div class="s-hero-title">The Orient Express</div>
+      <div class="s-hero-sub">Level: B2 ESL · Present Perfect & Past Simple · Guide: Yusuf</div>
+    </div>
+  </div>
+
+  <div class="s-progress">
+    <span class="s-prog-label" id="s-prog-label">Scene 1 of 5</span>
+    <div class="s-prog-bar"><div class="s-prog-fill" id="s-prog-fill" style="width:20%"></div></div>
+    <span class="s-xp" id="s-xp">0 XP</span>
+  </div>
+
+  <div class="s-scene active" id="s-scene-1">
+    <div class="s-card">
+      <div class="s-scene-tag">Scene 1 — All Aboard!</div>
+      <div class="s-story">
+        Agent Yusuf, Bob's latest vacation took him to the year <strong>1883</strong>. He boarded the inaugural journey of the legendary Orient Express, traveling from Istanbul to Paris.<br><br>
+        It is the most <span class="vpill" onclick="showFeedback('vocab-luxurious')">luxurious</span> train in the world. The problem? Bob brought a futuristic digital camera with him. He was taking photos of his dinner, but when he went to the bathroom, someone stole it!<br><br>
+        If that camera reaches Paris, the French will reverse-engineer it and jump to the 21st Century overnight! You must find the thief.
+      </div>
+    </div>
+    
+    <div class="s-card">
+      <div class="s-quiz-tag">Idiom Check</div>
+      <div class="s-quiz-q">You tell Bob, "We need to find the camera to keep history <span class="ipill" onclick="showFeedback('idiom-track')">on track</span>." What does this idiom mean?</div>
+      <div class="s-hint" id="hint-q1" style="display:none">💡 <strong>Hint:</strong> Think of a train. If it stays on the track, it goes where it's supposed to go.</div>
+      <div class="s-choices" id="q1-choices">
+        <button class="s-choice" onclick="checkQ1(this,'A')"><span class="cl">A</span> To make sure things continue to happen as planned.</button>
+        <button class="s-choice" onclick="checkQ1(this,'B')"><span class="cl">B</span> To walk on the railway lines outside the train.</button>
+        <button class="s-choice" onclick="checkQ1(this,'C')"><span class="cl">C</span> To buy a ticket for a train journey.</button>
+      </div>
+      <div class="s-fb" id="q1-fb"></div>
+    </div>
+    <div class="s-fb info" id="fb-vocab-luxurious" style="display:none">✨ <strong>Vocabulary: Luxurious</strong> — Extremely comfortable, elegant, and expensive.</div>
+    <div class="s-fb info" id="fb-idiom-track" style="display:none">🚂 <strong>Idiom: On track</strong> — Proceeding as planned or expected.</div>
+    <div class="s-nav"><button class="s-next" id="s-next-1" onclick="goScene(2)">Enter the Dining Car →</button></div>
+  </div>
+
+  <div class="s-scene" id="s-scene-2">
+    <div class="s-card">
+      <div class="s-scene-tag grammar">Scene 2 — Grammar Timeout: Unfinished Business</div>
+      <div class="s-story">
+        You begin interrogating the passengers. You ask the French Chef a question, but you need to be careful with your tenses!<br><br>
+        Detectives use the <strong>Past Simple</strong> for finished time periods (yesterday, last week). But they use the <strong>Present Perfect</strong> for unfinished time periods (today, this week) or life experiences.
+      </div>
+      <div class="s-logic">
+        <div class="s-logic-title" style="color:var(--accent);">Present Perfect vs. Past Simple</div>
+        <div class="s-rule"><span class="s-tag">Past Simple</span> "Did you see the camera <strong>yesterday</strong>?" (Yesterday is finished).</div>
+        <div class="s-rule"><span class="s-tag">Present Perfect</span> "Have you seen the camera <strong>today</strong>?" (Today is not finished yet).</div>
+      </div>
+    </div>
+    
+    <div class="s-card">
+      <div class="s-quiz-tag grammar">Grammar Challenge</div>
+      <div class="s-quiz-q">Which question is grammatically correct to ask the Chef about an event happening <strong>this morning</strong> (which is not over yet)?</div>
+      <div class="s-hint" id="hint-qGrammar" style="display:none">💡 <strong>Hint:</strong> "This morning" is unfinished time, so we need "Have you...".</div>
+      <div class="s-choices" id="qGrammar-choices">
+        <button class="s-choice grammar" onclick="checkQGrammar(this,'A')"><span class="cl">A</span> Did you seen anyone suspicious this morning?</button>
+        <button class="s-choice grammar" onclick="checkQGrammar(this,'B')"><span class="cl">B</span> Have you saw anyone suspicious this morning?</button>
+        <button class="s-choice grammar" onclick="checkQGrammar(this,'C')"><span class="cl">C</span> Have you seen anyone suspicious this morning?</button>
+      </div>
+      <div class="s-fb" id="qGrammar-fb"></div>
+    </div>
+    <div class="s-nav"><button class="s-next" id="s-next-2" onclick="goScene(3)">Question the suspects →</button></div>
+  </div>
+
+  <div class="s-scene" id="s-scene-3">
+    <div class="s-card">
+      <div class="s-scene-tag">Scene 3 — The Passenger Manifest</div>
+      <div class="s-story">
+        The Chef is terrified. <em>"I didn't take it! But I'm going to <span class="ipill" onclick="showFeedback('idiom-bus')">throw someone under the bus</span>. I saw someone running into the First Class cabins."</em><br><br>
+        You have three <span class="vpill" onclick="showFeedback('vocab-suspect')">suspects</span> in First Class:
+        <br><strong>Cabin A:</strong> The British Banker
+        <br><strong>Cabin B:</strong> The Russian Countess
+        <br><strong>Cabin C:</strong> The French Chef (His private room)
+      </div>
+      <div class="s-logic">
+        <div class="s-logic-title">Detective Logic Rules</div>
+        <div class="s-rule"><span class="s-tag">Rule 1</span> The thief is NOT in Cabin A.</div>
+        <div class="s-rule"><span class="s-tag">Rule 2</span> The Countess is next door to the Chef's private room.</div>
+        <div class="s-rule"><span class="s-tag">Rule 3</span> The thief is NOT the Chef.</div>
+      </div>
+    </div>
+    
+    <div class="s-card">
+      <div class="s-quiz-tag">Logic Challenge: Cabin Hunt</div>
+      <div class="s-quiz-q">Based on the rules, which cabin contains the thief?</div>
+      <div class="s-hint" id="hint-q3" style="display:none">💡 <strong>Hint:</strong> If the thief is not in A, and not the Chef (C), who is left?</div>
+      <div class="s-choices" id="q3-choices">
+        <button class="s-choice" onclick="checkQ3(this,'A')"><span class="cl">A</span> Cabin A</button>
+        <button class="s-choice" onclick="checkQ3(this,'B')"><span class="cl">B</span> Cabin B</button>
+        <button class="s-choice" onclick="checkQ3(this,'C')"><span class="cl">C</span> Cabin C</button>
+      </div>
+      <div class="s-fb" id="q3-fb"></div>
+    </div>
+    <div class="s-fb info" id="fb-vocab-suspect" style="display:none">🕵️ <strong>Vocabulary: Suspect (noun)</strong> — A person thought to be guilty of a crime.</div>
+    <div class="s-fb info" id="fb-idiom-bus" style="display:none">🚌 <strong>Idiom: Throw under the bus</strong> — To betray a friend or colleague for selfish reasons. (Funny to use on a train!)</div>
+    <div class="s-nav"><button class="s-next" id="s-next-3" onclick="goScene(4)">Enter Cabin B →</button></div>
+  </div>
+
+  <div class="s-scene" id="s-scene-4">
+    <div class="s-card">
+      <div class="s-scene-tag">Scene 4 — The Flash</div>
+      <div class="s-story">
+        You burst into Cabin B! The Russian Countess screams. She is holding Bob's digital camera upside down. She presses the button, and the flash goes off, temporarily blinding her!<br><br>
+        <em>"What is this witchcraft?!"</em> she yells.<br><br>
+        You grab the camera. <em>"It's just a magic box, Countess. I'll take that."</em> You and Bob run to the back of the train. It's time to escape before the train reaches Paris!
+      </div>
+    </div>
+    
+    <div class="s-card">
+      <div style="font-size:13px;font-weight:800;color:var(--primary);text-transform:uppercase;margin-bottom:14px;border-bottom:2px solid var(--bg4)">True or False — Idiom Check</div>
+      <div class="s-quiz-q" style="margin-top:4px">Statement: If you tell Bob to run "full steam ahead", you are telling him to move as fast as possible with all his energy.</div>
+      <div class="s-hint" id="hint-tf" style="display:none">💡 <strong>Hint:</strong> "Full steam ahead" comes from the days of steam trains, meaning moving at maximum speed!</div>
+      <div class="tf-row" id="tf-row">
+        <button class="tf-btn t-btn" onclick="checkTF(this,'TRUE')">TRUE</button>
+        <button class="tf-btn f-btn" onclick="checkTF(this,'FALSE')">FALSE</button>
+      </div>
+      <div class="s-fb" id="tf-fb"></div>
+    </div>
+    <div class="s-nav"><button class="s-next" id="s-next-4" onclick="goScene(5)">Jump off the train →</button></div>
+  </div>
+
+  <div class="s-scene" id="s-scene-5">
+    <div class="s-reward">
+      <div class="s-reward-icon">🚂</div>
+      <div class="s-reward-title">Timeline Restored, Yusuf!</div>
+      <div class="s-reward-xp" id="s-final-xp">0 XP Earned</div>
+      <div class="s-reward-sub">
+        Today you navigated the Orient Express and mastered the difference between <strong>Present Perfect and Past Simple</strong>.<br><br>
+        <strong>Vocabulary:</strong> <em>luxurious, suspect</em><br>
+        <strong>Idioms:</strong> <em>on track, throw under the bus, full steam ahead</em>
+      </div>
+      
+      <div class="cliffhanger">
+        <div class="cliffhanger-title">Next Time: The Series Finale!</div>
+        <div style="font-size:15px; line-height:1.6;">
+          Bob's final vacation is the biggest disaster yet. He traveled to <strong>10,000 BCE</strong> to visit Gobekli Tepe, the world's oldest temple in Anatolia.<br><br>
+          Because of his shiny sunglasses and flashlight, the ancient people think Bob is a Sun God! You must solve the ultimate stone pillar puzzle to rescue him.<br><br>
+          Get ready for the Epic Grammar Review in <strong>Episode 5: Gobekli Tepe!</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- TEACHER DASHBOARD -->
+<div id="teacher-view">
+<div class="t-wrap">
+  <div class="t-header">
+    <div class="t-header-left">
+      <h1>Teacher Dashboard</h1>
+      <p><span class="live-dot"></span>Ep 4: Orient Express · B2 ESL</p>
+    </div>
+    <div class="t-stats">
+      <div class="t-stat"><div class="t-stat-val" id="t-xp">0</div><div class="t-stat-lbl">XP</div></div>
+    </div>
+  </div>
+
+  <div class="t-grid">
+    <div class="t-card">
+      <div class="t-card-title">Answer Log</div>
+      <div class="t-answer-row"><span class="t-ans-q">Q1 — Idiom: "on track"</span><span class="t-ans-badge pending" id="tlog-q1">Pending</span></div>
+      <div class="t-answer-row"><span class="t-ans-q" style="color:var(--accent);">Q2 — Grammar: Pres Perf vs Past Simple</span><span class="t-ans-badge pending" id="tlog-qGrammar">Pending</span></div>
+      <div class="t-answer-row"><span class="t-ans-q">Q3 — Logic: Cabin Hunt</span><span class="t-ans-badge pending" id="tlog-q3">Pending</span></div>
+      <div class="t-answer-row"><span class="t-ans-q">TF — Idiom: "full steam ahead"</span><span class="t-ans-badge pending" id="tlog-tf">Pending</span></div>
+    </div>
+
+    <div class="t-card">
+      <div class="t-card-title">Hint Controls</div>
+      <button class="t-hint-btn" id="thint-q1" onclick="fireHint('q1')">💡 Hint: Q1 (Track)</button>
+      <button class="t-hint-btn" id="thint-qGrammar" onclick="fireHint('qGrammar')">💡 Hint: Q2 (Grammar)</button>
+      <button class="t-hint-btn" id="thint-q3" onclick="fireHint('q3')">💡 Hint: Q3 (Cabin Logic)</button>
+      <button class="t-hint-btn" id="thint-tf" onclick="fireHint('tf')">💡 Hint: TF (Steam)</button>
+    </div>
+  </div>
+  
+  <button class="t-print-btn" onclick="showSummary()">🖨 Print / Save Summary</button>
+</div>
+</div>
+
+<!-- PRINT SUMMARY -->
+<div id="print-summary">
+  <button onclick="window.print()" style="padding:10px 20px; margin-bottom: 20px; background:var(--primary); color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:16px;">🖨 Print Document</button>
+  <h1>Lesson Summary — Episode 4: The Orient Express</h1>
+  <p><strong>Student:</strong> Yusuf &nbsp;|&nbsp; <strong>Level:</strong> B2 ESL &nbsp;|&nbsp; <strong>Date:</strong> <span id="print-date"></span></p>
+  
+  <table>
+    <tr><th>Question</th><th>Topic</th><th>Result</th><th>XP</th></tr>
+    <tr><td>Q1</td><td>Idiom: "on track"</td><td id="pr-q1">—</td><td id="pr-q1-xp">—</td></tr>
+    <tr><td>Q2</td><td>Grammar: Present Perfect (Have you seen)</td><td id="pr-qGrammar">—</td><td id="pr-qGrammar-xp">—</td></tr>
+    <tr><td>Q3</td><td>Logic: Cabin Process of Elimination</td><td id="pr-q3">—</td><td id="pr-q3-xp">—</td></tr>
+    <tr><td>TF</td><td>Idiom: "full steam ahead"</td><td id="pr-tf">—</td><td id="pr-tf-xp">—</td></tr>
+  </table>
+  <h2>Total XP: <span id="pr-total-xp">0</span></h2>
+</div>
+
+<script>
+var xp=0,correct=0,totalAttempts=0,currentScene=1;
+var attempts={q1:0,qGrammar:0,q3:0,tf:0};
+
+function setMode(m){
+  document.getElementById('student-view').classList.toggle('active',m==='student');
+  document.getElementById('teacher-view').classList.toggle('active',m==='teacher');
+  document.getElementById('print-summary').classList.toggle('active',m==='summary');
+  document.querySelectorAll('.mode-btn').forEach(function(b){b.classList.remove('active')});
+  if(m==='student') document.querySelectorAll('.mode-btn')[0].classList.add('active');
+  if(m==='teacher') document.querySelectorAll('.mode-btn')[1].classList.add('active');
+  if(m==='summary') document.querySelectorAll('.mode-btn')[2].classList.add('active');
+}
+
+function addXP(pts){
+  xp+=pts;
+  document.getElementById('s-xp').textContent=xp+' XP';
+  document.getElementById('s-final-xp').textContent=xp+' XP Earned';
+  document.getElementById('pr-total-xp').textContent=xp;
+}
+
+function recordAnswer(q,result,pts){
+  var badge=document.getElementById('tlog-'+q);
+  if(badge){badge.className='t-ans-badge '+(result==='correct'?'correct':'wrong');badge.textContent=result==='correct'?'✓ Correct':'✗ Wrong'}
+  var pr=document.getElementById('pr-'+q);var prXP=document.getElementById('pr-'+q+'-xp');
+  if(pr)pr.textContent=result==='correct'?'Correct':'Incorrect';
+  if(prXP)prXP.textContent=pts+' XP';
+}
+
+function goScene(n){
+  document.querySelectorAll('.s-scene').forEach(function(s){s.classList.remove('active')});
+  document.getElementById('s-scene-'+n).classList.add('active');
+  document.getElementById('s-prog-fill').style.width=[0,20,40,60,80,100][n]+'%';
+  document.getElementById('s-prog-label').textContent='Scene '+n+' of 5';
+  if(n===5){document.getElementById('s-final-xp').textContent=xp+' XP Earned'}
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function showFeedback(id){var el=document.getElementById('fb-'+id); if(el){el.style.display='block';el.classList.add('show')}}
+function fireHint(q){var btn=document.getElementById('thint-'+q); if(btn){btn.classList.add('fired');btn.innerHTML='✓ Hint sent';btn.onclick=null}}
+function lockChoices(sel){document.querySelectorAll(sel).forEach(function(b){b.onclick=null;b.style.opacity='.7'})}
+
+function checkQ1(btn,ans){
+  attempts.q1++; var fb=document.getElementById('q1-fb'); showFeedback('vocab-luxurious'); showFeedback('idiom-track');
+  if(ans==='A'){
+    lockChoices('#q1-choices .s-choice'); btn.classList.add('correct');btn.style.opacity='1';
+    var pts=attempts.q1===1?25:10;addXP(pts);recordAnswer('q1','correct',pts);
+    fb.className='s-fb ok show';fb.innerHTML='<strong>Correct!</strong> ✓ "On track" means proceeding as planned! +'+pts+' XP!';
+    document.getElementById('s-next-1').classList.add('show');
+  } else {
+    btn.classList.add('wrong'); btn.style.opacity='.6'; btn.onclick=null;
+    recordAnswer('q1','wrong',0); fb.className='s-fb err show'; fb.innerHTML='<strong>Incorrect!</strong> It is an idiom, not literal train tracks. Try again!';
+  }
+}
+
+function checkQGrammar(btn,ans){
+  attempts.qGrammar++; var fb=document.getElementById('qGrammar-fb');
+  if(ans==='C'){
+    lockChoices('#qGrammar-choices .s-choice'); btn.classList.add('correct');btn.style.opacity='1';
+    var pts=attempts.qGrammar===1?35:15;addXP(pts);recordAnswer('qGrammar','correct',pts);
+    fb.className='s-fb ok show';fb.innerHTML='<strong>Perfect Grammar!</strong> ✓ "Have you seen" is the correct Present Perfect for an unfinished time period (this morning). +'+pts+' XP!';
+    document.getElementById('s-next-2').classList.add('show');
+  } else {
+    btn.classList.add('wrong'); btn.style.opacity='.6'; btn.onclick=null;
+    recordAnswer('qGrammar','wrong',0); fb.className='s-fb err show'; fb.innerHTML=ans==='A'?'<strong>Grammar Foul!</strong> "Did you seen" mixes Past Simple and Past Participle. Try again!':'<strong>Grammar Foul!</strong> "Have you saw" mixes Present Perfect with V2. We need V3! Try again!';
+  }
+}
+
+function checkQ3(btn,ans){
+  attempts.q3++; var fb=document.getElementById('q3-fb'); showFeedback('idiom-bus'); showFeedback('vocab-suspect');
+  if(ans==='B'){
+    lockChoices('#q3-choices .s-choice'); btn.classList.add('correct');btn.style.opacity='1';
+    var pts=attempts.q3===1?30:15;addXP(pts);recordAnswer('q3','correct',pts);
+    fb.className='s-fb ok show';fb.innerHTML='<strong>Excellent Logic!</strong> ✓ The thief is NOT A, and NOT C (the Chef). The only suspect left is the Countess in Cabin B! +'+pts+' XP!';
+    document.getElementById('s-next-3').classList.add('show');
+  } else {
+    btn.classList.add('wrong'); btn.style.opacity='.6'; btn.onclick=null;
+    recordAnswer('q3','wrong',0); fb.className='s-fb err show'; fb.innerHTML='<strong>Logic Error!</strong> Use the rules to eliminate the innocent people. Try again!';
+  }
+}
+
+function checkTF(btn,ans){
+  attempts.tf++; var fb=document.getElementById('tf-fb'); var row=document.getElementById('tf-row');
+  if(ans==='TRUE'){
+    row.querySelectorAll('.tf-btn').forEach(function(b){b.onclick=null;b.style.opacity='.65'});
+    btn.classList.add('correct');btn.style.opacity='1';
+    var pts=attempts.tf===1?20:10;addXP(pts);recordAnswer('tf','correct',pts);
+    fb.className='s-fb ok show'; fb.innerHTML='<strong>Spot on!</strong> ✓ TRUE. "Full steam ahead" means to move quickly with all your energy! +'+pts+' XP!';
+    document.getElementById('s-next-4').classList.add('show');
+  } else {
+    btn.classList.add('wrong'); btn.style.opacity='.65'; btn.onclick=null;
+    recordAnswer('tf','wrong',0); fb.className='s-fb err show'; fb.innerHTML='<strong>Think again!</strong> Re-read the steam train hint!';
+  }
+}
+
+function showSummary(){ document.getElementById('print-date').textContent=new Date().toLocaleDateString(); setMode('summary'); }
+</script>
+</body>
+</html>

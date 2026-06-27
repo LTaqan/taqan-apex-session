@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Episode 5: Gobekli Tepe | Yusuf</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,600&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f4ecd8; --bg2:#e9dfc4; --bg3:#dfd2b0; --bg4:#c2b28f;
+  --primary:#0f766e; /* Using the Aegean Teal as the base for the finale */
+  --primary-lt:#14b8a6; --primary-bg:rgba(15,118,110,0.1); --primary-border:rgba(15,118,110,0.3);
+  --accent:#b45309; /* Bronze/Gold */
+  --accent-bg:rgba(180,83,9,0.15); --accent-border:rgba(180,83,9,0.5);
+  --ink:#1e293b; --ink-light:#334155;
+  --green:#166534;--green-bg:rgba(22,101,52,0.1);--green-border:rgba(22,101,52,0.3);
+  --error:#b91c1c;--error-bg:rgba(185,28,28,0.1);--error-border:rgba(185,28,28,0.3);
+  --r-md:8px;--r-lg:12px;--r-xl:20px;
+  --font:'Nunito',sans-serif; --font-serif:'Playfair Display',serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);min-height:100vh;overflow-x:hidden}
+
+#mode-bar{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(244,236,216,0.96);backdrop-filter:blur(8px);border-bottom:2px solid var(--primary);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;}
+#mode-bar .logo{font-family:var(--font-serif);font-size:18px;color:var(--primary);font-weight:800;white-space:nowrap;}
+.mode-btns{display:flex;gap:6px}
+.mode-btn{padding:8px 16px;border-radius:6px;border:2px solid var(--bg4);background:var(--bg2);color:var(--ink-light);font-family:var(--font);font-size:13px;font-weight:800;cursor:pointer;transition:all .2s}
+.mode-btn.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.mode-btn:hover:not(.active){border-color:var(--primary);color:var(--ink)}
+
+#student-view,#teacher-view{display:none;padding-top:70px}
+#student-view.active,#teacher-view.active{display:block}
+
+.s-wrap{max-width:720px;margin:0 auto;padding:24px 16px 60px;display:flex;flex-direction:column;gap:20px}
+.s-hero{background:linear-gradient(135deg,var(--primary),#064e3b);border:3px solid var(--accent);border-radius:var(--r-xl);padding:30px;display:flex;align-items:center;gap:20px;position:relative;overflow:hidden; box-shadow: 0 10px 25px rgba(15,118,110,0.3);}
+.s-hero::before{content:'🗿';position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:80px;opacity:.15}
+.s-hero-icon{width:64px;height:64px;background:var(--accent-bg);border:2px solid var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0;}
+.s-hero-title{font-family:var(--font-serif);font-size:26px;color:#fff;line-height:1.2;}
+.s-hero-sub{font-size:14px;color:#e2e8f0;margin-top:6px; font-weight: 600;}
+.s-series-badge{display:inline-block; background:var(--accent); color:#fff; font-size:12px; font-weight:800; padding:4px 10px; border-radius:4px; margin-bottom:10px; text-transform:uppercase; letter-spacing:0.08em;}
+
+.s-progress{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--r-md);padding:14px 18px;display:flex;align-items:center;gap:15px;}
+.s-prog-label{font-size:14px;font-weight:800;color:var(--ink-light);white-space:nowrap}
+.s-prog-bar{flex:1;height:12px;background:var(--bg4);border-radius:6px;overflow:hidden;}
+.s-prog-fill{height:100%;background:linear-gradient(90deg,var(--primary-lt),var(--primary));border-radius:6px;transition:width .6s ease}
+.s-xp{font-size:16px;font-weight:800;color:var(--primary);}
+
+.s-scene{display:none;flex-direction:column;gap:18px;animation:fadeUp .5s ease}
+.s-scene.active{display:flex}
+@keyframes fadeUp{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+
+.s-card{background:var(--bg);border:2px solid var(--bg4);border-radius:var(--r-lg);padding:26px; position:relative;}
+.s-card::after {content:''; position:absolute; top:4px; left:4px; right:4px; bottom:4px; border:1px solid var(--bg3); border-radius:var(--r-md); pointer-events:none;}
+
+.s-scene-tag{font-family:var(--font-serif);font-size:18px;font-weight:800;letter-spacing:.05em;color:var(--primary);text-transform:uppercase;margin-bottom:14px; border-bottom: 2px solid var(--bg4); padding-bottom:6px; display:inline-block;}
+.s-scene-tag.grammar{color:var(--accent); border-bottom-color:var(--accent);}
+.s-story{font-size:16px;line-height:1.8;color:var(--ink)}
+.s-story strong{font-weight:800;color:var(--primary)}
+
+.s-logic{background:var(--bg2);border:1px solid var(--bg4);border-radius:var(--r-md);padding:18px;margin-top:16px}
+.s-logic-title{font-size:14px;font-weight:800;color:var(--ink);text-transform:uppercase;margin-bottom:12px}
+.s-rule{display:flex;align-items:flex-start;gap:12px;padding:8px 0;border-bottom:1px solid var(--bg3);font-size:15px; font-weight:600;}
+.s-rule:last-child{border-bottom:none}
+.s-tag{background:var(--accent);color:#fff;border-radius:4px;padding:3px 10px;font-size:12px;font-weight:800;white-space:nowrap;}
+
+.s-quiz-tag{font-size:13px;font-weight:800;letter-spacing:.09em;color:var(--primary);text-transform:uppercase;margin-bottom:8px;margin-top:20px}
+.s-quiz-q{font-size:17px;font-weight:800;line-height:1.5;margin-bottom:16px; color:var(--ink);}
+.s-choices{display:flex;flex-direction:column;gap:10px}
+.s-choice{background:var(--bg);border:2px solid var(--bg4);border-radius:var(--r-md);padding:16px;font-family:var(--font);font-size:15px;font-weight:700;color:var(--ink);text-align:left;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:14px}
+.s-choice:hover{background:var(--bg2);border-color:var(--primary); transform: translateX(5px);}
+.s-choice .cl{width:32px;height:32px;border-radius:6px;background:var(--bg3);border:2px solid var(--bg4);color:var(--ink-light);font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.s-choice.correct{border-color:var(--green);background:var(--green-bg)}
+.s-choice.wrong{border-color:var(--error);background:var(--error-bg)}
+
+.tf-row{display:flex;gap:12px;margin-bottom:16px}
+.tf-btn{flex:1;padding:16px;font-family:var(--font-serif);font-size:20px;font-weight:800;border-radius:var(--r-md);border:2px solid var(--bg4);background:var(--bg);color:var(--ink);cursor:pointer;transition:all .2s;text-align:center;}
+.tf-btn:hover{background:var(--bg2); transform:translateY(-2px);}
+.tf-btn.correct{background:var(--green);color:#fff;border-color:var(--green);}
+.tf-btn.wrong{background:var(--error);color:#fff;border-color:var(--error);}
+
+.s-fb{border-radius:var(--r-md);padding:16px;font-size:15px;font-weight:700;line-height:1.6;border:2px solid;display:none; margin-top:14px;}
+.s-fb.ok{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+.s-fb.err{background:var(--error-bg);border-color:var(--error);color:var(--error)}
+.s-fb.info{background:var(--accent-bg);border-color:var(--accent);color:var(--ink)}
+.s-fb.show{display:block;animation:fadeUp .3s ease}
+
+.s-hint{background:var(--bg2);border:2px dashed var(--accent);border-radius:var(--r-md);padding:14px;font-size:14px;font-weight:700;color:var(--ink-light);display:none; margin-bottom:16px;}
+.s-hint.show{display:block;animation:fadeUp .3s ease}
+
+.vpill, .ipill{display:inline-block;border-radius:4px;padding:2px 8px;font-size:14px;font-weight:800;cursor:pointer;transition:all .2s;}
+.vpill{background:var(--accent-bg);border:1px solid var(--accent);color:var(--ink);}
+.ipill{background:var(--bg3);border:1px solid var(--bg4);color:var(--primary);}
+.vpill:hover{background:var(--accent); color:#fff;}
+.ipill:hover{background:var(--primary); color:#fff;}
+
+.s-nav{display:flex;justify-content:flex-end;margin-top:10px;}
+.s-next{background:var(--primary);border:none;border-radius:var(--r-md);padding:14px 28px;font-family:var(--font);font-size:16px;font-weight:800;color:#fff;cursor:pointer;transition:all .2s;display:none; box-shadow: 0 4px 15px rgba(15,118,110,0.3);}
+.s-next:hover{background:var(--primary-lt); transform:translateY(-2px);}
+.s-next.show{display:inline-block}
+
+.s-reward{background:linear-gradient(135deg,var(--bg),var(--bg2));border:3px solid var(--accent);border-radius:var(--r-xl);padding:40px 30px;text-align:center;}
+.s-reward-icon{font-size:60px;margin-bottom:16px;}
+.s-reward-title{font-family:var(--font-serif);font-size:32px;color:var(--primary);margin-bottom:10px; font-weight:800;}
+.s-reward-xp{font-size:38px;font-weight:800;color:var(--accent);margin:16px 0;}
+.s-reward-sub{font-size:16px;color:var(--ink);line-height:1.7; font-weight:600; background:var(--bg); padding:20px; border-radius:var(--r-md); border:2px dashed var(--bg4); margin-bottom:20px;}
+
+/* TEACHER DASHBOARD */
+.t-wrap{max-width:960px;margin:0 auto;padding:24px 20px 60px;display:flex;flex-direction:column;gap:20px}
+.t-header{background:var(--bg);border:2px solid var(--primary);border-radius:var(--r-xl);padding:24px;display:flex;justify-content:space-between;flex-wrap:wrap}
+.t-header-left h1{font-family:var(--font-serif);font-size:26px;color:var(--primary);font-weight:800;}
+.t-stats{display:flex;gap:12px}.t-stat{background:var(--bg2);border:2px solid var(--bg4);border-radius:var(--r-md);padding:14px 20px;text-align:center;min-width:100px}
+.t-stat-val{font-size:28px;font-weight:800;color:var(--primary)}.t-stat-lbl{font-size:12px;color:var(--ink-light);font-weight:800;text-transform:uppercase;}
+.t-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+@media(max-width:768px){.t-grid{grid-template-columns:1fr}}
+.t-card{background:var(--bg);border:2px solid var(--bg4);border-radius:var(--r-lg);padding:20px}
+.t-card-title{font-size:15px;font-weight:800;color:var(--primary);text-transform:uppercase;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--bg4)}
+.t-answer-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--bg3);font-size:14px; font-weight:600;}
+.t-ans-badge{padding:4px 12px;border-radius:12px;font-size:12px;font-weight:800;white-space:nowrap}
+.t-ans-badge.correct{background:var(--green);color:#fff;}
+.t-ans-badge.wrong{background:var(--error);color:#fff;}
+.t-ans-badge.pending{background:var(--bg3);color:var(--ink-light);}
+.t-hint-btn{background:var(--bg2);border:2px solid var(--accent);border-radius:var(--r-md);padding:12px 16px;color:var(--ink);cursor:pointer;width:100%;text-align:left;margin-bottom:10px;font-weight:800}
+.t-print-btn{background:var(--primary);border:none;border-radius:var(--r-md);padding:14px 28px;font-size:16px;font-weight:800;color:#fff;cursor:pointer;}
+@media print{ #mode-bar,.mode-btns,#teacher-view,.s-next,#student-view{display:none!important} #print-summary{display:block!important; padding:0; margin:0; background:#fff;} }
+#print-summary{display:none;padding:80px 32px 32px;font-family:var(--font);color:#111;background:#fff;min-height:100vh;}
+#print-summary.active{display:block;}
+#print-summary h1{font-family:var(--font-serif); font-size:28px;color:var(--primary);}
+#print-summary table{width:100%;border-collapse:collapse;font-size:14px;margin-top:12px}
+#print-summary td,#print-summary th{border:1px solid #ddd;padding:12px 14px;text-align:left}
+</style>
+</head>
+<body>
+
+<div id="mode-bar">
+  <div class="logo">🗿 The Time-Traveling Historian: Ep 5</div>
+  <div class="mode-btns">
+    <button class="mode-btn active" onclick="setMode('student')">Student View</button>
+    <button class="mode-btn" onclick="setMode('teacher')">Teacher Dashboard</button>
+    <button class="mode-btn" onclick="showSummary()">Print Summary</button>
+  </div>
+</div>
+
+<div id="student-view" class="active">
+<div class="s-wrap">
+
+  <div class="s-hero">
+    <div class="s-hero-icon">🗿</div>
+    <div>
+      <span class="s-series-badge">Historical Comedy Series: Series Finale</span>
+      <div class="s-hero-title">Gobekli Tepe</div>
+      <div class="s-hero-sub">Level: B2 ESL · Epic Grammar Review & Logic · Guide: Yusuf</div>
+    </div>
+  </div>
+
+  <div class="s-progress">
+    <span class="s-prog-label" id="s-prog-label">Scene 1 of 5</span>
+    <div class="s-prog-bar"><div class="s-prog-fill" id="s-prog-fill" style="width:20%"></div></div>
+    <span class="s-xp" id="s-xp">0 XP</span>
+  </div>
+
+  <div class="s-scene active" id="s-scene-1">
+    <div class="s-card">
+      <div class="s-scene-tag">Scene 1 — The Oldest Temple</div>
+      <div class="s-story">
+        This is it, Yusuf. The biggest emergency yet.<br><br>
+        Bob accidentally traveled to <strong>10,000 BCE</strong> in southeastern Anatolia. He has stumbled into <strong>Göbekli Tepe</strong>, an <span class="vpill" onclick="showFeedback('vocab-ancient')">ancient</span> site that is widely considered the world's oldest temple.<br><br>
+        Bob was wearing shiny sunglasses and holding an LED flashlight. Now, the local hunter-gatherers think Bob is a Sun God! They have trapped him in the center of the giant <span class="vpill" onclick="showFeedback('vocab-monolithic')">monolithic</span> pillars. You have to save him, but opening a time portal here requires extreme precision.
+      </div>
+    </div>
+    
+    <div class="s-card">
+      <div class="s-quiz-tag">Vocabulary Vault</div>
+      <div class="s-quiz-q">The story describes Göbekli Tepe as "ancient" and "monolithic". What does "monolithic" mean?</div>
+      <div class="s-hint" id="hint-q1" style="display:none">💡 <strong>Hint:</strong> "Mono" means one, and "lith" means stone. What does that tell you about the pillars?</div>
+      <div class="s-choices" id="q1-choices">
+        <button class="s-choice" onclick="checkQ1(this,'A')"><span class="cl">A</span> Formed of a single large block of stone.</button>
+        <button class="s-choice" onclick="checkQ1(this,'B')"><span class="cl">B</span> Very colorful and painted.</button>
+        <button class="s-choice" onclick="checkQ1(this,'C')"><span class="cl">C</span> Made of many small wooden pieces.</button>
+      </div>
+      <div class="s-fb" id="q1-fb"></div>
+    </div>
+    <div class="s-fb info" id="fb-vocab-ancient" style="display:none">⏳ <strong>Vocabulary: Ancient</strong> — Belonging to the very distant past.</div>
+    <div class="s-fb info" id="fb-vocab-monolithic" style="display:none">🗿 <strong>Vocabulary: Monolithic</strong> — Formed of a single, massive block of stone.</div>
+    <div class="s-nav"><button class="s-next" id="s-next-1" onclick="goScene(2)">Enter the Temple →</button></div>
+  </div>
+
+  <div class="s-scene" id="s-scene-2">
+    <div class="s-card">
+      <div class="s-scene-tag grammar">Scene 2 — The Epic Grammar Review</div>
+      <div class="s-story">
+        To activate the portal, you must speak the correct chronological incantation into your device. You have to use everything you've learned in the past four episodes: <strong>Past Continuous</strong> and <strong>Past Perfect</strong>!<br><br>
+        Remember:<br>
+        • <em>Past Continuous</em> (was + V-ing) = An interrupted action.<br>
+        • <em>Past Perfect</em> (had + V3) = An action that happened BEFORE another action.
+      </div>
+    </div>
+    
+    <div class="s-card">
+      <div class="s-quiz-tag grammar">Grammar Challenge (Ultimate Review)</div>
+      <div class="s-quiz-q">Which sentence correctly uses BOTH the Past Continuous and the Past Perfect?</div>
+      <div class="s-hint" id="hint-qGrammar" style="display:none">💡 <strong>Hint:</strong> Look for a sentence that has "was/were [verb]-ing" AND "had [verb]ed".</div>
+      <div class="s-choices" id="qGrammar-choices">
+        <button class="s-choice grammar" onclick="checkQGrammar(this,'A')"><span class="cl">A</span> Bob was flashing his light because he had lost his map.</button>
+        <button class="s-choice grammar" onclick="checkQGrammar(this,'B')"><span class="cl">B</span> Bob flashed his light because he was losing his map.</button>
+        <button class="s-choice grammar" onclick="checkQGrammar(this,'C')"><span class="cl">C</span> Bob had flashed his light because he had lost his map.</button>
+      </div>
+      <div class="s-fb" id="qGrammar-fb"></div>
+    </div>
+    <div class="s-nav"><button class="s-next" id="s-next-2" onclick="goScene(3)">Unlock the pillars →</button></div>
+  </div>
+
+  <div class="s-scene" id="s-scene-3">
+    <div class="s-card">
+      <div class="s-scene-tag">Scene 3 — The T-Shaped Pillars</div>
+      <div class="s-story">
+        The portal machine powers on, but it needs a 3-digit access code based on the carvings around you. <br><br>
+        Göbekli Tepe is famous for its T-shaped pillars carved with wild animals. You see three carvings: a <strong>Boar</strong>, a <strong>Fox</strong>, and a <strong>Vulture</strong>. You must figure out their numerical value.
+      </div>
+      <div class="s-logic">
+        <div class="s-logic-title">Pillar Logic Rules</div>
+        <div class="s-rule"><span class="s-tag">Rule 1</span> The Boar is worth exactly 1.</div>
+        <div class="s-rule"><span class="s-tag">Rule 2</span> The Fox is worth twice as much as the Boar.</div>
+        <div class="s-rule"><span class="s-tag">Rule 3</span> The Vulture is worth the Boar and Fox combined.</div>
+      </div>
+    </div>
+    
+    <div class="s-card">
+      <div class="s-quiz-tag">Logic Challenge: Code Breaking</div>
+      <div class="s-quiz-q">You need to enter the code in this order: <strong>Vulture, Fox, Boar</strong>. What is the 3-digit code?</div>
+      <div class="s-hint" id="hint-q3" style="display:none">💡 <strong>Hint:</strong> <br>Boar = 1.<br>Fox = 2 * 1 = ?<br>Vulture = 1 + Fox = ?<br>Then arrange them: Vulture, Fox, Boar.</div>
+      <div class="s-choices" id="q3-choices">
+        <button class="s-choice" onclick="checkQ3(this,'A')"><span class="cl">A</span> 1 2 3</button>
+        <button class="s-choice" onclick="checkQ3(this,'B')"><span class="cl">B</span> 3 2 1</button>
+        <button class="s-choice" onclick="checkQ3(this,'C')"><span class="cl">C</span> 2 3 1</button>
+      </div>
+      <div class="s-fb" id="q3-fb"></div>
+    </div>
+    <div class="s-nav"><button class="s-next" id="s-next-3" onclick="goScene(4)">Enter the code →</button></div>
+  </div>
+
+  <div class="s-scene" id="s-scene-4">
+    <div class="s-card">
+      <div class="s-scene-tag">Scene 4 — History Repeats Itself</div>
+      <div class="s-story">
+        The portal whirs to life! It glows a bright, blinding blue. <br><br>
+        The ancient hunter-gatherers fall to their knees, amazed by the light. You grab Bob by the collar and pull him into the portal. As you jump, Bob drops his sunglasses in the dirt.<br><br>
+        You sigh. <em>"Well, <span class="ipill" onclick="showFeedback('idiom-history')">history repeats itself</span>. Another tourist, another mess."</em>
+      </div>
+    </div>
+    
+    <div class="s-card">
+      <div style="font-size:13px;font-weight:800;color:var(--primary);text-transform:uppercase;margin-bottom:14px;border-bottom:2px solid var(--bg4)">True or False — Idiom Check</div>
+      
+      <div class="s-quiz-q" style="margin-top:4px">Statement: If you say "history repeats itself," you mean that people often make the same mistakes or experience similar events over and over again.</div>
+      <div class="s-hint" id="hint-tf" style="display:none">💡 <strong>Hint:</strong> Bob always drops things in the past (iPhone, GPS, Chips, Sunglasses). Does he repeat his actions?</div>
+      <div class="tf-row" id="tf-row">
+        <button class="tf-btn t-btn" onclick="checkTF(this,'TRUE')">TRUE</button>
+        <button class="tf-btn f-btn" onclick="checkTF(this,'FALSE')">FALSE</button>
+      </div>
+      <div class="s-fb" id="tf-fb"></div>
+    </div>
+    <div class="s-fb info" id="fb-idiom-history" style="display:none">🔄 <strong>Idiom: History repeats itself</strong> — The idea that similar events or mistakes will continue to happen in the future.</div>
+    <div class="s-nav"><button class="s-next" id="s-next-4" onclick="goScene(5)">Return to 2024 →</button></div>
+  </div>
+
+  <div class="s-scene" id="s-scene-5">
+    <div class="s-reward">
+      <div class="s-reward-icon">🎉</div>
+      <div class="s-reward-title">SERIES COMPLETE!</div>
+      <div class="s-reward-xp" id="s-final-xp">0 XP Earned</div>
+      <div class="s-reward-sub">
+        Congratulations, Yusuf! You have successfully guided Bob through 5 periods of Turkish history, fixing his terrible mistakes.<br><br>
+        You have mastered:<br>
+        • Present Perfect, Past Perfect, and Past Continuous<br>
+        • Advanced Spatial and Math Logic<br>
+        • Over 15 advanced B2 Idioms!<br><br>
+        <strong>Your skills as a Time-Traveling Historian are unmatched. Outstanding work!</strong>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<div id="teacher-view">
+<div class="t-wrap">
+  <div class="t-header">
+    <div class="t-header-left">
+      <h1>Teacher Dashboard</h1>
+      <p><span class="live-dot"></span>Ep 5: Gobekli Tepe · B2 ESL (Series Finale)</p>
+    </div>
+    <div class="t-stats">
+      <div class="t-stat"><div class="t-stat-val" id="t-xp">0</div><div class="t-stat-lbl">XP</div></div>
+    </div>
+  </div>
+
+  <div class="t-grid">
+    <div class="t-card">
+      <div class="t-card-title">Answer Log</div>
+      <div class="t-answer-row"><span class="t-ans-q">Q1 — Vocab: "monolithic"</span><span class="t-ans-badge pending" id="tlog-q1">Pending</span></div>
+      <div class="t-answer-row"><span class="t-ans-q" style="color:var(--accent);">Q2 — Grammar: Ultimate Review</span><span class="t-ans-badge pending" id="tlog-qGrammar">Pending</span></div>
+      <div class="t-answer-row"><span class="t-ans-q">Q3 — Logic: Pillar Math</span><span class="t-ans-badge pending" id="tlog-q3">Pending</span></div>
+      <div class="t-answer-row"><span class="t-ans-q">TF — Idiom: "history repeats"</span><span class="t-ans-badge pending" id="tlog-tf">Pending</span></div>
+    </div>
+
+    <div class="t-card">
+      <div class="t-card-title">Hint Controls</div>
+      <button class="t-hint-btn" id="thint-q1" onclick="fireHint('q1')">💡 Hint: Q1 (Mono/Lith)</button>
+      <button class="t-hint-btn" id="thint-qGrammar" onclick="fireHint('qGrammar')">💡 Hint: Q2 (Grammar Review)</button>
+      <button class="t-hint-btn" id="thint-q3" onclick="fireHint('q3')">💡 Hint: Q3 (Math)</button>
+      <button class="t-hint-btn" id="thint-tf" onclick="fireHint('tf')">💡 Hint: TF (History)</button>
+    </div>
+  </div>
+  
+  <button class="t-print-btn" onclick="showSummary()">🖨 Print / Save Series Summary</button>
+</div>
+</div>
+
+<div id="print-summary">
+  <button onclick="window.print()" style="padding:10px 20px; margin-bottom: 20px; background:var(--primary); color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:16px;">🖨 Print Document</button>
+  <h1>Series Finale Summary — Episode 5: Gobekli Tepe</h1>
+  <p><strong>Student:</strong> Yusuf &nbsp;|&nbsp; <strong>Level:</strong> B2 ESL &nbsp;|&nbsp; <strong>Date:</strong> <span id="print-date"></span></p>
+  
+  <table>
+    <tr><th>Question</th><th>Topic</th><th>Result</th><th>XP</th></tr>
+    <tr><td>Q1</td><td>Vocabulary: "monolithic"</td><td id="pr-q1">—</td><td id="pr-q1-xp">—</td></tr>
+    <tr><td>Q2</td><td>Grammar: Past Cont. + Past Perfect</td><td id="pr-qGrammar">—</td><td id="pr-qGrammar-xp">—</td></tr>
+    <tr><td>Q3</td><td>Logic: Math (Substitution)</td><td id="pr-q3">—</td><td id="pr-q3-xp">—</td></tr>
+    <tr><td>TF</td><td>Idiom: "history repeats itself"</td><td id="pr-tf">—</td><td id="pr-tf-xp">—</td></tr>
+  </table>
+  <h2>Total XP for Finale: <span id="pr-total-xp">0</span></h2>
+  <div style="margin-top:20px; padding:15px; border:2px dashed #ccc; text-align:center;">
+    <strong>🎉 ESL DETECTIVE SERIES COMPLETE 🎉</strong><br>
+    The student has successfully completed all 5 episodes, demonstrating mastery over advanced past tenses, conditionals, and deductive logic!
+  </div>
+</div>
+
+<script>
+var xp=0,correct=0,totalAttempts=0,currentScene=1;
+var attempts={q1:0,qGrammar:0,q3:0,tf:0};
+
+function setMode(m){
+  document.getElementById('student-view').classList.toggle('active',m==='student');
+  document.getElementById('teacher-view').classList.toggle('active',m==='teacher');
+  document.getElementById('print-summary').classList.toggle('active',m==='summary');
+  document.querySelectorAll('.mode-btn').forEach(function(b){b.classList.remove('active')});
+  if(m==='student') document.querySelectorAll('.mode-btn')[0].classList.add('active');
+  if(m==='teacher') document.querySelectorAll('.mode-btn')[1].classList.add('active');
+  if(m==='summary') document.querySelectorAll('.mode-btn')[2].classList.add('active');
+}
+
+function addXP(pts){
+  xp+=pts;
+  document.getElementById('s-xp').textContent=xp+' XP';
+  document.getElementById('s-final-xp').textContent=xp+' XP Earned';
+  document.getElementById('pr-total-xp').textContent=xp;
+}
+
+function recordAnswer(q,result,pts){
+  var badge=document.getElementById('tlog-'+q);
+  if(badge){badge.className='t-ans-badge '+(result==='correct'?'correct':'wrong');badge.textContent=result==='correct'?'✓ Correct':'✗ Wrong'}
+  var pr=document.getElementById('pr-'+q);var prXP=document.getElementById('pr-'+q+'-xp');
+  if(pr)pr.textContent=result==='correct'?'Correct':'Incorrect';
+  if(prXP)prXP.textContent=pts+' XP';
+}
+
+function goScene(n){
+  document.querySelectorAll('.s-scene').forEach(function(s){s.classList.remove('active')});
+  document.getElementById('s-scene-'+n).classList.add('active');
+  document.getElementById('s-prog-fill').style.width=[0,20,40,60,80,100][n]+'%';
+  document.getElementById('s-prog-label').textContent='Scene '+n+' of 5';
+  if(n===5){document.getElementById('s-final-xp').textContent=xp+' XP Earned'}
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function showFeedback(id){var el=document.getElementById('fb-'+id); if(el){el.style.display='block';el.classList.add('show')}}
+function fireHint(q){var btn=document.getElementById('thint-'+q); if(btn){btn.classList.add('fired');btn.innerHTML='✓ Hint sent';btn.onclick=null}}
+function lockChoices(sel){document.querySelectorAll(sel).forEach(function(b){b.onclick=null;b.style.opacity='.7'})}
+
+function checkQ1(btn,ans){
+  attempts.q1++; var fb=document.getElementById('q1-fb'); showFeedback('vocab-ancient'); showFeedback('vocab-monolithic');
+  if(ans==='A'){
+    lockChoices('#q1-choices .s-choice'); btn.classList.add('correct');btn.style.opacity='1';
+    var pts=attempts.q1===1?25:10;addXP(pts);recordAnswer('q1','correct',pts);
+    fb.className='s-fb ok show';fb.innerHTML='<strong>Correct!</strong> ✓ "Mono" means one, "lith" means stone. Monolithic means one giant stone! +'+pts+' XP!';
+    document.getElementById('s-next-1').classList.add('show');
+  } else {
+    btn.classList.add('wrong'); btn.style.opacity='.6'; btn.onclick=null;
+    recordAnswer('q1','wrong',0); fb.className='s-fb err show'; fb.innerHTML='<strong>Incorrect!</strong> Re-read the hint. Mono = one, lith = stone.';
+  }
+}
+
+function checkQGrammar(btn,ans){
+  attempts.qGrammar++; var fb=document.getElementById('qGrammar-fb');
+  if(ans==='A'){
+    lockChoices('#qGrammar-choices .s-choice'); btn.classList.add('correct');btn.style.opacity='1';
+    var pts=attempts.qGrammar===1?35:15;addXP(pts);recordAnswer('qGrammar','correct',pts);
+    fb.className='s-fb ok show';fb.innerHTML='<strong>Perfect Grammar!</strong> ✓ "Was flashing" (Past Continuous) and "had lost" (Past Perfect). Outstanding! +'+pts+' XP!';
+    document.getElementById('s-next-2').classList.add('show');
+  } else {
+    btn.classList.add('wrong'); btn.style.opacity='.6'; btn.onclick=null;
+    recordAnswer('qGrammar','wrong',0); fb.className='s-fb err show'; fb.innerHTML='<strong>Grammar Foul!</strong> Look for BOTH "was/were + -ing" AND "had + V3". Try again!';
+  }
+}
+
+function checkQ3(btn,ans){
+  attempts.q3++; var fb=document.getElementById('q3-fb');
+  if(ans==='B'){
+    lockChoices('#q3-choices .s-choice'); btn.classList.add('correct');btn.style.opacity='1';
+    var pts=attempts.q3===1?30:15;addXP(pts);recordAnswer('q3','correct',pts);
+    fb.className='s-fb ok show';fb.innerHTML='<strong>Excellent Logic!</strong> ✓ Boar = 1. Fox = 2. Vulture = 3. Vulture, Fox, Boar = 3, 2, 1! +'+pts+' XP!';
+    document.getElementById('s-next-3').classList.add('show');
+  } else {
+    btn.classList.add('wrong'); btn.style.opacity='.6'; btn.onclick=null;
+    recordAnswer('q3','wrong',0); fb.className='s-fb err show'; fb.innerHTML='<strong>Math Error!</strong> Follow the rules to find the value of each animal, then put them in the order requested. Try again!';
+  }
+}
+
+function checkTF(btn,ans){
+  attempts.tf++; var fb=document.getElementById('tf-fb'); var row=document.getElementById('tf-row');
+  showFeedback('idiom-history');
+  if(ans==='TRUE'){
+    row.querySelectorAll('.tf-btn').forEach(function(b){b.onclick=null;b.style.opacity='.65'});
+    btn.classList.add('correct');btn.style.opacity='1';
+    var pts=attempts.tf===1?20:10;addXP(pts);recordAnswer('tf','correct',pts);
+    fb.className='s-fb ok show'; fb.innerHTML='<strong>Spot on!</strong> ✓ TRUE. Bob just can\'t stop leaving his things in the past! +'+pts+' XP!';
+    document.getElementById('s-next-4').classList.add('show');
+  } else {
+    btn.classList.add('wrong'); btn.style.opacity='.65'; btn.onclick=null;
+    recordAnswer('tf','wrong',0); fb.className='s-fb err show'; fb.innerHTML='<strong>Think again!</strong> Has Bob repeated his clumsy mistakes in every episode?';
+  }
+}
+
+function showSummary(){
+  document.getElementById('print-date').textContent=new Date().toLocaleDateString(); setMode('summary');
+}
+</script>
+</body>
+</html>

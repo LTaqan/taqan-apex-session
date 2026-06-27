@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Episode 1: The Glowing Shoebox | Yoonu</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  /* Cyber-Athletic Theme (Neon Cyan & Lime) */
+  --bg:#050b14; --bg2:#0a192f; --bg3:#112240; --bg4:#233554;
+  --primary:#00f3ff; /* Neon Cyan */
+  --primary2:#64ffda; --primary-dim:#00a3cc;
+  --text:#f8fafc;--text2:#cbd5e1;--text3:#94a3b8;
+  --accent:#39ff14; /* Neon Lime */
+  --accent-bg:rgba(57,255,20,0.15);--accent-border:rgba(57,255,20,0.5);
+  --red:#ff003c;--red-bg:rgba(255,0,60,0.1);--red-border:rgba(255,0,60,0.3);
+  --white:#ffffff;--white-bg:rgba(255,255,255,0.1);--white-border:rgba(255,255,255,0.3);
+  --r-md:12px;--r-lg:16px;--r-xl:24px;
+  --font:'Nunito',sans-serif;--font-display:'Orbitron',sans-serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(circle at 50% 0%,rgba(0,243,255,0.1) 0%,transparent 70%);pointer-events:none;z-index:0}
+
+#mode-bar{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(5,11,20,0.95);backdrop-filter:blur(10px);border-bottom:2px solid var(--primary);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+#mode-bar .logo{font-family:var(--font-display);font-size:18px;color:var(--primary);letter-spacing:.08em;white-space:nowrap; text-shadow:0 0 8px var(--primary-dim);}
+.mode-btns{display:flex;gap:6px}
+.mode-btn{padding:8px 16px;border-radius:8px;border:2px solid var(--bg4);background:var(--bg3);color:var(--text2);font-family:var(--font);font-size:13px;font-weight:800;cursor:pointer;transition:all .2s}
+.mode-btn.active{background:var(--primary);color:#000;border-color:var(--primary); box-shadow:0 0 12px var(--primary-dim);}
+.mode-btn:hover:not(.active){border-color:var(--primary2);color:var(--text)}
+
+#student-view,#teacher-view{display:none;padding-top:70px}
+#student-view.active,#teacher-view.active{display:block}
+
+.s-wrap{max-width:680px;margin:0 auto;padding:24px 16px 48px;display:flex;flex-direction:column;gap:20px;position:relative;z-index:1}
+.s-hero{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:2px solid var(--primary);border-radius:var(--r-xl);padding:24px;display:flex;align-items:center;gap:18px;position:relative;overflow:hidden; box-shadow: 0 10px 30px rgba(0,243,255,0.15);}
+.s-hero::before{content:'👟';position:absolute;right:20px;top:50%;transform:translateY(-50%);font-size:80px;opacity:.08}
+.s-hero-icon{width:65px;height:65px;background:var(--accent-bg);border:2px solid var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;flex-shrink:0; box-shadow: 0 0 15px var(--accent-border);}
+.s-hero-title{font-family:var(--font-display);font-size:26px;color:#fff;letter-spacing:.05em;line-height:1.2}
+.s-hero-sub{font-size:14px;color:var(--primary2);margin-top:6px; font-weight: 800;}
+.s-series-badge {display:inline-block; background:var(--primary); color:#000; font-size:12px; font-weight:800; padding:4px 10px; border-radius:6px; margin-bottom:8px; text-transform:uppercase; letter-spacing:0.08em;}
+
+.s-progress{background:var(--bg2);border:2px solid var(--bg4);border-radius:var(--r-md);padding:14px 18px;display:flex;align-items:center;gap:12px}
+.s-prog-label{font-size:14px;font-weight:800;color:var(--text2);white-space:nowrap}
+.s-prog-bar{flex:1;height:10px;background:var(--bg4);border-radius:5px;overflow:hidden}
+.s-prog-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:5px;transition:width .6s cubic-bezier(0.4, 0, 0.2, 1)}
+.s-xp{font-size:16px;font-weight:800;color:var(--accent);white-space:nowrap; text-shadow: 0 0 10px rgba(57,255,20,0.4);}
+
+.s-scene{display:none;flex-direction:column;gap:16px;animation:fadeUp .5s ease}
+.s-scene.active{display:flex}
+@keyframes fadeUp{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+
+.s-card{background:var(--bg2);border:2px solid var(--bg4);border-radius:var(--r-lg);padding:24px; box-shadow: 0 4px 15px rgba(0,0,0,0.4);}
+.s-scene-tag{font-family:var(--font-display);font-size:18px;letter-spacing:.1em;color:var(--primary);text-transform:uppercase;margin-bottom:12px; display:inline-block; border-bottom: 2px solid var(--primary-dim); padding-bottom:4px;}
+.s-scene-tag.grammar{color:var(--accent); border-bottom-color: var(--accent-border);}
+.s-story{font-size:16px;line-height:1.7;color:var(--text)}
+.s-story strong{font-weight:800;color:var(--primary2)}
+.s-story em{color:var(--accent);font-style:normal;font-weight:800}
+
+.s-logic{background:var(--bg3);border:2px solid var(--accent-border);border-radius:var(--r-md);padding:16px;margin-top:12px}
+.s-logic-title{font-size:14px;font-weight:800;letter-spacing:.08em;color:var(--text);text-transform:uppercase;margin-bottom:12px; font-family:var(--font-display);}
+.s-rule{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--bg4);font-size:15px; font-weight:600;}
+.s-rule:last-child{border-bottom:none}
+.s-tag{background:var(--white-bg);color:var(--white);border:1px solid var(--white-border);border-radius:6px;padding:2px 10px;font-size:12px;font-weight:800;white-space:nowrap;margin-top:2px;flex-shrink:0}
+
+.s-quiz-tag{font-size:14px;font-weight:800;letter-spacing:.09em;color:var(--primary);text-transform:uppercase;margin-bottom:8px;margin-top:18px}
+.s-quiz-q{font-size:17px;font-weight:800;line-height:1.4;margin-bottom:16px}
+.s-choices{display:flex;flex-direction:column;gap:10px}
+.s-choice{background:var(--bg3);border:2px solid var(--bg4);border-radius:var(--r-md);padding:16px;font-family:var(--font);font-size:16px;font-weight:600;color:var(--text);text-align:left;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:14px}
+.s-choice:hover{background:var(--bg4);border-color:var(--primary); transform: translateX(5px);}
+.s-choice .cl{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,0.1);border:2px solid var(--text3);color:var(--text);font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.s-choice.correct{border-color:var(--primary);background:var(--bg3); color:var(--primary);}
+.s-choice.wrong{border-color:var(--red);background:var(--red-bg)}
+
+.tf-row{display:flex;gap:12px;margin-bottom:16px}
+.tf-btn{flex:1;padding:16px;font-family:var(--font-display);font-size:22px;letter-spacing:.06em;border-radius:var(--r-md);border:2px solid var(--bg4);background:var(--bg3);color:var(--text);cursor:pointer;transition:all .2s;text-align:center; text-transform: uppercase;}
+.tf-btn:hover{background:var(--bg4); transform:translateY(-2px);}
+.tf-btn.correct{background:var(--primary);color:#000;border-color:var(--primary);}
+.tf-btn.wrong{background:var(--red);color:#fff;border-color:var(--red);}
+
+/* Voice Lock Specific Styles */
+.voice-lock-box{background:var(--accent-bg); border:2px dashed var(--accent); border-radius:var(--r-md); padding:20px; text-align:center; margin-top:15px;}
+.voice-icon{font-size:40px; margin-bottom:10px; animation: pulse 2s infinite;}
+@keyframes pulse { 0% {transform: scale(1);} 50% {transform: scale(1.1);} 100% {transform: scale(1);} }
+.read-text{font-size:22px; font-weight:800; color:#fff; font-style:italic; line-height:1.5; margin:15px 0; padding:15px; background:rgba(0,0,0,0.3); border-radius:8px; border-left: 4px solid var(--accent);}
+.voice-status{display:inline-block; padding:8px 16px; border-radius:20px; font-weight:bold; font-size:14px; background:var(--bg4); color:var(--text2);}
+.voice-status.approved{background:var(--accent); color:#000; box-shadow: 0 0 10px var(--accent);}
+
+.s-fb{border-radius:var(--r-md);padding:16px;font-size:15px;font-weight:700;line-height:1.5;border:2px solid;display:none; margin-top:12px;}
+.s-fb.ok{background:rgba(0,243,255,0.1);border-color:var(--primary);color:var(--primary)}
+.s-fb.err{background:var(--red-bg);border-color:var(--red);color:var(--red)}
+.s-fb.show{display:block;animation:fadeUp .3s ease}
+
+.s-hint{background:var(--bg3);border:2px dashed var(--accent);border-radius:var(--r-md);padding:14px;font-size:14px;font-weight:700;color:var(--accent);display:none; margin-bottom:16px;}
+.s-hint.show{display:block;animation:fadeUp .3s ease}
+
+.s-nav{display:flex;gap:10px;flex-wrap:wrap;align-items:center; margin-top: 10px; justify-content:flex-end;}
+.s-next{background:var(--primary);border:none;border-radius:var(--r-md);padding:14px 28px;font-family:var(--font-display);font-size:20px;font-weight:800;color:#000;cursor:pointer;transition:all .2s;display:none; text-transform:uppercase; letter-spacing:0.05em; box-shadow: 0 4px 15px rgba(0,243,255,0.4);}
+.s-next:hover{background:#fff; transform:translateY(-2px);}
+.s-next.show{display:inline-block}
+
+.s-reward{background:linear-gradient(135deg,var(--bg2),var(--bg3));border:3px solid var(--accent);border-radius:var(--r-xl);padding:40px 24px;text-align:center; box-shadow: 0 10px 40px rgba(57,255,20,0.2);}
+.s-reward-icon{font-size:64px;margin-bottom:16px; animation: float 3s ease-in-out infinite;}
+@keyframes float { 0%, 100% {transform:translateY(0)} 50% {transform:translateY(-15px)} }
+.s-reward-title{font-family:var(--font-display);font-size:32px;color:var(--primary);letter-spacing:.04em;margin-bottom:8px}
+.s-reward-xp{font-size:36px;font-weight:800;color:var(--accent);margin:16px 0; text-shadow: 0 0 15px rgba(57,255,20,0.5);}
+.s-reward-sub{font-size:16px;color:var(--text);line-height:1.7; font-weight:600; background:var(--bg); padding:20px; border-radius:var(--r-md); border:1px solid var(--bg4);}
+
+/* TEACHER DASHBOARD */
+.t-wrap{max-width:900px;margin:0 auto;padding:24px 20px 48px;display:flex;flex-direction:column;gap:20px}
+.t-header{background:var(--bg2);border:2px solid var(--primary);border-radius:var(--r-xl);padding:24px;display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.t-header-left h1{font-family:var(--font-display);font-size:28px;color:var(--primary);letter-spacing:.04em}
+.t-stats{display:flex;gap:12px;flex-wrap:wrap}
+.t-stat{background:var(--bg3);border:2px solid var(--bg4);border-radius:var(--r-md);padding:12px 20px;text-align:center;min-width:90px}
+.t-stat-val{font-size:26px;font-weight:800;color:var(--accent)}
+.t-stat-lbl{font-size:12px;color:var(--text2);margin-top:4px; font-weight:700; text-transform:uppercase;}
+.t-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:640px){.t-grid{grid-template-columns:1fr}}
+.t-card{background:var(--bg2);border:2px solid var(--bg4);border-radius:var(--r-lg);padding:20px}
+.t-card-title{font-size:14px;font-weight:800;letter-spacing:.08em;color:var(--primary);text-transform:uppercase;margin-bottom:16px;padding-bottom:10px;border-bottom:2px solid var(--bg4)}
+.t-answer-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--bg4);font-size:14px; font-weight:600;}
+.t-answer-row:last-child{border-bottom:none}
+.t-ans-q{color:var(--text);flex:1}
+.t-ans-badge{padding:4px 12px;border-radius:12px;font-size:12px;font-weight:800;white-space:nowrap}
+.t-ans-badge.correct{background:var(--primary);color:#000;}
+.t-ans-badge.wrong{background:var(--red);color:#fff;}
+.t-ans-badge.pending{background:var(--bg4);color:var(--text3);}
+.t-hint-btn{background:var(--bg3);border:2px solid var(--primary-dim);border-radius:var(--r-md);padding:12px 16px;font-family:var(--font);font-size:14px;font-weight:800;color:var(--primary);cursor:pointer;text-align:left;transition:all .2s;display:flex;align-items:center;gap:10px}
+.t-hint-btn:hover{background:var(--bg4); border-color:var(--primary2);}
+.t-hint-btn.fired{background:var(--bg3);opacity:.5;cursor:default; border-color:var(--bg4);}
+.t-action-btn{background:var(--accent); border:none; padding:8px 16px; border-radius:6px; font-weight:800; cursor:pointer; color:#000; transition:0.2s;}
+.t-action-btn:hover{background:#fff;}
+
+/* PRINT STYLES */
+@media print{ 
+  body, html { background: #fff !important; color: #000 !important; }
+  body::before { display: none !important; }
+  #mode-bar, .mode-btns, #teacher-view, .s-next, #student-view, .no-print { display:none !important; } 
+  #print-summary { display:block !important; padding:0 !important; margin:0 !important; background:#fff !important; color:#000 !important; }
+  #print-summary h1 { color: #000 !important; }
+  #print-summary table { border-collapse: collapse; width: 100%; }
+  #print-summary th, #print-summary td { border: 1px solid #000 !important; color:#000 !important; }
+}
+
+#print-summary{display:none;padding:60px 32px 32px;font-family:var(--font);color:#111;background:#fff;min-height:100vh;}
+#print-summary.active{display:block;}
+#print-summary h1{font-family:var(--font-display);font-size:32px;color:#00a3cc;}
+#print-summary table{width:100%;border-collapse:collapse;font-size:14px;margin-top:12px}
+#print-summary td,#print-summary th{border:1px solid #ddd;padding:10px;text-align:left; color:#111;}
+#print-summary th{background:#f1f5f9;font-weight:800; color:#111;}
+</style>
+</head>
+<body>
+
+<div id="mode-bar">
+  <div class="logo">⚡ Quantum Sneakers: Yoonu</div>
+  <div class="mode-btns">
+    <button class="mode-btn active" onclick="setMode('student')">Student View</button>
+    <button class="mode-btn" onclick="setMode('teacher')">Teacher Dashboard</button>
+    <button class="mode-btn" onclick="showSummary()">Print Summary</button>
+  </div>
+</div>
+
+<div id="student-view" class="active">
+<div class="s-wrap">
+
+  <div class="s-hero">
+    <div class="s-hero-icon">👟</div>
+    <div>
+      <span class="s-series-badge">Sci-Fi Adventure Series: Ep 1</span>
+      <div class="s-hero-title">The Glowing Shoebox</div>
+      <div class="s-hero-sub">B1 ESL · Past Simple (Irregular) · Hero: Yoonu</div>
+    </div>
+  </div>
+
+  <div class="s-progress">
+    <span class="s-prog-label" id="s-prog-label">Scene 1 of 5</span>
+    <div class="s-prog-bar"><div class="s-prog-fill" id="s-prog-fill" style="width:20%"></div></div>
+    <span class="s-xp" id="s-xp">0 XP</span>
+  </div>
+
+  <div class="s-scene active" id="s-scene-1">
+    <div class="s-card">
+      <div class="s-scene-tag">Scene 1 — The Alley in Busan</div>
+      <div class="s-story">
+        It was a normal Saturday afternoon in Busan, South Korea. Yoonu was walking through the crowded, narrow alleys of Gukje Market.<br><br>
+        He walked into a dusty, old <strong>antique</strong> shop. In the corner, underneath a pile of old books, Yoonu saw something incredible. It was a shoebox, but it was glowing with a bright cyan light!
+      </div>
+    </div>
+    <div class="s-card">
+      <div class="s-quiz-tag">Vocabulary Check</div>
+      <div class="s-quiz-q">The story says Yoonu walked into an "antique" shop. What does antique mean?</div>
+      <div class="s-hint" id="hint-q1" style="display:none">💡 <strong>Hint:</strong> Gukje Market has many shops selling things from 50 or 100 years ago.</div>
+      <div class="s-choices" id="q1-choices">
+        <button class="s-choice" onclick="checkQ1(this,'A')"><span class="cl">A</span> A shop that sells very modern computers.</button>
+        <button class="s-choice" onclick="checkQ1(this,'B')"><span class="cl">B</span> A shop that sells old, historical, and valuable things.</button>
+        <button class="s-choice" onclick="checkQ1(this,'C')"><span class="cl">C</span> A restaurant that sells hot spicy noodles.</button>
+      </div>
+      <div class="s-fb" id="q1-fb"></div>
+    </div>
+    <div class="s-nav"><button class="s-next" id="s-next-1" onclick="goScene(2)">Open the box →</button></div>
+  </div>
+
+  <div class="s-scene" id="s-scene-2">
+    <div class="s-card">
+      <div class="s-scene-tag grammar">Scene 2 — Grammar Timeout</div>
+      <div class="s-story">
+        Yoonu opened the box. Inside were the coolest sneakers he had ever seen. They were black with glowing blue lines.<br><br>
+        Because this happened in the past, we use the <strong>Past Simple Tense</strong>. But beware! Some verbs do not end in "-ed". They are <em>irregular</em>!
+      </div>
+      <div class="s-logic">
+        <div class="s-logic-title" style="color:var(--primary);">Irregular Past Verbs</div>
+        <div class="s-rule"><span class="s-tag gram">See</span> Changes to: <strong>saw</strong></div>
+        <div class="s-rule"><span class="s-tag gram">Find</span> Changes to: <strong>found</strong></div>
+        <div class="s-rule"><span class="s-tag gram">Buy</span> Changes to: <strong>bought</strong></div>
+      </div>
+    </div>
+    <div class="s-card">
+      <div class="s-quiz-tag grammar">Grammar Challenge</div>
+      <div class="s-quiz-q">Fill in the blank correctly:<br><br><em>"Yoonu ________ the glowing sneakers and immediately ________ them."</em></div>
+      <div class="s-hint" id="hint-qGrammar" style="display:none">💡 <strong>Hint:</strong> What is the past tense of 'find' and 'buy'? Do we say 'finded'?</div>
+      <div class="s-choices" id="qGrammar-choices">
+        <button class="s-choice grammar" onclick="checkQGrammar(this,'A')"><span class="cl">A</span> finded / buyed</button>
+        <button class="s-choice grammar" onclick="checkQGrammar(this,'B')"><span class="cl">B</span> found / bought</button>
+        <button class="s-choice grammar" onclick="checkQGrammar(this,'C')"><span class="cl">C</span> finds / buys</button>
+      </div>
+      <div class="s-fb" id="qGrammar-fb"></div>
+    </div>
+    <div class="s-nav"><button class="s-next" id="s-next-2" onclick="goScene(3)">Try them on →</button></div>
+  </div>
+
+  <div class="s-scene" id="s-scene-3">
+    <div class="s-card">
+      <div class="s-scene-tag">Scene 3 — The Escape</div>
+      <div class="s-story">
+        As soon as Yoonu touched the sneakers, the old shopkeeper yelled, <em>"Hey! Those are not for sale!"</em><br><br>
+        Yoonu had to explain what happened to his friend later. Read his explanation out loud!
+      </div>
+    </div>
+    <div class="s-card">
+      <div class="s-quiz-tag" style="color:var(--accent);">🎙️ Voice Lock Challenge</div>
+      <div class="s-quiz-q">Read the sentence out loud to your teacher. Make sure you pronounce the irregular verbs perfectly!</div>
+      
+      <div class="voice-lock-box">
+        <div class="voice-icon">🎤</div>
+        <div class="read-text">"I saw the glowing box, I put the sneakers on, and I ran out of the shop!"</div>
+        <div class="voice-status" id="voice-status">⏳ Awaiting Teacher Approval...</div>
+      </div>
+      
+      <div class="s-fb" id="q3-fb" style="display:block; border-color:var(--bg4); background:transparent; text-align:center; margin-top:20px;">
+        <em>Teacher: Please approve the pronunciation in the Dashboard to unlock the next scene.</em>
+      </div>
+    </div>
+    <div class="s-nav"><button class="s-next" id="s-next-3" onclick="goScene(4)">Keep running →</button></div>
+  </div>
+
+  <div class="s-scene" id="s-scene-4">
+    <div class="s-card">
+      <div class="s-scene-tag grammar">Scene 4 — Grammar Glitch</div>
+      <div class="s-story">
+        Yoonu ran out of the market. His feet felt incredibly light, almost like he was hovering above the ground!<br><br>
+        To activate the shoes' full power, you must fix a grammar error in the system!
+      </div>
+    </div>
+    <div class="s-card">
+      <div class="s-quiz-tag">Grammar Quick Fire</div>
+      <div class="s-quiz-q">Is the grammar in this sentence correct?<br><br><em>"Yoonu weared the sneakers and felt powerful."</em></div>
+      <div class="tf-row" id="q4-choices">
+        <button class="tf-btn" onclick="checkQ4(this,'True')">True</button>
+        <button class="tf-btn" onclick="checkQ4(this,'False')">False</button>
+      </div>
+      <div class="s-hint" id="hint-q4" style="display:none">💡 <strong>Hint:</strong> The verb 'wear' is irregular. Is the past tense 'weared'?</div>
+      <div class="s-fb" id="q4-fb"></div>
+    </div>
+    <div class="s-nav"><button class="s-next" id="s-next-4" onclick="goScene(5)">Feel the power →</button></div>
+  </div>
+
+  <div class="s-scene" id="s-scene-5">
+    <div class="s-reward">
+      <div class="s-reward-icon">⚡</div>
+      <div class="s-reward-title">Quantum Power Activated!</div>
+      <div class="s-reward-xp" id="s-final-xp">0 XP Earned</div>
+      <div class="s-reward-sub">
+        ZAAAAAP! The cyan lines on the sneakers glow brightly. Yoonu takes a step and instantly moves 10 meters forward in a blur of speed!<br><br>
+        Great job! Today you mastered <strong>Past Simple (Irregular Verbs)</strong> like found, bought, ran, and wore.<br><br>
+        <em>Cliffhanger: Yoonu looks down at his feet in shock. "What kind of shoes are these?" Suddenly, a black van pulls up next to him...</em>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<div id="teacher-view">
+<div class="t-wrap">
+  <div class="t-header">
+    <div class="t-header-left">
+      <h1>Teacher Dashboard — Yoonu's Lesson</h1>
+      <p><span class="live-dot" style="color:var(--accent);">●</span> Ep 1: Glowing Shoebox · B1 ESL</p>
+    </div>
+    <div class="t-stats">
+      <div class="t-stat"><div class="t-stat-val" id="t-xp">0</div><div class="t-stat-lbl">XP</div></div>
+      <div class="t-stat"><div class="t-stat-val" id="t-correct">0</div><div class="t-stat-lbl">Correct</div></div>
+      <div class="t-stat"><div class="t-stat-val" id="t-attempts">0</div><div class="t-stat-lbl">Attempts</div></div>
+    </div>
+  </div>
+
+  <div class="t-grid">
+    <div class="t-card">
+      <div class="t-card-title">Live Answer Log</div>
+      <div class="t-answer-row"><span class="t-ans-q">Q1 — Vocab: "Antique"</span><span class="t-ans-badge pending" id="tlog-q1">Pending</span></div>
+      <div class="t-answer-row"><span class="t-ans-q" style="color:var(--primary);">Q2 — Grammar: Irregular Verbs</span><span class="t-ans-badge pending" id="tlog-qGrammar">Pending</span></div>
+      
+      <div class="t-answer-row" style="background:var(--bg3); padding:15px; border-radius:8px; border:1px solid var(--accent);">
+        <span class="t-ans-q" style="color:var(--accent);"><strong>Q3 — Voice Lock:</strong> Speaking task</span>
+        <div style="display:flex; align-items:center;">
+          <span class="t-ans-badge pending" id="tlog-q3" style="margin-right:10px;">Pending</span>
+          <button class="t-action-btn" id="btn-approve-voice" onclick="approveVoiceLock()">Approve Voice</button>
+        </div>
+      </div>
+      
+      <div class="t-answer-row"><span class="t-ans-q">Q4 — Quick Fire: False (wore)</span><span class="t-ans-badge pending" id="tlog-q4">Pending</span></div>
+    </div>
+
+    <div class="t-card">
+      <div class="t-card-title">Hint Controls</div>
+      <div class="t-hint-section" style="display:flex;flex-direction:column;gap:10px;">
+        <button class="t-hint-btn" id="thint-q1" onclick="fireHint('q1')">💡 Send Hint: Q1 (Antique)</button>
+        <button class="t-hint-btn" id="thint-qGrammar" onclick="fireHint('qGrammar')">💡 Send Hint: Grammar</button>
+        <button class="t-hint-btn" id="thint-q4" onclick="fireHint('q4')">💡 Send Hint: Q4 (Quick Fire)</button>
+      </div>
+    </div>
+  </div>
+  
+  <div style="text-align:center; margin-top:20px;">
+    <button style="background:var(--bg3); color:white; border:2px solid var(--bg4); padding:12px 24px; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="showSummary()">🖨 Generate Print Summary</button>
+  </div>
+</div>
+</div>
+
+<div id="print-summary">
+  <button class="no-print" onclick="window.print()" style="padding:10px 20px; margin-bottom: 20px; background:var(--primary); color:#000; border:none; border-radius:8px; cursor:pointer; font-weight:bold; font-size:16px;">🖨 Print / Save PDF</button>
+  <h1>Lesson Summary — Episode 1: The Glowing Shoebox</h1>
+  <p><strong>Student:</strong> Yoonu &nbsp;|&nbsp; <strong>Level:</strong> B1 ESL &nbsp;|&nbsp; <strong>Focus:</strong> Past Simple (Irregular)</p>
+  <p><strong>Date:</strong> <span id="print-date"></span></p>
+  <table>
+    <tr><th width="15%">Quest</th><th width="45%">Topic</th><th width="20%">Result</th><th width="20%">XP</th></tr>
+    <tr><td>Q1</td><td>Vocabulary (Antique)</td><td id="pr-q1">—</td><td id="pr-q1-xp">—</td></tr>
+    <tr><td>Q2</td><td>Grammar (Irregular Verbs)</td><td id="pr-qGrammar">—</td><td id="pr-qGrammar-xp">—</td></tr>
+    <tr><td>Q3</td><td>Pronunciation (Voice Lock)</td><td id="pr-q3">—</td><td id="pr-q3-xp">—</td></tr>
+    <tr><td>Q4</td><td>Grammar Error Correction (wore)</td><td id="pr-q4">—</td><td id="pr-q4-xp">—</td></tr>
+  </table>
+  <h2 style="margin-top: 20px;">Total XP: <span id="pr-total-xp">0</span></h2>
+</div>
+
+<script>
+var xp=0,correct=0,totalAttempts=0,currentScene=1;
+var attempts={q1:0,qGrammar:0,q3:0,q4:0};
+var voiceApproved = false;
+
+function setMode(m){
+  document.getElementById('student-view').classList.toggle('active',m==='student');
+  document.getElementById('teacher-view').classList.toggle('active',m==='teacher');
+  document.getElementById('print-summary').classList.toggle('active',m==='summary');
+  document.querySelectorAll('.mode-btn').forEach(function(b){b.classList.remove('active')});
+  if(m==='student') document.querySelectorAll('.mode-btn')[0].classList.add('active');
+  if(m==='teacher') document.querySelectorAll('.mode-btn')[1].classList.add('active');
+  if(m==='summary') document.querySelectorAll('.mode-btn')[2].classList.add('active');
+}
+function addXP(pts){
+  xp+=pts; document.getElementById('s-xp').textContent=xp+' XP'; document.getElementById('t-xp').textContent=xp;
+  document.getElementById('s-final-xp').textContent=xp+' XP Earned'; document.getElementById('pr-total-xp').textContent=xp;
+}
+function recordAnswer(q,result,pts){
+  if(result==='correct')correct++; totalAttempts++;
+  document.getElementById('t-correct').textContent=correct; document.getElementById('t-attempts').textContent=totalAttempts;
+  var badge=document.getElementById('tlog-'+q);
+  if(badge){badge.className='t-ans-badge '+(result==='correct'?'correct':'wrong');badge.textContent=result==='correct'?'✓ Correct':'✗ Wrong'}
+  var pr=document.getElementById('pr-'+q);var prXP=document.getElementById('pr-'+q+'-xp');
+  if(pr)pr.textContent=result==='correct'?'Correct':'Incorrect'; if(prXP)prXP.textContent=pts+' XP';
+}
+function goScene(n){
+  document.querySelectorAll('.s-scene').forEach(function(s){s.classList.remove('active')});
+  document.getElementById('s-scene-'+n).classList.add('active');
+  document.getElementById('s-prog-fill').style.width=[0,25,50,75,100][n-1]+'%';
+  document.getElementById('s-prog-label').textContent='Scene '+n+' of 5';
+  currentScene=n;
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+function fireHint(q){
+  var el=document.getElementById('hint-'+q); if(el){el.style.display='block';el.classList.add('show')}
+  var btn=document.getElementById('thint-'+q); if(btn){btn.classList.add('fired');btn.innerHTML='<span class="t-hint-icon">✓</span> Hint sent';btn.onclick=null}
+}
+function lockChoices(sel){
+    document.querySelectorAll(sel).forEach(function(b){b.onclick=null;b.style.cursor='default';})
+}
+function disableWrongButton(btn) {
+  btn.classList.add('wrong');
+  btn.style.opacity = '0.6';
+  btn.style.cursor = 'not-allowed';
+  btn.onclick = null;
+}
+
+// Q1: Vocab
+function checkQ1(btn,ans){
+  attempts.q1++; var fb=document.getElementById('q1-fb');
+  if(ans==='B'){
+    lockChoices('#q1-choices .s-choice'); btn.classList.add('correct');
+    var pts=attempts.q1===1?100:50; addXP(pts); recordAnswer('q1','correct',pts);
+    fb.className='s-fb ok show';fb.innerHTML='<strong>Perfect!</strong> ✓ Antique means old and valuable! +'+pts+' XP!';
+    document.getElementById('s-next-1').classList.add('show');
+  } else {
+    disableWrongButton(btn); // STRICT Click-Retry
+    recordAnswer('q1','wrong',0); fb.className='s-fb err show'; fb.innerHTML='<strong>Incorrect!</strong> Read the hint. Try again.';
+  }
+}
+
+// Q2: Grammar
+function checkQGrammar(btn,ans){
+  attempts.qGrammar++; var fb=document.getElementById('qGrammar-fb');
+  if(ans==='B'){
+    lockChoices('#qGrammar-choices .s-choice'); btn.classList.add('correct');
+    var pts=attempts.qGrammar===1?100:50; addXP(pts); recordAnswer('qGrammar','correct',pts);
+    fb.className='s-fb ok show';fb.innerHTML='<strong>Perfect Grammar!</strong> ✓ Found and Bought are the correct past tense forms. +'+pts+' XP!';
+    document.getElementById('s-next-2').classList.add('show');
+  } else {
+    disableWrongButton(btn); 
+    recordAnswer('qGrammar','wrong',0); fb.className='s-fb err show';
+    fb.innerHTML=ans==='A'?'<strong>Incorrect!</strong> These verbs are irregular. We do not use "-ed".':'<strong>Incorrect!</strong> We need the past tense, not present tense.';
+  }
+}
+
+// Q3: Voice Lock
+function approveVoiceLock() {
+  if(voiceApproved) return;
+  voiceApproved = true;
+  
+  var btn = document.getElementById('btn-approve-voice');
+  btn.textContent = '✅ Approved';
+  btn.style.background = 'var(--accent)';
+  
+  var pts = 100;
+  attempts.q3 = 1;
+  addXP(pts);
+  recordAnswer('q3', 'correct', pts);
+  
+  var statusBox = document.getElementById('voice-status');
+  statusBox.textContent = '✅ Access Granted by Teacher!';
+  statusBox.className = 'voice-status approved';
+  
+  var fb = document.getElementById('q3-fb');
+  fb.className = 's-fb ok show';
+  fb.innerHTML = '<strong>Excellent Speaking!</strong> ✓ +100 XP!';
+  
+  document.getElementById('s-next-3').classList.add('show');
+  setMode('student');
+}
+
+// Q4: Quick Fire
+function checkQ4(btn,ans){
+  attempts.q4++; var fb=document.getElementById('q4-fb');
+  if(ans==='False'){
+    lockChoices('#q4-choices .tf-btn'); btn.classList.add('correct');
+    var pts=attempts.q4===1?100:50; addXP(pts); recordAnswer('q4','correct',pts);
+    fb.className='s-fb ok show';fb.innerHTML='<strong>Great Catch!</strong> ✓ The past tense of wear is "wore". +'+pts+' XP!';
+    document.getElementById('s-next-4').classList.add('show');
+  } else {
+    disableWrongButton(btn); 
+    recordAnswer('q4','wrong',0); fb.className='s-fb err show'; fb.innerHTML='<strong>Look closer!</strong> "Wear" is irregular. We don\'t add "-ed".';
+  }
+}
+
+// Print Summary Fix
+function showSummary(){
+  var dateSpan = document.getElementById('print-date');
+  if(dateSpan) dateSpan.textContent = new Date().toLocaleDateString();
+  setMode('summary');
+}
+</script>
+</body>
+</html>

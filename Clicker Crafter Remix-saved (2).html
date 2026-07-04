@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyPop: Celestial Clicker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;600;800&display=swap');
+        
+        body { font-family: 'Outfit', sans-serif; overflow: hidden; background: #0f172a; }
+        
+        .sky-morning { background: linear-gradient(to bottom, #7dd3fc, #bae6fd); }
+        .sky-sunset { background: linear-gradient(to bottom, #f97316, #fbbf24); }
+        .sky-night { background: linear-gradient(to bottom, #1e1b4b, #312e81); }
+
+        .pop-animation { animation: pop 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+        @keyframes pop {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        .wobble { animation: wobble 2s ease-in-out infinite; }
+        @keyframes wobble {
+            0%, 100% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+        }
+
+        .rotate-star { animation: spin 3s linear infinite; }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .game-cursor { cursor: crosshair; }
+    </style>
+</head>
+<body class="w-screen h-screen flex flex-col items-center justify-between game-cursor overflow-hidden transition-all duration-1000 sky-morning" id="gameContainer">
+
+    <!-- HUD -->
+    <header class="w-full p-6 flex justify-between items-center z-50">
+        <div class="bg-white/20 backdrop-blur-md rounded-2xl p-4 text-white shadow-xl">
+            <p class="text-xs uppercase tracking-widest opacity-80">Score</p>
+            <h1 class="text-4xl font-extrabold" id="scoreDisplay">0</h1>
+        </div>
+        <div class="bg-white/20 backdrop-blur-md rounded-2xl p-4 text-white w-48 shadow-xl">
+            <p class="text-xs uppercase tracking-widest opacity-80">Star Power</p>
+            <div class="w-full bg-black/30 h-3 rounded-full mt-2 overflow-hidden">
+                <div id="comboBar" class="h-full bg-yellow-400 w-0 transition-all duration-300"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Game Area -->
+    <main id="stage" class="relative flex-grow w-full"></main>
+
+    <!-- Milestone Progress -->
+    <footer class="w-full p-6 z-50">
+        <div class="bg-white/10 backdrop-blur-md rounded-full h-2 w-full overflow-hidden">
+            <div id="milestoneBar" class="h-full bg-white/50 w-0 transition-all duration-500"></div>
+        </div>
+    </footer>
+
+    <script>
+        const stage = document.getElementById('stage');
+        const scoreDisplay = document.getElementById('scoreDisplay');
+        const comboBar = document.getElementById('comboBar');
+        const milestoneBar = document.getElementById('milestoneBar');
+        const gameContainer = document.getElementById('gameContainer');
+
+        let score = 0;
+        let combo = 0;
+        let isFrenzy = false;
+        let gameSpeed = 3000;
+        let level = 1;
+
+        function spawnObject() {
+            if (isFrenzy) return;
+            const isStar = Math.random() > 0.8;
+            const obj = document.createElement('div');
+            obj.className = `absolute ${isStar ? 'rotate-star' : 'wobble'}`;
+            obj.style.left = Math.random() * 90 + '%';
+            obj.style.bottom = '-100px';
+            obj.innerHTML = isStar ? '⭐' : '🎈';
+            obj.style.fontSize = isStar ? '2rem' : '3rem';
+            obj.dataset.value = isStar ? 5 : 1;
+            obj.dataset.type = isStar ? 'star' : 'balloon';
+
+            obj.addEventListener('mousedown', () => pop(obj));
+            stage.appendChild(obj);
+
+            const anim = obj.animate([
+                { bottom: '-100px' },
+                { bottom: '110vh' }
+            ], { duration: gameSpeed, easing: 'linear' });
+
+            anim.onfinish = () => obj.remove();
+        }
+
+        function pop(el) {
+            score += parseInt(el.dataset.value);
+            scoreDisplay.innerText = score;
+            el.classList.add('pop-animation');
+            
+            // Combo logic
+            combo += 10;
+            if(combo >= 100) triggerFrenzy();
+            comboBar.style.width = combo + '%';
+
+            updateLevel();
+            setTimeout(() => el.remove(), 200);
+        }
+
+        function triggerFrenzy() {
+            isFrenzy = true;
+            gameContainer.style.filter = 'hue-rotate(90deg)';
+            const frenzyInterval = setInterval(() => {
+                const star = document.createElement('div');
+                star.className = 'absolute text-4xl';
+                star.style.left = Math.random() * 90 + '%';
+                star.style.top = Math.random() * 80 + '%';
+                star.innerHTML = '✨';
+                star.addEventListener('mousedown', () => {
+                    score += 10;
+                    scoreDisplay.innerText = score;
+                    star.remove();
+                });
+                stage.appendChild(star);
+                setTimeout(() => star.remove(), 800);
+            }, 200);
+
+            setTimeout(() => {
+                isFrenzy = false;
+                gameContainer.style.filter = 'none';
+                combo = 0;
+                comboBar.style.width = '0%';
+                clearInterval(frenzyInterval);
+            }, 10000);
+        }
+
+        function updateLevel() {
+            if (score >= 1000 && level < 3) {
+                level = 3;
+                gameContainer.className = 'w-screen h-screen flex flex-col items-center justify-between game-cursor overflow-hidden transition-all duration-1000 sky-night';
+                gameSpeed = 1500;
+            } else if (score >= 500 && level < 2) {
+                level = 2;
+                gameContainer.className = 'w-screen h-screen flex flex-col items-center justify-between game-cursor overflow-hidden transition-all duration-1000 sky-sunset';
+                gameSpeed = 2000;
+            }
+            milestoneBar.style.width = (score % 1000) / 10 + '%';
+        }
+
+        setInterval(spawnObject, 800);
+    </script>
+</body>
+</html>

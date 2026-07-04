@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Retro Sky Dash</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        
+        body {
+            background-color: #1a1a2e;
+            font-family: 'Press Start 2P', cursive;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100%;
+            max-width: 480px;
+            aspect-ratio: 9/16;
+            background: #70c5ce;
+            border: 8px solid #333;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .ui-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            color: white;
+            z-index: 10;
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+        
+        <div id="start-screen" class="ui-overlay">
+            <h1 class="text-2xl mb-8 animate-bounce">SKY DASH</h1>
+            <button id="start-btn" class="px-8 py-4 bg-yellow-400 hover:bg-yellow-300 text-black rounded-xl border-b-8 border-yellow-600 transition-transform active:translate-y-2">START</button>
+        </div>
+
+        <div id="game-over-screen" class="ui-overlay hidden">
+            <h2 class="text-xl mb-4">GAME OVER</h2>
+            <div id="final-score" class="text-lg mb-8">Score: 0</div>
+            <button id="restart-btn" class="px-6 py-3 bg-red-500 hover:bg-red-400 text-white rounded-lg border-b-4 border-red-700">RETRY</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const startScreen = document.getElementById('start-screen');
+        const gameOverScreen = document.getElementById('game-over-screen');
+        const startBtn = document.getElementById('start-btn');
+        const restartBtn = document.getElementById('restart-btn');
+        const finalScoreText = document.getElementById('final-score');
+
+        canvas.width = 480;
+        canvas.height = 854;
+
+        let gameActive = false;
+        let score = 0;
+        let bird = { x: 100, y: 400, vy: 0, rot: 0, size: 40 };
+        let pipes = [];
+        let particles = [];
+        let speed = 3;
+        let biome = 0; // 0: Overworld, 1: Underground, 2: Underwater
+
+        const biomes = [
+            { bg: '#70c5ce', pipe: '#4caf50' },
+            { bg: '#2c3e50', pipe: '#9b59b6' },
+            { bg: '#005f73', pipe: '#0a9396' }
+        ];
+
+        function drawBird() {
+            ctx.save();
+            ctx.translate(bird.x + bird.size/2, bird.y + bird.size/2);
+            ctx.rotate(bird.rot * Math.PI / 180);
+            
+            // Bird Body
+            ctx.fillStyle = '#ffeb3b';
+            ctx.fillRect(-bird.size/2, -bird.size/2, bird.size, bird.size);
+            // Wing
+            ctx.fillStyle = 'white';
+            ctx.fillRect(-10, 0, 20, 10);
+            // Eye
+            ctx.fillStyle = 'black';
+            ctx.fillRect(5, -10, 8, 8);
+            
+            ctx.restore();
+        }
+
+        function createPipe() {
+            const gap = 200;
+            const minHeight = 100;
+            const height = Math.random() * (canvas.height - gap - 200) + 100;
+            pipes.push({ x: canvas.width, y: height, gap: gap, passed: false });
+        }
+
+        function update() {
+            if (!gameActive) return;
+
+            bird.vy += 0.5;
+            bird.y += bird.vy;
+            bird.rot = Math.min(Math.max(bird.vy * 3, -30), 90);
+
+            if (bird.y > canvas.height || bird.y < 0) endGame();
+
+            pipes.forEach((p, i) => {
+                p.x -= speed;
+                
+                // Collision
+                if (bird.x + bird.size > p.x && bird.x < p.x + 60) {
+                    if (bird.y < p.y || bird.y + bird.size > p.y + p.gap) endGame();
+                }
+
+                if (!p.passed && p.x + 60 < bird.x) {
+                    score++;
+                    p.passed = true;
+                    biome = Math.floor(score / 50) % 3;
+                }
+
+                if (p.x < -60) pipes.splice(i, 1);
+            });
+
+            if (pipes.length === 0 || pipes[pipes.length-1].x < canvas.width - 300) createPipe();
+        }
+
+        function draw() {
+            ctx.fillStyle = biomes[biome].bg;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            pipes.forEach(p => {
+                ctx.fillStyle = biomes[biome].pipe;
+                ctx.fillRect(p.x, 0, 60, p.y);
+                ctx.fillRect(p.x, p.y + p.gap, 60, canvas.height);
+            });
+
+            drawBird();
+
+            ctx.fillStyle = 'white';
+            ctx.font = '30px Press Start 2P';
+            ctx.fillText(score, canvas.width/2 - 20, 50);
+
+            requestAnimationFrame(() => {
+                update();
+                draw();
+            });
+        }
+
+        function flap() {
+            bird.vy = -8;
+        }
+
+        function endGame() {
+            gameActive = false;
+            gameOverScreen.classList.remove('hidden');
+            finalScoreText.textContent = `Score: ${score}`;
+        }
+
+        function reset() {
+            score = 0;
+            bird = { x: 100, y: 400, vy: 0, rot: 0, size: 40 };
+            pipes = [];
+            gameActive = true;
+            gameOverScreen.classList.add('hidden');
+            startScreen.classList.add('hidden');
+        }
+
+        window.addEventListener('mousedown', () => {
+            if(gameActive) flap();
+        });
+
+        startBtn.addEventListener('click', reset);
+        restartBtn.addEventListener('click', reset);
+
+        draw();
+    </script>
+</body>
+</html>

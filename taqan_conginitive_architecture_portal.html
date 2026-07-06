@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TAQAN | Cognitive Architecture Systems</title>
+<style>
+  /* 
+   * TAQAN DESIGN SYSTEM v2.0
+   * Palette: Deep Obsidian, Charcoal, Lava Orange, Metallic Gold
+   * Typography: IBM Plex Family + Playfair Display
+   */
+
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Sans:wght@400;600;700&family=IBM+Plex+Serif:wght@400;600&family=Playfair+Display:ital@1&display=swap');
+
+  :root {
+    /* --- DARK MODE (DEFAULT) --- */
+    --bg-primary: #020617;       /* Deep Obsidian */
+    --bg-secondary: #1E293B;     /* Charcoal Slate */
+    --bg-tertiary: #0F172A;      /* Input Background */
+    
+    --text-primary: #F8FAFC;     /* White */
+    --text-secondary: #94A3B8;   /* Silver */
+    
+    --border-color: #334155;     /* Slate */
+    --border-light: #475569;
+    
+    --accent-cta: #FF5F1F;       /* Glowing Lava Orange */
+    --accent-cta-hover: #FF7B29;
+    --accent-gold: #D4AF37;      /* Metallic Gold */
+    --accent-gold-dim: rgba(212, 175, 55, 0.15);
+    
+    --glow-shadow: 0 0 20px rgba(255, 95, 31, 0.4);
+    --card-shadow: 0 20px 40px -10px rgba(0,0,0,0.6);
+    --input-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+  }
+
+  [data-theme="light"] {
+    /* --- LIGHT MODE --- */
+    --bg-primary: #F8FAFC;       /* Alabaster */
+    --bg-secondary: #FFFFFF;     /* Pure White */
+    --bg-tertiary: #F1F5F9;      /* Light Grey Input */
+    
+    --text-primary: #0F172A;     /* Dark Slate */
+    --text-secondary: #64748B;   /* Medium Slate */
+    
+    --border-color: #E2E8F0;     /* Light Grey */
+    --border-light: #CBD5E1;
+    
+    --accent-cta: #EA580C;       /* Burnt Orange (Higher Contrast) */
+    --accent-cta-hover: #C2410C;
+    --accent-gold: #B4932A;      /* Antique Gold */
+    --accent-gold-dim: rgba(180, 147, 42, 0.15);
+    
+    --glow-shadow: 0 4px 14px rgba(234, 88, 12, 0.3);
+    --card-shadow: 0 20px 40px -10px rgba(0,0,0,0.1);
+    --input-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+  }
+
+  /* RESET & BASE */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: 'IBM Plex Sans', sans-serif;
+    line-height: 1.6;
+    transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1), color 0.5s;
+    overflow-x: hidden;
+  }
+
+  /* TYPOGRAPHY UTILS */
+  .font-serif { font-family: 'IBM Plex Serif', serif; }
+  .font-mono { font-family: 'IBM Plex Mono', monospace; }
+  .font-display { font-family: 'Playfair Display', serif; font-style: italic; }
+  
+  h1, h2, h3 { font-weight: 600; letter-spacing: -0.02em; }
+  
+  /* LAYOUT */
+  .wrapper {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* HEADER */
+  header {
+    padding: 24px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s;
+  }
+  
+  header.scrolled { border-bottom: 1px solid var(--border-color); }
+
+  .logo {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 700;
+    font-size: 1.5rem;
+    letter-spacing: -0.05em;
+    color: var(--text-primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-dot {
+    height: 10px;
+    width: 10px;
+    background-color: var(--accent-cta);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--accent-cta);
+  }
+
+  .theme-toggle {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.3s;
+  }
+
+  .theme-toggle:hover {
+    border-color: var(--accent-cta);
+    color: var(--accent-cta);
+  }
+
+  /* HERO SECTION */
+  .hero {
+    padding: 80px 0;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 60px;
+    align-items: center;
+    min-height: 85vh;
+  }
+
+  .hero-content h1 {
+    font-size: 4rem;
+    line-height: 1.1;
+    margin-bottom: 24px;
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--text-secondary) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-content .highlight {
+    color: var(--accent-cta);
+    -webkit-text-fill-color: var(--accent-cta);
+  }
+
+  .hero-content p {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    margin-bottom: 40px;
+    max-width: 540px;
+  }
+
+  .hero-quote {
+    border-left: 3px solid var(--accent-gold);
+    padding-left: 24px;
+    margin-top: 40px;
+  }
+
+  .hero-quote p {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .hero-quote cite {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.875rem;
+    color: var(--accent-gold);
+    font-style: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* VIP PORTAL CARD */
+  .portal-card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 40px;
+    position: relative;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.3s, box-shadow 0.3s, background-color 0.5s, border-color 0.5s;
+  }
+
+  .portal-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 30px 60px -12px rgba(0,0,0,0.7);
+    border-color: var(--border-light);
+  }
+
+  .vip-badge {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    background-color: var(--accent-gold-dim);
+    border: 1px solid var(--accent-gold);
+    color: var(--accent-gold);
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .vip-badge::before {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 6px;
+    background-color: var(--accent-gold);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--accent-gold);
+  }
+
+  .portal-header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .portal-header h2 {
+    font-size: 1.75rem;
+    margin-bottom: 8px;
+    color: var(--text-primary);
+  }
+
+  .portal-header p {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  /* FORM */
+  .form-group { margin-bottom: 20px; }
+
+  label {
+    display: block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+
+  input, select {
+    width: 100%;
+    padding: 14px 16px;
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 1rem;
+    transition: all 0.3s;
+    box-shadow: var(--input-shadow);
+  }
+
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--accent-cta);
+    box-shadow: 0 0 0 3px rgba(255, 95, 31, 0.15);
+  }
+
+  .btn-submit {
+    width: 100%;
+    padding: 16px;
+    margin-top: 8px;
+    background: linear-gradient(135deg, var(--accent-cta), var(--accent-cta-hover));
+    color: #FFFFFF;
+    border: none;
+    border-radius: 8px;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    box-shadow: var(--glow-shadow);
+    transition: all 0.3s;
+  }
+
+  .btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 95, 31, 0.5);
+  }
+
+  .portal-footer {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    font-family: 'IBM Plex Mono', monospace;
+    line-height: 1.8;
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px;
+  }
+
+  /* PIPELINE / PROOF SECTION */
+  .pipeline-section {
+    padding: 80px 0;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .pipeline-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    align-items: center;
+  }
+
+  .pipeline-stats h3 {
+    font-size: 2.5rem;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+  }
+
+  .stat-highlight {
+    color: var(--accent-gold);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 3.5rem;
+    font-weight: 700;
+    display: block;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .pipeline-cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+
+  .card-preview {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 16px;
+    aspect-ratio: 3/4;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s;
+  }
+  
+  .card-preview:hover { transform: scale(1.02); border-color: var(--accent-cta); }
+
+  .card-preview::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(to bottom, transparent 0%, var(--bg-secondary) 100%);
+    z-index: 1;
+  }
+
+  .card-label {
+    position: relative;
+    z-index: 2;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+  }
+  
+  .card-title {
+    position: relative;
+    z-index: 2;
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 1.1rem;
+    color: var(--text-primary);
+    margin-top: 4px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 968px) {
+    .hero { grid-template-columns: 1fr; padding-top: 40px; text-align: center; }
+    .hero-content h1 { font-size: 3rem; }
+    .hero-content p { margin: 0 auto 40px; }
+    .hero-quote { border-left: none; border-top: 3px solid var(--accent-gold); padding-top: 20px; padding-left: 0; margin: 40px auto 0; }
+    .pipeline-grid { grid-template-columns: 1fr; }
+    .pipeline-cards { max-width: 400px; margin: 0 auto; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="wrapper">
+    <header>
+      <a href="#" class="logo">
+        <span class="logo-dot"></span>
+        TAQAN
+      </a>
+      <button class="theme-toggle" id="themeToggle">
+        ◑ Switch View
+      </button>
+    </header>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-content">
+        <span class="font-mono" style="color: var(--accent-gold); font-size: 0.875rem; display: block; margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.1em;">
+          Cognitive Architecture Systems
+        </span>
+        <h1>Architect Your <br><span class="highlight">Global Transition</span></h1>
+        <p>
+          Exclusive advisory for relocating executives and founders. 
+          Leverage a methodology battle-tested with a <strong>93% adoption rate</strong> in high-velocity learning environments.
+        </p>
+        
+        <div class="hero-quote">
+          <p class="font-display">"Precision timing is the currency of the relocated executive."</p>
+          <cite>— Taqan Protocol</cite>
+        </div>
+      </div>
+
+      <!-- VIP PORTAL -->
+      <div class="portal-card">
+        <div class="vip-badge">VIP Access</div>
+        
+        <div class="portal-header">
+          <h2 class="font-serif">Secure Verification</h2>
+          <p>Limited Private Alpha • 2026</p>
+        </div>
+
+        <form onsubmit="event.preventDefault(); alert('Request Initialized.');">
+          <div class="form-group">
+            <label for="identity">Authorized Identity</label>
+            <input type="text" id="identity" placeholder="e.g. Al-Mansoori Cohort" required>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Secure Node (Email)</label>
+            <input type="email" id="email" placeholder="name@domain.com" required>
+          </div>
+
+          <div class="form-group">
+            <label for="profile">Objective Profile</label>
+            <select id="profile">
+              <option>Global Executive Communications</option>
+              <option>Founder Relocation</option>
+              <option>Family Office Transition</option>
+            </select>
+          </div>
+
+          <button type="submit" class="btn-submit">Initialize Request</button>
+        </form>
+
+        <div class="portal-footer">
+          CONFIDENTIAL ARCHITECTURE. © 2026 TAQAN.<br>
+          PATENT PENDING. <span style="color: var(--accent-cta);">SYSTEM ONLINE.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PIPELINE / PROOF -->
+    <section class="pipeline-section">
+      <div class="pipeline-grid">
+        <div class="pipeline-stats">
+          <span class="font-mono" style="color: var(--accent-cta); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.1em; display: block; margin-bottom: 12px;">
+            The Proving Ground
+          </span>
+          <h3 class="font-serif">Validated by Advanced Youth Pipeline</h3>
+          <p style="color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 24px;">
+            Our "Cognitive Architecture" is stress-tested in high-adoption game-based environments before deployment to executive clients.
+          </p>
+          <span class="stat-highlight">93%</span>
+          <p class="font-mono" style="color: var(--text-secondary);">Adoption Rate in Beta Phase 2</p>
+          
+          <div style="margin-top: 32px; display: flex; gap: 16px;">
+            <div style="flex: 1; border-left: 2px solid var(--border-color); padding-left: 16px;">
+              <p class="font-mono" style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">Asset Type</p>
+              <p class="font-serif" style="font-size: 1.1rem;">Reward X:P Cards</p>
+            </div>
+            <div style="flex: 1; border-left: 2px solid var(--border-color); padding-left: 16px;">
+              <p class="font-mono" style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">Module</p>
+              <p class="font-serif" style="font-size: 1.1rem;">Vanishing Recipe</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="pipeline-cards">
+          <!-- Placeholders for your actual images -->
+          <div class="card-preview">
+            <div class="card-label">Phase 2 Asset</div>
+            <div class="card-title">Trading Card Interface</div>
+          </div>
+          <div class="card-preview">
+            <div class="card-label">Interactive Lesson</div>
+            <div class="card-title">Vanishing Recipe</div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const toggleBtn = document.getElementById('themeToggle');
+    const html = document.documentElement;
+    const header = document.querySelector('header');
+
+    // Toggle Logic
+    toggleBtn.addEventListener('click', () => {
+      const current = html.getAttribute('data-theme');
+      const next = current === 'dark' ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('taqan-theme', next);
+    });
+
+    // Load Preference
+    const saved = localStorage.getItem('taqan-theme');
+    if (saved) {
+      html.setAttribute('data-theme', saved);
+    } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+      html.setAttribute('data-theme', 'light');
+    }
+
+    // Scroll Effect for Header
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+  </script>
+</body>
+</html>   

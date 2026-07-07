@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>The Three Little Cats and the Hungry Dog</title>
+  <style>
+    :root {
+      --ink: #1f2933;
+      --paper: #fff7e6;
+      --card: #ffffff;
+      --accent: #ffb347;
+      --accent-dark: #925f00;
+      --green: #377a49;
+      --soft: #f4ead8;
+      --shadow: 0 18px 55px rgba(31, 41, 51, 0.18);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(255, 179, 71, 0.25), transparent 34rem),
+        linear-gradient(180deg, #e9f7ff 0%, #fff7e6 38%, #f7efe0 100%);
+      line-height: 1.55;
+    }
+    header {
+      padding: 3rem 1.25rem 2rem;
+      text-align: center;
+      background: linear-gradient(135deg, rgba(55,122,73,0.14), rgba(255,179,71,0.22));
+      border-bottom: 1px solid rgba(146, 95, 0, 0.18);
+    }
+    .title-wrap { max-width: 980px; margin: 0 auto; }
+    h1 {
+      margin: 0;
+      font-size: clamp(2.2rem, 6vw, 5rem);
+      line-height: 1.02;
+      letter-spacing: -0.04em;
+      color: #cc4b24;
+      text-shadow: 0 3px 0 rgba(255,255,255,0.8);
+    }
+    .subtitle {
+      max-width: 760px;
+      margin: 1rem auto 0;
+      font-size: 1.1rem;
+    }
+    .toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1rem;
+      background: rgba(255, 247, 230, 0.94);
+      backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(146, 95, 0, 0.18);
+    }
+    .toolbar button, .toolbar a {
+      appearance: none;
+      border: 1px solid rgba(146, 95, 0, 0.35);
+      border-radius: 999px;
+      padding: 0.52rem 0.85rem;
+      background: #fff;
+      color: var(--ink);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.92rem;
+      cursor: pointer;
+    }
+    .toolbar button:hover, .toolbar a:hover { background: var(--soft); }
+    main { max-width: 1180px; margin: 0 auto; padding: 1.25rem; }
+    .spread {
+      margin: 2rem 0;
+      padding: clamp(1rem, 3vw, 2rem);
+      background: rgba(255,255,255,0.86);
+      border: 1px solid rgba(146, 95, 0, 0.18);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+    }
+    .spread-header { display: grid; gap: 0.2rem; margin-bottom: 1rem; }
+    .eyebrow {
+      margin: 0;
+      color: var(--accent-dark);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: 0.82rem;
+    }
+    h2 { margin: 0; font-size: clamp(1.5rem, 3vw, 2.4rem); }
+    figure { margin: 0; }
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 20px;
+      border: 1px solid rgba(31, 41, 51, 0.12);
+      box-shadow: 0 10px 30px rgba(31, 41, 51, 0.16);
+      background: #ddd;
+    }
+    .reader-text {
+      margin-top: 1rem;
+      padding: 1rem;
+      border-radius: 18px;
+      background: #fff7e6;
+      border: 1px dashed rgba(146, 95, 0, 0.35);
+    }
+    .reader-text h3 { margin: 0 0 0.5rem; color: var(--green); }
+    .reader-text p {
+      margin: 0.45rem 0;
+      font-size: clamp(1.08rem, 2.2vw, 1.35rem);
+      font-weight: 650;
+    }
+    .teaching-notes {
+      margin: 2rem 0 4rem;
+      padding: 1.5rem;
+      background: #ffffff;
+      border: 1px solid rgba(55,122,73,0.22);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+    .teaching-notes h2 { color: var(--green); }
+    .columns {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+    ol, ul { padding-left: 1.25rem; }
+    li { margin: 0.35rem 0; }
+    footer { text-align: center; padding: 2rem 1rem 3rem; color: #4b5563; }
+    @media (max-width: 720px) {
+      .toolbar { justify-content: flex-start; overflow-x: auto; flex-wrap: nowrap; }
+      .toolbar a, .toolbar button { white-space: nowrap; }
+      main { padding: 0.75rem; }
+      .spread { border-radius: 20px; }
+    }
+    @media print {
+      body { background: #fff; }
+      header, .toolbar, footer { display: none; }
+      main { max-width: none; padding: 0; }
+      .spread {
+        box-shadow: none;
+        border: 0;
+        border-radius: 0;
+        page-break-after: always;
+        margin: 0;
+        padding: 0.35in;
+      }
+      .reader-text { break-inside: avoid; }
+      img { box-shadow: none; border-radius: 0; }
+      .teaching-notes { box-shadow: none; border: 0; page-break-before: always; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="title-wrap">
+      <h1>The Three Little Cats and the Hungry Dog</h1>
+      <p class="subtitle">A funny B1 ESL picture book set in Sakarya, Türkiye, with clean reading text, page images, vocabulary, and comprehension questions.</p>
+    </div>
+  </header>
+
+  <nav class="toolbar" aria-label="Page navigation">
+    <button type="button" onclick="window.print()">Print or save as PDF</button>
+    <a href="#spread-0">Cover</a>
+<a href="#spread-1">Pages 1-2</a>
+<a href="#spread-2">Pages 3-4</a>
+<a href="#spread-3">Pages 5-6</a>
+<a href="#spread-4">Pages 7-8</a>
+<a href="#spread-5">Pages 9-10</a>
+<a href="#spread-6">Pages 11-12</a>
+<a href="#spread-7">Pages 13-14</a>
+<a href="#spread-8">Pages 15-16</a>
+<a href="#spread-9">Pages 17-20</a>
+  </nav>
+
+  <main>
+    
+    <section class="spread" id="spread-0">
+      <div class="spread-header"><p class="eyebrow">Cover · Cover</p><h2>The Three Little Cats and the Hungry Dog</h2></div>
+      <figure><img loading="lazy" decoding="async" src="assets/00_cover.webp" alt="Cover image with three little cats, three houses, and a hungry dog in Sakarya countryside."></figure>
+      <div class="reader-text"><h3>Clean ESL text</h3><p>The Three Little Cats and the Hungry Dog</p></div>
+    </section>
+
+    <section class="spread" id="spread-1">
+      <div class="spread-header"><p class="eyebrow">Spread 1 · Pages 1-2</p><h2>Home in Sakarya</h2></div>
+      <figure><img loading="lazy" decoding="async" src="assets/01_pages_1_2.webp" alt="Mother Cat speaks to three little cats outside their village home in Sakarya."></figure>
+      <div class="reader-text"><h3>Clean ESL text</h3><p>Once upon a time, three little cats lived with their mother near a forest in Sakarya.</p><p>One day, Mother Cat said, “It is time to build your own houses.”</p></div>
+    </section>
+
+    <section class="spread" id="spread-2">
+      <div class="spread-header"><p class="eyebrow">Spread 2 · Pages 3-4</p><h2>The First Two Houses</h2></div>
+      <figure><img loading="lazy" decoding="async" src="assets/02_pages_3_4.webp" alt="Mırmır builds a wooden house and Pofuduk builds a cat food house."></figure>
+      <div class="reader-text"><h3>Clean ESL text</h3><p>Mırmır said, “I will build a house of wood. It will be fast!”</p><p>Pofuduk said, “I will build a house of cat food. It will be delicious!”</p></div>
+    </section>
+
+    <section class="spread" id="spread-3">
+      <div class="spread-header"><p class="eyebrow">Spread 3 · Pages 5-6</p><h2>The Brick House and the Dog</h2></div>
+      <figure><img loading="lazy" decoding="async" src="assets/03_pages_5_6.webp" alt="Captain Meow builds a brick house while a hungry dog comes from the forest."></figure>
+      <div class="reader-text"><h3>Clean ESL text</h3><p>Captain Meow said, “I will build a house of bricks. It will be strong.”</p><p>Then a big hungry dog came out of the forest.</p></div>
+    </section>
+
+    <section class="spread" id="spread-4">
+      <div class="spread-header"><p class="eyebrow">Spread 4 · Pages 7-8</p><h2>The Wooden House Falls</h2></div>
+      <figure><img loading="lazy" decoding="async" src="assets/04_pages_7_8.webp" alt="The dog barks at the wooden house, then the wooden house falls down."></figure>
+      <div class="reader-text"><h3>Clean ESL text</h3><p>The dog went to the wooden house. “Let me in!” he barked.</p><p>Crash! The wooden house fell down, and Mırmır ran away.</p></div>
+    </section>
+
+    <section class="spread" id="spread-5">
+      <div class="spread-header"><p class="eyebrow">Spread 5 · Pages 9-10</p><h2>The Cat Food House</h2></div>
+      <figure><img loading="lazy" decoding="async" src="assets/05_pages_9_10.webp" alt="The dog follows Mırmır to Pofuduk’s cat food house and sniffs it."></figure>
+      <div class="reader-text"><h3>Clean ESL text</h3><p>Mırmır ran to Pofuduk’s cat food house. The dog followed him.</p><p>The dog sniffed the house. “Mmm... chicken!” he said.</p></div>
+    </section>
+
+    <section class="spread" id="spread-6">
+      <div class="spread-header"><p class="eyebrow">Spread 6 · Pages 11-12</p><h2>Crunch, Crunch</h2></div>
+      <figure><img loading="lazy" decoding="async" src="assets/06_pages_11_12.webp" alt="The dog eats the cat food house and the cats run to the brick house."></figure>
+      <div class="reader-text"><h3>Clean ESL text</h3><p>Crunch, crunch! The dog ate the cat food house.</p><p>The two cats ran to Captain Meow’s brick house.</p></div>
+    </section>
+
+    <section class="spread" id="spread-7">
+      <div class="spread-header"><p class="eyebrow">Spread 7 · Pages 13-14</p><h2>The Brick House Survives</h2></div>
+      <figure><img loading="lazy" decoding="async" src="assets/07_pages_13_14.webp" alt="The dog tries to break the brick house, but the house stays strong."></figure>
+      <div class="reader-text"><h3>Clean ESL text</h3><p>The dog barked, jumped, and pushed. But the brick house did not move.</p><p>Captain Meow smiled. “A strong house is the best house.”</p></div>
+    </section>
+
+    <section class="spread" id="spread-8">
+      <div class="spread-header"><p class="eyebrow">Spread 8 · Pages 15-16</p><h2>Kindness</h2></div>
+      <figure><img loading="lazy" decoding="async" src="assets/08_pages_15_16.webp" alt="The tired dog sits outside while the cats give him food."></figure>
+      <div class="reader-text"><h3>Clean ESL text</h3><p>The dog sat down. He looked tired and hungry.</p><p>The cats gave the dog some food. “Please do not eat cats or houses,” they said.</p></div>
+    </section>
+
+    <section class="spread" id="spread-9">
+      <div class="spread-header"><p class="eyebrow">Spread 9 · Pages 17-20</p><h2>A Happy Ending</h2></div>
+      <figure><img loading="lazy" decoding="async" src="assets/09_pages_17_20.webp" alt="The cats and dog laugh together and live happily in Sakarya."></figure>
+      <div class="reader-text"><h3>Clean ESL text</h3><p>The dog said, “I promise. Can I eat homework?”</p><p>“Only math homework,” said Mırmır.</p><p>From that day, they all lived happily in Sakarya.</p><p>The end.</p></div>
+    </section>
+
+    <section class="teaching-notes" id="teaching-notes">
+      <h2>Teacher notes</h2>
+      <div class="columns">
+        <div>
+          <h3>B1 vocabulary</h3>
+          <ul>
+            <li>brick</li>
+            <li>wood</li>
+            <li>hungry</li>
+            <li>strong</li>
+            <li>survive</li>
+            <li>escape</li>
+            <li>knock</li>
+            <li>promise</li>
+            <li>security guard</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Comprehension questions</h3>
+          <ol>
+            <li>Where do the three little cats live?</li>
+            <li>Why does Mırmır build a wooden house?</li>
+            <li>Why is Pofuduk’s house a bad idea?</li>
+            <li>Why does the brick house survive?</li>
+            <li>What does the dog promise?</li>
+          </ol>
+        </div>
+        <div>
+          <h3>Full clean text</h3>
+          <ol>
+            <li>Once upon a time, three little cats lived with their mother near a forest in Sakarya.</li><li>One day, Mother Cat said, “It is time to build your own houses.”</li><li>Mırmır said, “I will build a house of wood. It will be fast!”</li><li>Pofuduk said, “I will build a house of cat food. It will be delicious!”</li><li>Captain Meow said, “I will build a house of bricks. It will be strong.”</li><li>Then a big hungry dog came out of the forest.</li><li>The dog went to the wooden house. “Let me in!” he barked.</li><li>Crash! The wooden house fell down, and Mırmır ran away.</li><li>Mırmır ran to Pofuduk’s cat food house. The dog followed him.</li><li>The dog sniffed the house. “Mmm... chicken!” he said.</li><li>Crunch, crunch! The dog ate the cat food house.</li><li>The two cats ran to Captain Meow’s brick house.</li><li>The dog barked, jumped, and pushed. But the brick house did not move.</li><li>Captain Meow smiled. “A strong house is the best house.”</li><li>The dog sat down. He looked tired and hungry.</li><li>The cats gave the dog some food. “Please do not eat cats or houses,” they said.</li><li>The dog said, “I promise. Can I eat homework?”</li><li>“Only math homework,” said Mırmır.</li><li>From that day, they all lived happily in Sakarya.</li><li>The end.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Created for ESL reading practice. Open this file in a browser, then use Print or save as PDF for classroom use.
+  </footer>
+</body>
+</html>

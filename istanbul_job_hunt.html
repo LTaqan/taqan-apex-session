@@ -1,0 +1,1579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jankat & Emre | Istanbul Job Hunt</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  /* ── VARIABLES (Blue & Gold Theme) ── */
+  :root {
+    --primary: #0f4c81; /* Deep Classic Blue */
+    --primary-lt: #2d74ba; /* Lighter Blue */
+    --accent: #d4af37; /* Metallic Gold */
+    --saffron: #fbbf24; /* Bright Gold/Yellow for XP */
+    --bg-main: #f0f4f8; /* Soft blue-gray background */
+    --card-bg: #ffffff;
+    --card-border: #cbd5e1; /* Slate border */
+    --text: #1e293b;
+    --muted: #64748b;
+    --correct: #059669; /* Emerald */
+    --wrong: #dc2626; /* Red */
+    --hint-color: #d4af37;
+    --radius: 16px;
+    --shadow: 0 8px 30px rgba(15, 76, 129, 0.12);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg-main);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── BACKGROUND PATTERN ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 15% 20%, rgba(15, 76, 129, 0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 80%, rgba(212, 175, 55, 0.12) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(45, 116, 186, 0.05) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── LAYOUT ── */
+  #app {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 20px 16px 60px;
+  }
+
+  /* ── INTRO BANNER ── */
+  .intro-banner {
+    background: linear-gradient(135deg, rgba(15, 76, 129, 0.1), rgba(212, 175, 55, 0.15));
+    border: 3px solid var(--primary-lt);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    margin-bottom: 20px;
+    animation: fadeUp 0.5s ease;
+  }
+  .intro-banner .intro-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.4rem;
+    color: var(--primary);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .intro-banner p { font-size: 1rem; line-height: 1.6; color: var(--text); font-weight: 700; }
+  .intro-banner strong { color: var(--primary); }
+
+  /* ── HEADER ── */
+  .ep-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--card-bg);
+    border: 3px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+    box-shadow: var(--shadow);
+  }
+  .ep-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.6rem;
+    color: var(--primary);
+    line-height: 1.2;
+  }
+  .ep-sub {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 2px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .xp-badge {
+    background: var(--saffron);
+    border-radius: 50px;
+    padding: 8px 18px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.1rem;
+    color: #451a03;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(250, 204, 21, 0.4);
+  }
+
+  /* ── SCENE PROGRESS DOTS ── */
+  .scene-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .scene-dot {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 3px solid var(--card-border);
+    background: var(--card-bg);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.8rem;
+    font-weight: 900;
+    color: var(--muted);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .scene-dot.active { border-color: var(--primary); background: var(--primary); color: #fff; transform: scale(1.1); box-shadow: 0 4px 10px rgba(15, 76, 129, 0.3);}
+  .scene-dot.done { border-color: var(--correct); background: var(--correct); color: #fff; }
+  .scene-dot.locked { opacity: 0.4; cursor: default; }
+
+  .nav-arrows {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+  }
+  .nav-btn {
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    border-radius: 10px;
+    color: var(--text);
+    font-size: 1rem;
+    padding: 6px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 800;
+  }
+  .nav-btn:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); background: #f0f8ff; }
+  .nav-btn:disabled { opacity: 0.3; cursor: default; }
+
+  /* ── SCENE CARD ── */
+  .scene-card {
+    background: var(--card-bg);
+    border: 3px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 32px 28px;
+    margin-bottom: 20px;
+    animation: fadeUp 0.3s ease;
+    box-shadow: var(--shadow);
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .scene-label {
+    font-size: 0.8rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .scene-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.1rem;
+    color: var(--text);
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+  .scene-body {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: var(--text);
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+  .scene-body strong { color: var(--primary); font-weight: 800;}
+  .scene-body em { color: var(--accent); font-style: normal; font-weight: 800; }
+
+  .scene-illustration {
+    font-size: 4rem;
+    text-align: center;
+    margin-bottom: 20px;
+    line-height: 1;
+    filter: drop-shadow(0 4px 12px rgba(212, 175, 55, 0.4));
+  }
+
+  /* ── INLINE MAGIC WORDS ── */
+  .ipill {
+    display: inline-block;
+    background: rgba(212, 175, 55, 0.15);
+    border: 2px solid var(--accent);
+    color: #9c7a14;
+    padding: 2px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 900;
+    font-size: 1.1rem;
+    transition: all 0.2s;
+  }
+  .ipill:hover {
+    background: var(--accent);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
+  }
+  .idiom-display {
+    display: none;
+    background: #fffbeb;
+    border-left: 5px solid var(--accent);
+    padding: 16px 20px;
+    margin-top: 16px;
+    border-radius: 0 12px 12px 0;
+    font-size: 1.05rem;
+    color: var(--text);
+    font-weight: 700;
+    animation: fadeUp 0.3s ease;
+  }
+  .idiom-display.active { display: block; }
+  .idiom-display strong { color: #b48600; font-size: 1.15rem;}
+
+  /* ── GRAMMAR SPOTLIGHT ── */
+  .grammar-box {
+    background: #f0f9ff;
+    border: 2px dashed var(--primary-lt);
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin: 20px 0;
+  }
+  .grammar-box .g-label {
+    font-size: 0.85rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: var(--primary);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .grammar-box p { font-size: 1.05rem; line-height: 1.6; font-weight: 700; }
+  .grammar-box code {
+    background: rgba(15, 76, 129, 0.15);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    color: var(--primary);
+    font-size: 1.05rem;
+  }
+
+  /* ── HINT BANNER ── */
+  .hint-banner {
+    display: none;
+    background: #fef9c3;
+    border: 2px solid var(--accent);
+    border-radius: 12px;
+    padding: 14px 20px;
+    font-size: 1rem;
+    color: #854d0e;
+    font-weight: 800;
+    margin-bottom: 16px;
+    animation: fadeUp 0.3s ease;
+  }
+  .hint-banner.active { display: block; }
+
+  /* ── QUESTIONS ── */
+  .question-block {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 2px dashed var(--card-border);
+  }
+  .q-label {
+    font-size: 0.8rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: var(--primary-lt);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .q-text {
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin-bottom: 18px;
+    line-height: 1.4;
+    color: var(--text);
+  }
+
+  .choices { display: flex; flex-direction: column; gap: 12px; }
+  .choice-btn {
+    background: var(--bg-main);
+    border: 2px solid var(--card-border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    text-align: left;
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .choice-btn .choice-letter {
+    width: 36px; height: 36px; min-width: 36px;
+    border-radius: 10px;
+    background: var(--card-border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--primary);
+    transition: all 0.2s;
+  }
+  .choice-btn:hover:not(:disabled) { border-color: var(--primary); transform: translateX(5px); background: #fff; box-shadow: 0 4px 10px rgba(15, 76, 129, 0.1); }
+  .choice-btn:hover:not(:disabled) .choice-letter { background: var(--primary); color: #fff; }
+  .choice-btn.correct { border-color: var(--correct); background: #ecfdf5; }
+  .choice-btn.correct .choice-letter { background: var(--correct); color: #fff; }
+  .choice-btn.wrong { border-color: var(--wrong); background: #fef2f2; opacity: 0.7;}
+  .choice-btn.wrong .choice-letter { background: var(--wrong); color: #fff; }
+  .choice-btn:disabled { cursor: default; }
+
+  /* ── NEW INTERACTIVE CONTROLS ── */
+  
+  /* Drag and Drop Sentence Builder */
+  .sentence-builder { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; min-height: 50px; padding: 12px; border: 2px dashed var(--card-border); border-radius: 12px; background: #fafafa; }
+  .word-bank { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .draggable-word { background: var(--card-bg); border: 2px solid var(--primary-lt); border-radius: 8px; padding: 8px 12px; cursor: grab; font-weight: 800; user-select: none; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+  .draggable-word:active { cursor: grabbing; transform: scale(1.05); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
+  .draggable-word.dragging { opacity: 0.5; }
+  
+  /* Fill in the Blank */
+  .fitb-container { font-size: 1.2rem; font-weight: 700; line-height: 1.8; margin-bottom: 16px; }
+  .fitb-input { border: 2px solid var(--card-border); border-radius: 8px; padding: 4px 8px; font-family: 'Nunito', sans-serif; font-size: 1.1rem; font-weight: 800; color: var(--primary); width: 120px; text-align: center; outline: none; transition: border-color 0.2s; background: #fff; }
+  .fitb-input:focus { border-color: var(--primary); }
+  .fitb-input.correct { border-color: var(--correct); background: #ecfdf5; color: var(--correct); }
+  .fitb-input.wrong { border-color: var(--wrong); background: #fef2f2; color: var(--wrong); }
+  
+  /* True / False Toggle */
+  .tf-container { display: flex; gap: 16px; margin-bottom: 16px; }
+  .tf-btn { flex: 1; padding: 16px; font-size: 1.2rem; font-weight: 900; border-radius: 12px; border: 2px solid var(--card-border); background: var(--card-bg); cursor: pointer; transition: all 0.2s; }
+  .tf-btn:hover:not(:disabled) { border-color: var(--primary); transform: translateY(-3px); box-shadow: 0 4px 10px rgba(15, 76, 129, 0.1); }
+  .tf-btn.selected.true { border-color: var(--correct); background: var(--correct); color: #fff; }
+  .tf-btn.selected.false { border-color: var(--wrong); background: var(--wrong); color: #fff; }
+  .tf-btn:disabled { cursor: default; }
+  
+  /* Sorting / Ordering */
+  .sort-list { list-style: none; padding: 0; margin: 0 0 16px 0; display: flex; flex-direction: column; gap: 8px; }
+  .sort-item { display: flex; align-items: center; background: var(--card-bg); border: 2px solid var(--card-border); border-radius: 12px; padding: 12px 16px; font-weight: 800; cursor: grab; user-select: none; }
+  .sort-item::before { content: '☰'; margin-right: 12px; color: var(--muted); cursor: grab; }
+  .sort-item:active { cursor: grabbing; }
+  .sort-item.dragging { opacity: 0.5; background: #f0f8ff; border-color: var(--primary-lt); }
+  
+  /* Matching Pairs */
+  .match-container { display: flex; justify-content: space-between; gap: 20px; margin-bottom: 16px; }
+  .match-col { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+  .match-btn { background: var(--card-bg); border: 2px solid var(--card-border); border-radius: 8px; padding: 12px; font-weight: 800; cursor: pointer; transition: all 0.2s; text-align: center; }
+  .match-btn:hover:not(:disabled) { border-color: var(--primary-lt); background: #f0f8ff; }
+  .match-btn.selected { border-color: var(--primary); background: var(--primary); color: #fff; box-shadow: 0 4px 10px rgba(15, 76, 129, 0.3); }
+  .match-btn.matched { border-color: var(--correct); background: #ecfdf5; color: var(--correct); cursor: default; opacity: 0.8; }
+  .match-btn.wrong { animation: shake 0.4s; border-color: var(--wrong); background: #fef2f2; color: var(--wrong); }
+  @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
+  
+  /* General Check Answer Button for new controls */
+  .check-btn { background: var(--accent); color: #fff; border: none; border-radius: 10px; padding: 12px 24px; font-family: 'Fredoka One', cursive; font-size: 1.1rem; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 4px 10px rgba(212, 175, 55, 0.4); margin-bottom: 16px; }
+  .check-btn:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(212, 175, 55, 0.5); }
+  .check-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* ── FEEDBACK ── */
+  .feedback {
+    display: none;
+    margin-top: 16px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    animation: fadeUp 0.3s ease;
+  }
+  .feedback.correct { display: block; background: #ecfdf5; border: 2px solid var(--correct); color: #065f46; }
+  .feedback.wrong   { display: block; background: #fef2f2; border: 2px solid var(--wrong); color: #991b1b; }
+
+  /* ── TRY AGAIN / CONTINUE BTN ── */
+  .try-again-btn {
+    display: none;
+    margin-top: 16px;
+    background: #fef2f2;
+    color: var(--wrong);
+    border: 2px solid var(--wrong);
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .try-again-btn:hover { background: var(--wrong); color: #fff; }
+  .try-again-btn.visible { display: inline-block; }
+
+  .continue-btn {
+    display: none;
+    margin-top: 20px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 32px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 6px 16px rgba(15, 76, 129, 0.4);
+    width: 100%;
+  }
+  .continue-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(15, 76, 129, 0.5); }
+  .continue-btn.visible { display: block; }
+
+  /* ── XP BURST ── */
+  .xp-burst {
+    display: none;
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%) scale(0.5);
+    font-family: 'Fredoka One', cursive;
+    font-size: 4rem;
+    color: var(--saffron);
+    text-shadow: 0 0 30px rgba(250,204,21,0.8), 0 4px 0 rgba(0,0,0,0.2);
+    z-index: 9999;
+    pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+    letter-spacing: 2px;
+  }
+  .xp-burst.pop { display: block; transform: translate(-50%,-50%) scale(1); }
+  .xp-burst.fade { opacity: 0; transform: translate(-50%,-70%) scale(1.2); }
+
+  /* ── LEVEL UP MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-box {
+    background: var(--card-bg);
+    border: 4px solid var(--accent);
+    border-radius: 24px;
+    padding: 40px 32px;
+    text-align: center;
+    max-width: 420px;
+    width: 90%;
+    animation: fadeUp 0.4s ease;
+    box-shadow: 0 0 60px rgba(212, 175, 55, 0.3);
+  }
+  .modal-box .modal-emoji { font-size: 5rem; margin-bottom: 16px; animation: bounce 2s infinite;}
+  @keyframes bounce { 0%, 100% {transform:translateY(0)} 50% {transform:translateY(-15px)} }
+  .modal-box h2 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.4rem;
+    color: var(--primary);
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+  .modal-box p { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 28px; line-height: 1.6; }
+  .modal-close {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 16px 40px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+    box-shadow: 0 4px 15px rgba(15, 76, 129, 0.4);
+  }
+  .modal-close:hover { transform: scale(1.05); }
+
+  /* ── TEACHER DASHBOARD ── */
+  #teacher-panel {
+    background: #f8fafc;
+    border: 3px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-top: 40px;
+  }
+  .t-header {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.6rem;
+    color: var(--text);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .t-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .t-stat {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    border: 2px solid #e2e8f0;
+    text-align: center;
+  }
+  .t-stat .t-val {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.2rem;
+    color: var(--primary);
+    line-height: 1;
+  }
+  .t-stat .t-key {
+    font-size: 0.8rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+  .t-log {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    border: 2px solid #e2e8f0;
+    max-height: 200px;
+    overflow-y: auto;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.8;
+    margin-bottom: 20px;
+  }
+  .t-log .log-correct { color: #059669; }
+  .t-log .log-wrong   { color: #dc2626; }
+
+  .t-hint-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .t-hint-btn {
+    background: #fffbeb;
+    border: 2px solid var(--accent);
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: #9c7a14;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .t-hint-btn:hover { background: var(--accent); color:#fff; }
+
+  .t-idiom-log {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .t-idiom-log span { color: #b48600; font-weight: 900; }
+
+  /* Top Mode Bar Buttons */
+  .top-btn {
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-weight: 800;
+    cursor: pointer;
+    color: var(--text);
+  }
+  .top-btn:hover { border-color: var(--primary); }
+  .top-btn.print-btn { background: #1e293b; color: #fff; border-color: #1e293b; }
+  .top-btn.print-btn:hover { background: #000; }
+  
+  .print-dash-btn {
+    background: var(--text);
+    border: none;
+    border-radius: 10px;
+    padding: 12px 24px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    color: #fff;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.2s;
+  }
+  .print-dash-btn:hover { background: #000; }
+
+  /* ── STRICT PRINT STYLES ── */
+  #print-summary { display: none; } /* Hidden by default in normal view */
+
+  @media print {
+    body { background: #fff !important; color: #000 !important; }
+    body::before { display: none !important; }
+    
+    /* HIDE ABSOLUTELY EVERYTHING EXCEPT THE PRINT SUMMARY */
+    #app > *:not(#print-summary) { display: none !important; }
+    .top-bar-container { display: none !important; } 
+    
+    /* Ensure Print Summary claims the full page cleanly */
+    #print-summary {
+      display: block !important;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 0 !important;
+      margin: 0 !important;
+      border: none !important;
+      background: #fff !important;
+      color: #000 !important;
+    }
+
+    #print-summary h2 { font-family: 'Fredoka One', cursive; font-size: 1.8rem; margin-bottom: 16px; color: #000; }
+    #print-summary table { width: 100%; border-collapse: collapse; font-size: 1.05rem; font-weight: 600; margin-bottom: 20px;}
+    #print-summary td, #print-summary th { border: 2px solid #ccc; padding: 12px 16px; text-align: left; color: #000;}
+    #print-summary th { background: #f5f5f5 !important; font-weight: 900; }
+    .no-print { display: none !important; }
+  }
+  
+  .print-summary-box {
+    margin-top: 30px;
+    padding: 30px;
+    border: 2px solid #ccc;
+    border-radius: 12px;
+    background: #fff;
+    color: #000;
+  }
+</style>
+</head>
+<body>
+
+<!-- Top Navigation -->
+<div class="top-bar-container" style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(240,244,248,0.95);backdrop-filter:blur(10px);border-bottom:3px solid var(--primary);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+  <div style="font-family:'Fredoka One', cursive; font-size:20px; color:var(--primary);">🏙️ Istanbul Job Hunt</div>
+  <div style="display:flex; gap:8px;">
+    <button class="top-btn print-btn" onclick="printSummary()">🖨️ Print Summary PDF</button>
+  </div>
+</div>
+
+<div id="app" style="padding-top: 80px;">
+
+  <div class="intro-banner">
+    <div class="intro-title">👋 Welcome, Jankat & Emre!</div>
+    <p>It's time to figure out what you want to do when you grow up! You will explore the chaotic streets of Istanbul to shadow different hilarious jobs. Master <strong>B1 Grammar</strong> and learn essential <strong>Career Vocabulary</strong> along the way. Click the gold <strong style="color:var(--accent)">Magic Words</strong> to reveal grammar secrets! 🇹🇷🚙</p>
+  </div>
+
+  <div class="ep-header">
+    <div>
+      <div class="ep-title">🏙️ Ep 1: Chaos in the City</div>
+      <div class="ep-sub">JANKAT & EMRE · B1 INTERMEDIATE · VOCAB & GRAMMAR</div>
+    </div>
+    <div class="xp-badge">⭐ XP: <span id="xp-display">0</span></div>
+  </div>
+
+  <div class="scene-nav" id="scene-nav">
+    <div class="nav-arrows">
+      <button class="nav-btn" id="prev-btn" onclick="goScene(-1)">◀ Back</button>
+      <button class="nav-btn" id="next-btn" onclick="goScene(1)">Next ▶</button>
+    </div>
+  </div>
+
+  <div class="hint-banner" id="hint-banner">💡 <span id="hint-text"></span></div>
+
+  <div id="scene-container"></div>
+
+  <div id="teacher-panel">
+    <div class="t-header">👨‍🏫 Teacher Dashboard</div>
+    <div class="t-grid">
+      <div class="t-stat"><div class="t-val" id="t-xp">0</div><div class="t-key">Total XP</div></div>
+      <div class="t-stat"><div class="t-val" id="t-correct">0</div><div class="t-key">Correct</div></div>
+      <div class="t-stat"><div class="t-val" id="t-wrong">0</div><div class="t-key">Errors</div></div>
+      <div class="t-stat"><div class="t-val" id="t-scene">1</div><div class="t-key">Scene / 9</div></div>
+    </div>
+    <div class="t-log" id="t-log">Activity log will appear here...</div>
+    <div style="font-size:0.8rem; font-weight:900; letter-spacing:1px; color:var(--muted); text-transform:uppercase; margin-bottom:10px;">✨ Fire a Live Hint</div>
+    <div class="t-hint-row">
+      <button class="t-hint-btn" onclick="fireHint('Grammar Hint: Use should for advice, and must for strong obligation.')">Modals Hint</button>
+      <button class="t-hint-btn" onclick="fireHint('Grammar Hint: Present Perfect Continuous uses has/have + been + Verb-ing.')">Pres. Perf. Cont. Hint</button>
+      <button class="t-hint-btn" onclick="fireHint('Grammar Hint: Second Conditional uses If + Past Simple, would + Verb.')">Second Conditional Hint</button>
+      <button class="t-hint-btn" onclick="fireHint('Grammar Hint: Passive voice uses the verb to be + Past Participle (Verb 3).')">Passive Voice Hint</button>
+      <button class="t-hint-btn" onclick="fireHint('Come on boys, you can do this! Keep exploring Istanbul! 💪')">Encouragement</button>
+    </div>
+    <div class="t-idiom-log" id="t-idiom-log">Magic Words clicked: <span>none yet</span></div>
+    <button class="print-dash-btn" onclick="printSummary()">🖨️ Generate Print Summary PDF</button>
+  </div>
+
+  <div id="print-summary">
+    <div class="print-summary-box">
+      <h2>📋 Lesson Summary — Jankat & Emre | B1 Istanbul Job Hunt</h2>
+      <p style="margin-bottom: 15px; font-weight: 700; font-size: 1.1rem; color: #444;"><strong>Date: </strong><span id="print-date"></span></p>
+      <table>
+        <tr><th width="30%">Metric</th><th width="70%">Result</th></tr>
+        <tr><td>Total XP Earned</td><td id="ps-xp">—</td></tr>
+        <tr><td>Correct Answers</td><td id="ps-correct">—</td></tr>
+        <tr><td>Attempts Needed</td><td id="ps-attempts">—</td></tr>
+        <tr><td>Scenes Completed</td><td id="ps-scenes">—</td></tr>
+        <tr><td>Magic Words Clicked</td><td id="ps-idioms">—</td></tr>
+        <tr><td>Learning Focus</td><td>B1 Grammar (Present Perfect Continuous, 2nd Conditional, Passive Voice, Reported Speech, Modals) & B1 Career Vocab</td></tr>
+      </table>
+      <h3 style="margin-top: 20px; font-family: 'Fredoka One', cursive; color: #333;">Teacher Activity Log:</h3>
+      <p id="ps-log" style="margin-top:12px; font-size:0.95rem; color:#444; font-weight: 600; line-height: 1.6;"></p>
+    </div>
+  </div>
+
+</div>
+
+<div class="xp-burst" id="xp-burst"></div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <div class="modal-emoji" id="modal-emoji">🏆</div>
+    <h2 id="modal-title">LESSON COMPLETE!</h2>
+    <p id="modal-msg">Outstanding work, Jankat and Emre!</p>
+    <button class="modal-close" onclick="closeModal()">Next Adventure! ✨</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+let state = {
+  xp: 0,
+  currentScene: 0,
+  scenesDone: [],
+  correctCount: 0,
+  wrongCount: 0,
+  answerLog: [],
+  idiomsClicked: [],
+  questionStates: {},     
+  shuffledChoices: {}     
+};
+
+// ═══════════════════════════════════════════════════════
+// DICTIONARY FOR INLINE "MAGIC WORDS" (B1 Grammar & Vocab)
+// ═══════════════════════════════════════════════════════
+const IDIOM_DEFS = {
+  'should_carry': '✨ <strong>Modals for Advice</strong><br>We use <strong>should + verb</strong> to give advice or say what is a good idea. "You should carry them carefully!"',
+  'have_been_honking': '✨ <strong>Present Perfect Continuous</strong><br>We use <strong>have/has + been + V-ing</strong> for an action that started in the past and is still happening now! Traffic is still crazy!',
+  'show_off': '✨ <strong>Phrasal Verb: Show off</strong><br>To try to impress people by showing them how good you are at something (like flipping ice cream).',
+  'if_we_were': '✨ <strong>Second Conditional</strong><br>We use this for imaginary or unlikely situations! <strong>If + Past Simple, would + Verb</strong>. "If we were rich, we would buy it." Note: We often use "were" instead of "was" for all subjects in the 2nd conditional!',
+  'commute': '✨ <strong>B1 Vocabulary</strong><br><strong>Commute</strong> means the journey you make regularly between your home and your job.',
+  'are_fed': '✨ <strong>Passive Voice (Present Simple)</strong><br>We use <strong>am/is/are + Verb 3</strong> when the ACTION is more important than WHO does it. "The cats are fed by everyone." (We don\'t care exactly who feeds them).',
+  'too_spicy': '✨ <strong>Too vs. Enough</strong><br><strong>Too</strong> comes before an adjective and means "more than what is good or needed". It\'s a negative thing!',
+  'said_he_was': '✨ <strong>Reported Speech</strong><br>When we tell someone else what a person said, we step back one tense in the past. "I am busy" becomes "He said he was busy."'
+};
+
+// ═══════════════════════════════════════════════════════
+// 9 SCENES DATA (Istanbul Jobs & B1 Grammar) - UPDATED WITH NEW CONTROLS
+// ═══════════════════════════════════════════════════════
+const SCENES = [
+  {
+    id: 0,
+    label: "Scene 1 · B1 Modals 🥯",
+    title: "The Clumsy Simit Seller",
+    illustration: "🥯🤸‍♂️🛒",
+    body: `Jankat and Emre woke up early to try their first job: selling crispy simits near the Galata Tower. The master baker handed Jankat a massive tray of 100 simits to balance on his head.<br><br>
+"Listen carefully," the baker warned. "You <span class="ipill" onclick="showIdiom('should_carry')">should carry</span> the tray slowly. You <strong>must not</strong> run, or you will drop our breakfast!" But Jankat saw a cute street dog and started running...`,
+    grammar: {
+      label: "✨ Grammar Spot: Modals of Obligation & Advice",
+      text: `<strong>Should</strong> = It's a good idea (advice).<br>
+      <strong>Must</strong> = It's a strong rule or obligation (very important!).<br>
+      <strong>Must not (Mustn't)</strong> = It is prohibited! Don't do it!`
+    },
+    question: {
+      type: "sentence-builder",
+      text: "Build the correct rule for Jankat: (Hint: Strong prohibition)",
+      words: ["He", "must", "not", "dance", "in", "the", "street."],
+      correctOrder: ["He", "must", "not", "dance", "in", "the", "street."],
+      xp: 100,
+      correctMsg: "🥯 Correct! 'Must not + base verb' is used for strong prohibitions. No dancing with simits!",
+      wrongMsg: "Oops! We need a strong modal for a rule ('must not'), followed by the base form of the verb."
+    }
+  },
+  {
+    id: 1,
+    label: "Scene 2 · B1 Grammar 🚐",
+    title: "Dolmuş Driver Drama",
+    illustration: "🚐🚦🗣️",
+    body: `Next, the boys sat next to a Dolmuş (minibus) driver. The traffic in Beşiktaş was terrible. Cars were completely stopped.<br><br>
+The driver wiped his forehead. "I am exhausted!" he yelled. "I <span class="ipill" onclick="showIdiom('have_been_honking')">have been honking</span> the horn for two hours, and we haven't moved an inch! Emre, collect the money from the back!"`,
+    grammar: {
+      label: "✨ Grammar Spot: Present Perfect Continuous",
+      text: `We use <strong>have/has + been + Verb-ing</strong> for an action that started in the past and is <strong>still continuing now</strong>.<br><br>
+      He started honking 2 hours ago... and he is STILL honking right now!`
+    },
+    question: {
+      type: "fitb",
+      text: "Fill in the blanks to say the driver started honking 2 hours ago and is still doing it now:",
+      template: "He [has] [been] [honking] for two hours.",
+      xp: 100,
+      correctMsg: "🚐 Excellent! 'Has been honking' shows it's continuous, and 'for' is used for a duration of time!",
+      wrongMsg: "Remember: We use 'has been' + V-ing for singular subjects in Present Perfect Continuous."
+    }
+  },
+  {
+    id: 2,
+    label: "Scene 3 · Phrasal Verbs 🍦",
+    title: "Tricked by Ice Cream",
+    illustration: "🍦🤹‍♂️😂",
+    body: `It was a hot day, so they visited a Maraş Dondurmacısı (traditional Turkish ice cream seller). The man wearing a red vest decided to <span class="ipill" onclick="showIdiom('show_off')">show off</span> for the tourists.<br><br>
+He handed Emre a cone, but when Emre tried to grab it, the man flipped it away with a long metal stick! Emre tried again, but the man pulled it back. Jankat couldn't stop laughing.`,
+    grammar: {
+      label: "✨ Vocab Spot: Phrasal Verbs",
+      text: `<strong>Show off:</strong> To behave in a way that is intended to attract attention or admiration.<br>
+      <strong>Give up:</strong> To stop trying to do something because it is too hard.<br>
+      <em>Emre tried to grab the ice cream 5 times, but he didn't give up!</em>`
+    },
+    question: {
+      type: "matching",
+      text: "Match the phrasal verbs to their meanings:",
+      pairs: [
+        { left: "Show off", right: "Try to impress others" },
+        { left: "Give up", right: "Stop trying (quit)" },
+        { left: "Look for", right: "Try to find something" }
+      ],
+      xp: 100,
+      correctMsg: "🍦 Perfect matching! You know your phrasal verbs.",
+      wrongMsg: "Not quite. Think about what Emre wanted to do when he couldn't get the ice cream."
+    }
+  },
+  {
+    id: 3,
+    label: "Scene 4 · B1 Grammar 🕌",
+    title: "The Grand Bazaar Carpet",
+    illustration: "🕌🧞‍♂️💸",
+    body: `The boys wandered into the massive Grand Bazaar. A man tried to sell them a beautiful, hand-woven silk carpet. It cost 100,000 Lira!<br><br>
+Emre whispered to Jankat, "<span class="ipill" onclick="showIdiom('if_we_were')">If we were</span> millionaires, I <strong>would buy</strong> this carpet for my mom. But right now, we only have enough money for a glass of tea."`,
+    grammar: {
+      label: "✨ Grammar Spot: Second Conditional",
+      text: `We use the Second Conditional for <strong>unreal, imaginary, or impossible</strong> situations right now.<br><br>
+      Structure: <code>If + Past Simple, would (or wouldn't) + Verb</code><br>
+      <em>If I <strong>had</strong> money, I <strong>would buy</strong> it.</em> (Reality: I don't have money).`
+    },
+    question: {
+      type: "tf",
+      text: "True or False: The sentence 'If Jankat spoke Arabic, he would talk to the tourists' uses the Second Conditional correctly.",
+      answer: true,
+      xp: 100,
+      correctMsg: "💸 Fantastic! 'If he spoke' (Past Simple) pairs with 'he would talk' (Would + Base Verb). It is an unreal situation.",
+      wrongMsg: "Look at the Second Conditional rule again! We need Past Simple after 'If', and 'would + verb' in the main clause."
+    }
+  },
+  {
+    id: 4,
+    label: "Scene 5 · B1 Vocabulary ⛴️",
+    title: "A Breezy Commute",
+    illustration: "⛴️🌊🕊️",
+    body: `They got jobs throwing ropes on the Bosphorus ferry, crossing from Asia to Europe. The wind was blowing, and seagulls followed the boat.<br><br>
+"This is the best <span class="ipill" onclick="showIdiom('commute')">commute</span> in the world!" Jankat smiled, throwing a piece of simit to a bird. "It's much better than sitting in a hot, crowded bus in traffic!"`,
+    grammar: {
+      label: "✨ Vocab Spot: Career & Travel",
+      text: `<strong>Commute (noun):</strong> The regular journey between work and home.<br>
+      <strong>Colleagues (noun):</strong> The people you work with.<br>
+      <strong>Shift (noun):</strong> The period of time a person is scheduled to work (e.g., a night shift).`
+    },
+    question: {
+      type: "multiple-choice", // Keep one MC just for variety
+      text: "If Jankat works on the ferry from 8 AM to 4 PM every day, that period of time is called his:",
+      choices: [
+        { text: "shift", correct: true },
+        { text: "commute", correct: false },
+        { text: "colleague", correct: false },
+        { text: "salary", correct: false }
+      ],
+      xp: 100,
+      correctMsg: "⛴️ Spot on! A 'shift' is a scheduled period of work time.",
+      wrongMsg: "Think about the vocabulary list. What do we call a scheduled period of working time?"
+    }
+  },
+  {
+    id: 5,
+    label: "Scene 6 · B1 Grammar 🐈",
+    title: "Managers of the City",
+    illustration: "🐈🐟👑",
+    body: `In Kadıköy, they realized who really runs the city: the street cats! The cats don't have human jobs, but they are treated like royalty.<br><br>
+"Look at that fat cat," Emre pointed. "The cats <span class="ipill" onclick="showIdiom('are_fed')">are fed</span> by the fishermen every morning. Little wooden houses <strong>are built</strong> for them by the city council."`,
+    grammar: {
+      label: "✨ Grammar Spot: Passive Voice (Present Simple)",
+      text: `We use the Passive Voice when the <strong>receiver</strong> of the action is more important than the <strong>doer</strong>.<br><br>
+      Structure: <code>Subject + am/is/are + Past Participle (Verb 3)</code><br>
+      <em>The fish <strong>is eaten</strong>.</em> (We care about the fish, not who ate it!)`
+    },
+    question: {
+      type: "sentence-builder",
+      text: "Rewrite 'The people love the cats' in the Passive Voice:",
+      words: ["The", "cats", "are", "loved", "by", "the", "people."],
+      correctOrder: ["The", "cats", "are", "loved", "by", "the", "people."],
+      xp: 100,
+      correctMsg: "👑 Meow! 'Cats' is plural, so we use 'are', followed by the Past Participle 'loved'. Perfect passive!",
+      wrongMsg: "Check the passive structure: we need the correct 'to be' verb (am/is/are) + Verb 3."
+    }
+  },
+  {
+    id: 6,
+    label: "Scene 7 · B1 Vocabulary 🥙",
+    title: "The Spicy Chef",
+    illustration: "🥙🔥🥵",
+    body: `For lunch, they tried working at a famous kebab restaurant. The chef handed Emre a spicy Adana kebab to taste.<br><br>
+Emre took one bite and his face turned bright red! "Water! I need water!" he coughed. "This kebab is <span class="ipill" onclick="showIdiom('too_spicy')">too spicy</span>! I can't feel my tongue!" Jankat laughed and handed him an Ayran.`,
+    grammar: {
+      label: "✨ Grammar Spot: Too vs. Enough",
+      text: `<strong>Too + Adjective:</strong> Means more than what is wanted or needed. It has a negative meaning! (Too spicy = I can't eat it).<br>
+      <strong>Adjective + Enough:</strong> Means the right amount. (Spicy enough = It's perfect).`
+    },
+    question: {
+      type: "fitb",
+      text: "Jankat can't lift the massive tray of meat. Fill in the blank:",
+      template: "The tray is [too] heavy for him to carry.",
+      xp: 100,
+      correctMsg: "🔥 Yes! 'Too heavy' means it is heavier than what he can handle, so he can't lift it.",
+      wrongMsg: "If he CANNOT lift it because it has a negative amount of weight, we use 'too' before the adjective."
+    }
+  },
+  {
+    id: 7,
+    label: "Scene 8 · B1 Grammar 💻",
+    title: "The Tech Bro in Levent",
+    illustration: "💻☕🏢",
+    body: `Finally, they visited a modern skyscraper in Levent. They met a software developer who was drinking very expensive coffee. He looked stressed.<br><br>
+"I am working on a major app update," the man said. Later, Jankat told Emre, "The developer <span class="ipill" onclick="showIdiom('said_he_was')">said he was</span> working on a major app update. Sounds boring compared to the ferry!"`,
+    grammar: {
+      label: "✨ Grammar Spot: Reported Speech",
+      text: `When we report what someone said, we usually move the tense <strong>one step back into the past</strong>.<br><br>
+      Direct: "I <strong>am</strong> working." (Present Continuous)<br>
+      Reported: He said he <strong>was</strong> working. (Past Continuous)`
+    },
+    question: {
+      type: "sorting",
+      text: "Order the words to report: 'I hate the traffic.' -> The driver said...",
+      items: ["he", "hated", "the", "traffic."],
+      correctOrder: ["he", "hated", "the", "traffic."],
+      prefix: "The driver said ",
+      xp: 100,
+      correctMsg: "🏢 Great job! Present Simple ('hate') steps back to Past Simple ('hated') in reported speech.",
+      wrongMsg: "Remember to change the pronoun and step the verb tense back to the past!"
+    }
+  },
+  {
+    id: 8,
+    label: "Scene 9 · Final Challenge 🏆",
+    title: "The Final Decision",
+    illustration: "🏆👨‍🎓💼",
+    body: `The sun set over the Golden Horn. Jankat and Emre sat on a bench, eating sunflower seeds (çekirdek) and looking at the view.<br><br>
+"So, what do you want to be?" Emre asked. "I don't know," Jankat replied. "But let's see if we can pass the final B1 test first!"`,
+    grammar: {
+      label: "✨ The Ultimate Mixed Challenge",
+      text: `To win the game, you must construct a sentence that contains TWO things:<br>
+      1. <strong>A Second Conditional</strong> (If + Past Simple, would + Verb)<br>
+      2. <strong>A Phrasal Verb</strong> (like give up, show off, or find out)`
+    },
+    question: {
+      type: "sentence-builder",
+      text: "Build the winning sentence (2nd Conditional + Phrasal Verb):",
+      words: ["If", "Jankat", "lived", "in", "Levent,", "he", "would", "show", "off", "his", "new", "car."],
+      correctOrder: ["If", "Jankat", "lived", "in", "Levent,", "he", "would", "show", "off", "his", "new", "car."],
+      xp: 100,
+      correctMsg: "🏆 HARİKA! (Awesome!) 'If he lived... he would' is the 2nd Conditional, and 'show off' is a phrasal verb. You won!",
+      wrongMsg: "Check carefully! You need 'If + past... would' AND the phrasal verb 'show off'."
+    },
+    isLast: true
+  }
+];
+
+// ═══════════════════════════════════════════════════════
+// RENDER FUNCTIONS
+// ═══════════════════════════════════════════════════════
+
+function shuffleChoices(choices) {
+  const arr = choices.map((c, i) => ({ ...c, origIndex: i }));
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function renderSceneNav() {
+  const nav = document.getElementById('scene-nav');
+  const arrows = nav.querySelector('.nav-arrows');
+  nav.innerHTML = '';
+  SCENES.forEach((s, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'scene-dot' +
+      (i === state.currentScene ? ' active' : '') +
+      (state.scenesDone.includes(i) ? ' done' : '');
+    dot.textContent = i + 1;
+    dot.title = s.title;
+    dot.onclick = () => { state.currentScene = i; renderScene(); };
+    nav.appendChild(dot);
+  });
+  nav.appendChild(arrows);
+  document.getElementById('prev-btn').disabled = state.currentScene === 0;
+  document.getElementById('next-btn').disabled = state.currentScene === SCENES.length - 1;
+  document.getElementById('t-scene').textContent = state.currentScene + 1;
+}
+
+function renderScene() {
+  renderSceneNav();
+  const scene = SCENES[state.currentScene];
+  const qKey = `scene_${scene.id}`;
+  const answered = state.questionStates[qKey] || null;
+
+  let feedbackHTML = '';
+  let tryAgainHTML = '';
+  let continueHTML = '';
+
+  let questionAreaHTML = '';
+
+  if (scene.question.type === "multiple-choice") {
+    if (!state.shuffledChoices[qKey]) {
+      state.shuffledChoices[qKey] = shuffleChoices(scene.question.choices);
+    }
+    const shuffled = state.shuffledChoices[qKey];
+    const letters = ['A','B','C','D'];
+    
+    let choicesHTML = shuffled.map((c, idx) => {
+      let cls = '';
+      if (answered) {
+        if (c.correct) cls = 'correct';
+        else if (answered.pickedIndex === idx && !c.correct) cls = 'wrong';
+      }
+      return `<button class="choice-btn ${cls}" ${answered ? 'disabled' : ''}
+        onclick="checkAnswerMC(this, ${c.correct}, '${escapeStr(c.text)}', ${scene.question.xp}, ${idx}, ${scene.id})"
+        data-correct="${c.correct}">
+        <span class="choice-letter">${letters[idx]}</span>
+        ${escapeStr(c.text)}
+      </button>`;
+    }).join('');
+    questionAreaHTML = `<div class="choices" id="choices-${scene.id}">${choicesHTML}</div>`;
+  } 
+  
+  else if (scene.question.type === "sentence-builder") {
+    // Determine the current order (either initial shuffled, user's current, or final answered state)
+    let currentBank = scene.question.words;
+    let currentBuilder = [];
+    
+    if (answered) {
+      currentBuilder = answered.userAnswer;
+      currentBank = []; // All words used
+    } else if (state.questionStates[qKey + '_temp']) {
+      currentBank = state.questionStates[qKey + '_temp'].bank;
+      currentBuilder = state.questionStates[qKey + '_temp'].builder;
+    } else {
+      // Initial shuffle for word bank
+      currentBank = [...scene.question.words].sort(() => Math.random() - 0.5);
+      state.questionStates[qKey + '_temp'] = { bank: currentBank, builder: [] };
+    }
+
+    const bankHTML = currentBank.map((word, idx) => 
+      `<div class="draggable-word" draggable="${!answered}" ondragstart="sbDragStart(event, '${escapeStr(word)}', 'bank')" onclick="sbClickMove('${escapeStr(word)}', 'bank', ${scene.id})">${escapeStr(word)}</div>`
+    ).join('');
+    
+    const builderHTML = currentBuilder.map((word, idx) => 
+      `<div class="draggable-word" draggable="${!answered}" ondragstart="sbDragStart(event, '${escapeStr(word)}', 'builder')" onclick="sbClickMove('${escapeStr(word)}', 'builder', ${scene.id})">${escapeStr(word)}</div>`
+    ).join('');
+
+    questionAreaHTML = `
+      <div class="word-bank" id="sb-bank-${scene.id}" ondragover="sbDragOver(event)" ondrop="sbDrop(event, 'bank', ${scene.id})">
+        ${bankHTML}
+      </div>
+      <div class="sentence-builder" id="sb-builder-${scene.id}" ondragover="sbDragOver(event)" ondrop="sbDrop(event, 'builder', ${scene.id})">
+        ${builderHTML}
+      </div>
+      ${!answered ? `<button class="check-btn" onclick="checkAnswerSB(${scene.id})">Check Sentence</button>` : ''}
+    `;
+  }
+  
+  else if (scene.question.type === "fitb") {
+    let htmlTemplate = scene.question.template;
+    let inputsHTML = '';
+    const parts = htmlTemplate.split(/(\[[^\]]+\])/);
+    
+    let answerState = answered ? answered.userAnswer : (state.questionStates[qKey + '_temp'] || []);
+    
+    let inputIndex = 0;
+    parts.forEach(part => {
+      if (part.startsWith('[') && part.endsWith(']')) {
+        const expected = part.slice(1, -1);
+        const val = answerState[inputIndex] || '';
+        let cls = '';
+        if (answered) {
+          cls = (val.toLowerCase() === expected.toLowerCase()) ? 'correct' : 'wrong';
+        }
+        inputsHTML += `<input type="text" class="fitb-input ${cls}" id="fitb-${scene.id}-${inputIndex}" value="${escapeStr(val)}" ${answered ? 'disabled' : ''} oninput="updateTempStateFITB(${scene.id}, ${inputIndex}, this.value)">`;
+        inputIndex++;
+      } else {
+        inputsHTML += `<span>${part}</span>`;
+      }
+    });
+
+    questionAreaHTML = `
+      <div class="fitb-container">${inputsHTML}</div>
+      ${!answered ? `<button class="check-btn" onclick="checkAnswerFITB(${scene.id})">Check Answers</button>` : ''}
+    `;
+  }
+  
+  else if (scene.question.type === "tf") {
+    let tCls = '', fCls = '';
+    if (answered) {
+      if (answered.userAnswer === true) tCls = answered.correct ? 'selected true' : 'selected false';
+      if (answered.userAnswer === false) fCls = answered.correct ? 'selected true' : 'selected false';
+    }
+    questionAreaHTML = `
+      <div class="tf-container">
+        <button class="tf-btn ${tCls}" ${answered ? 'disabled' : ''} onclick="checkAnswerTF(true, ${scene.id})">TRUE</button>
+        <button class="tf-btn ${fCls}" ${answered ? 'disabled' : ''} onclick="checkAnswerTF(false, ${scene.id})">FALSE</button>
+      </div>
+    `;
+  }
+  
+  else if (scene.question.type === "sorting") {
+    let currentItems = [];
+    if (answered) {
+      currentItems = answered.userAnswer;
+    } else if (state.questionStates[qKey + '_temp']) {
+      currentItems = state.questionStates[qKey + '_temp'];
+    } else {
+      currentItems = [...scene.question.items].sort(() => Math.random() - 0.5);
+      state.questionStates[qKey + '_temp'] = currentItems;
+    }
+
+    let itemsHTML = currentItems.map((item, idx) => 
+      `<li class="sort-item" draggable="${!answered}" ondragstart="sortDragStart(event, ${idx})" ondragover="sortDragOver(event, ${idx})" ondrop="sortDrop(event, ${idx}, ${scene.id})" data-idx="${idx}">
+        ${escapeStr(item)}
+      </li>`
+    ).join('');
+
+    questionAreaHTML = `
+      <div style="font-weight: 800; color: var(--primary); margin-bottom: 8px;">${scene.question.prefix || ''}</div>
+      <ul class="sort-list" id="sort-list-${scene.id}">
+        ${itemsHTML}
+      </ul>
+      ${!answered ? `<button class="check-btn" onclick="checkAnswerSort(${scene.id})">Check Order</button>` : ''}
+    `;
+  }
+
+  else if (scene.question.type === "matching") {
+    // Initial setup for matching if not done
+    if (!state.questionStates[qKey + '_temp']) {
+      let lefts = scene.question.pairs.map((p, i) => ({ text: p.left, id: i, type: 'left' })).sort(() => Math.random() - 0.5);
+      let rights = scene.question.pairs.map((p, i) => ({ text: p.right, id: i, type: 'right' })).sort(() => Math.random() - 0.5);
+      state.questionStates[qKey + '_temp'] = { lefts, rights, selected: null, matched: [] };
+    }
+    
+    let tempState = state.questionStates[qKey + '_temp'];
+    // If fully answered via matching all correctly, we might transition to the 'answered' state
+    let isFullyMatched = tempState.matched.length === scene.question.pairs.length;
+    
+    // Auto-check if fully matched and not officially 'answered' yet
+    if (isFullyMatched && !answered) {
+       setTimeout(() => finalizeMatching(scene.id), 100); // defer to let render finish
+    }
+
+    const renderMatchCol = (items, side) => items.map(item => {
+      let isMatched = tempState.matched.includes(item.id);
+      let isSelected = tempState.selected && tempState.selected.id === item.id && tempState.selected.type === side;
+      let cls = isMatched ? 'matched' : isSelected ? 'selected' : '';
+      return `<button class="match-btn ${cls}" ${isMatched || answered ? 'disabled' : ''} onclick="handleMatchClick(${item.id}, '${side}', ${scene.id})">${escapeStr(item.text)}</button>`;
+    }).join('');
+
+    questionAreaHTML = `
+      <div class="match-container">
+        <div class="match-col">${renderMatchCol(tempState.lefts, 'left')}</div>
+        <div class="match-col">${renderMatchCol(tempState.rights, 'right')}</div>
+      </div>
+    `;
+  }
+
+  if (answered) {
+    if (answered.correct) {
+      feedbackHTML = `<div class="feedback correct">✅ ${escapeStr(scene.question.correctMsg)}</div>`;
+      continueHTML = `<button class="continue-btn visible" onclick="advanceScene()">Continue ▶</button>`;
+    } else {
+      feedbackHTML = `<div class="feedback wrong">❌ ${escapeStr(scene.question.wrongMsg)}</div>`;
+      tryAgainHTML = `<button class="try-again-btn visible" onclick="resetQuestion(${scene.id})">🔄 Try Again</button>`;
+    }
+  }
+
+  document.getElementById('scene-container').innerHTML = `
+    <div class="scene-card">
+      <div class="scene-label">${scene.label}</div>
+      <div class="scene-title">${scene.title}</div>
+      <div class="scene-illustration">${scene.illustration}</div>
+      <div class="scene-body">${scene.body}</div>
+      
+      <div id="idiom-display" class="idiom-display"></div>
+
+      ${scene.grammar ? `<div class="grammar-box"><div class="g-label">${scene.grammar.label}</div><p>${scene.grammar.text}</p></div>` : ''}
+      <div class="question-block">
+        <div class="q-label">🎯 B1 Challenge Question</div>
+        <div class="q-text">${scene.question.text}</div>
+        ${questionAreaHTML}
+        ${feedbackHTML}
+        ${tryAgainHTML}
+        ${continueHTML}
+      </div>
+    </div>
+  `;
+
+  document.getElementById('hint-banner').classList.remove('active');
+}
+
+function escapeStr(s) {
+  if (s == null) return '';
+  return String(s).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
+
+// ═══════════════════════════════════════════════════════
+// ANSWER LOGIC & INTERACTIVITY FOR SPECIFIC CONTROLS
+// ═══════════════════════════════════════════════════════
+
+// --- Multiple Choice ---
+function checkAnswerMC(btn, isCorrect, text, xpVal, pickedIndex, sceneId) {
+  processAnswer(sceneId, isCorrect, `"${text}"`, xpVal, { pickedIndex: pickedIndex });
+}
+
+// --- Sentence Builder ---
+let draggedSBWord = null;
+let draggedSBSource = null;
+
+function sbDragStart(e, word, source) {
+  draggedSBWord = word;
+  draggedSBSource = source;
+  e.dataTransfer.effectAllowed = 'move';
+  setTimeout(() => e.target.classList.add('dragging'), 0);
+}
+
+function sbDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+}
+
+function sbDrop(e, targetZone, sceneId) {
+  e.preventDefault();
+  document.querySelectorAll('.dragging').forEach(el => el.classList.remove('dragging'));
+  if (!draggedSBWord) return;
+  moveSBWord(draggedSBWord, draggedSBSource, targetZone, sceneId);
+}
+
+function sbClickMove(word, source, sceneId) {
+  const targetZone = source === 'bank' ? 'builder' : 'bank';
+  moveSBWord(word, source, targetZone, sceneId);
+}
+
+function moveSBWord(word, source, targetZone, sceneId) {
+  if (source === targetZone) return;
+  const qKey = `scene_${sceneId}`;
+  let tempState = state.questionStates[qKey + '_temp'];
+  
+  // Remove from source
+  if (source === 'bank') {
+    tempState.bank = tempState.bank.filter(w => w !== word);
+    tempState.builder.push(word);
+  } else {
+    tempState.builder = tempState.builder.filter(w => w !== word);
+    tempState.bank.push(word);
+  }
+  
+  draggedSBWord = null;
+  draggedSBSource = null;
+  renderScene();
+}
+
+function checkAnswerSB(sceneId) {
+  const scene = SCENES[sceneId];
+  const qKey = `scene_${sceneId}`;
+  const builtSentenceArr = state.questionStates[qKey + '_temp'].builder;
+  
+  if (builtSentenceArr.length !== scene.question.correctOrder.length) {
+    // Treat as wrong if not all words used
+    processAnswer(sceneId, false, `[Incomplete sentence]`, scene.question.xp, { userAnswer: builtSentenceArr });
+    return;
+  }
+
+  const isCorrect = JSON.stringify(builtSentenceArr) === JSON.stringify(scene.question.correctOrder);
+  const textLog = builtSentenceArr.join(' ');
+  processAnswer(sceneId, isCorrect, `Built: "${textLog}"`, scene.question.xp, { userAnswer: builtSentenceArr });
+}
+
+// --- Fill in the Blank ---
+function updateTempStateFITB(sceneId, index, value) {
+  const qKey = `scene_${sceneId}`;
+  if (!state.questionStates[qKey + '_temp']) {
+    state.questionStates[qKey + '_temp'] = [];
+  }
+  state.questionStates[qKey + '_temp'][index] = value.trim();
+}
+
+function checkAnswerFITB(sceneId) {
+  const scene = SCENES[sceneId];
+  const qKey = `scene_${sceneId}`;
+  const userAnswers = state.questionStates[qKey + '_temp'] || [];
+  
+  const parts = scene.question.template.split(/(\[[^\]]+\])/);
+  const expectedAnswers = parts.filter(p => p.startsWith('[') && p.endsWith(']')).map(p => p.slice(1, -1));
+  
+  let isCorrect = true;
+  for (let i = 0; i < expectedAnswers.length; i++) {
+    const userVal = userAnswers[i] || '';
+    if (userVal.toLowerCase() !== expectedAnswers[i].toLowerCase()) {
+      isCorrect = false;
+      break;
+    }
+  }
+
+  const textLog = `Answers: [${userAnswers.join(', ')}]`;
+  processAnswer(sceneId, isCorrect, textLog, scene.question.xp, { userAnswer: userAnswers });
+}
+
+// --- True / False ---
+function checkAnswerTF(userPick, sceneId) {
+  const scene = SCENES[sceneId];
+  const isCorrect = userPick === scene.question.answer;
+  const textLog = `Picked ${userPick}`;
+  processAnswer(sceneId, isCorrect, textLog, scene.question.xp, { userAnswer: userPick });
+}
+
+// --- Sorting ---
+let sortDragIdx = null;
+
+function sortDragStart(e, idx) {
+  sortDragIdx = idx;
+  setTimeout(() => e.target.classList.add('dragging'), 0);
+}
+
+function sortDragOver(e, overIdx) {
+  e.preventDefault();
+  if (sortDragIdx === null || sortDragIdx === overIdx) return;
+  // Visual swap could happen here for better UX, but we'll do it on drop for simplicity
+}
+
+function sortDrop(e, dropIdx, sceneId) {
+  e.preventDefault();
+  document.querySelectorAll('.dragging').forEach(el => el.classList.remove('dragging'));
+  if (sortDragIdx === null || sortDragIdx === dropIdx) return;
+  
+  const qKey = `scene_${sceneId}`;
+  let arr = [...state.questionStates[qKey + '_temp']];
+  
+  // Swap logic
+  const temp = arr[sortDragIdx];
+  arr[sortDragIdx] = arr[dropIdx];
+  arr[dropIdx] = temp;
+  
+  state.questionStates[qKey + '_temp'] = arr;
+  sortDragIdx = null;
+  renderScene();
+}
+
+function checkAnswerSort(sceneId) {
+  const scene = SCENES[sceneId];
+  const qKey = `scene_${sceneId}`;
+  const currentArr = state.questionStates[qKey + '_temp'];
+  
+  const isCorrect = JSON.stringify(currentArr) === JSON.stringify(scene.question.correctOrder);
+  const textLog = `Ordered items`;
+  processAnswer(sceneId, isCorrect, textLog, scene.question.xp, { userAnswer: currentArr });
+}
+
+// --- Matching ---
+function handleMatchClick(id, type, sceneId) {
+  const qKey = `scene_${sceneId}`;
+  let tempState = state.questionStates[qKey + '_temp'];
+  
+  if (tempState.selected) {
+    if (tempState.selected.type === type) {
+      // Switched selection on same side
+      tempState.selected = { id, type };
+    } else {
+      // Trying to match
+      const otherId = tempState.selected.id;
+      // In our setup, correct pairs have matching IDs
+      if (id === otherId) {
+        // Correct match
+        tempState.matched.push(id);
+        // Show short visual feedback (handled implicitly by re-rendering)
+      } else {
+        // Wrong match (could add shake animation class here temporarily)
+        const buttons = document.querySelectorAll('.match-btn');
+        // Visual penalty omitted for brevity, handled generally by wrong state if needed
+      }
+      tempState.selected = null;
+    }
+  } else {
+    // First selection
+    tempState.selected = { id, type };
+  }
+  renderScene();
+}
+
+function finalizeMatching(sceneId) {
+   const scene = SCENES[sceneId];
+   // If it gets here, all are matched correctly
+   processAnswer(sceneId, true, "Completed Matching", scene.question.xp, { matchedAll: true });
+}
+
+// --- General Answer Processor ---
+function processAnswer(sceneId, isCorrect, logText, xpVal, stateData) {
+  const qKey = `scene_${sceneId}`;
+  if (state.questionStates[qKey]) return; 
+
+  state.questionStates[qKey] = { correct: isCorrect, ...stateData };
+
+  if (isCorrect) {
+    state.correctCount++;
+    state.xp += xpVal;
+    logAnswer(`✅ Scene ${sceneId + 1}: ${logText} — +${xpVal} XP`, true);
+    if (!state.scenesDone.includes(state.currentScene)) {
+      state.scenesDone.push(state.currentScene);
+    }
+    showXPBurst(`+${xpVal} XP ⭐`);
+  } else {
+    state.wrongCount++;
+    logAnswer(`❌ Scene ${sceneId + 1}: Wrong — ${logText}`, false);
+  }
+
+  updateDashboard();
+  renderScene(); 
+}
+
+function resetQuestion(sceneId) {
+  const qKey = `scene_${sceneId}`;
+  delete state.questionStates[qKey];
+  // Don't delete temp state for some types to allow correcting, 
+  // but for things like fitb or sentence builder, maybe reset them if desired.
+  // We'll leave temp state as is so they don't have to start from scratch.
+  renderScene();
+}
+
+function advanceScene() {
+  const scene = SCENES[state.currentScene];
+  if (scene.isLast) {
+    const totalPossible = SCENES.reduce((sum, s) => sum + s.question.xp, 0);
+    showModal('🏆', 'ADVENTURE COMPLETE!', `Jankat & Emre, you earned ${state.xp} XP out of ${totalPossible}! You survived Istanbul traffic AND mastered B1 Grammar! Awesome job! 🚙🇹🇷`);
+    return;
+  }
+  if (state.currentScene < SCENES.length - 1) {
+    state.currentScene++;
+    renderScene();
+  }
+}
+
+function goScene(dir) {
+  const next = state.currentScene + dir;
+  if (next >= 0 && next < SCENES.length) {
+    state.currentScene = next;
+    renderScene();
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// INLINE MAGIC WORDS LOGIC
+// ═══════════════════════════════════════════════════════
+function showIdiom(key) {
+  const displayBox = document.getElementById('idiom-display');
+  if (displayBox && IDIOM_DEFS[key]) {
+    displayBox.innerHTML = IDIOM_DEFS[key];
+    displayBox.classList.add('active');
+  }
+  
+  if (!state.idiomsClicked.includes(key)) {
+    state.idiomsClicked.push(key);
+    updateIdiomLog();
+  }
+}
+
+function updateIdiomLog() {
+  const el = document.getElementById('t-idiom-log');
+  if (state.idiomsClicked.length === 0) {
+    el.innerHTML = 'Magic Words clicked: <span>none yet</span>';
+  } else {
+    el.innerHTML = `Magic Words clicked: <span>${state.idiomsClicked.join(', ')}</span>`;
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// HINTS, DASHBOARD & MODAL
+// ═══════════════════════════════════════════════════════
+function fireHint(msg) {
+  const banner = document.getElementById('hint-banner');
+  document.getElementById('hint-text').textContent = msg;
+  banner.classList.add('active');
+  logAnswer(`💡 Hint fired: "${msg}"`, null);
+}
+
+function updateDashboard() {
+  document.getElementById('xp-display').textContent = state.xp;
+  document.getElementById('t-xp').textContent = state.xp;
+  document.getElementById('t-correct').textContent = state.correctCount;
+  document.getElementById('t-wrong').textContent = state.wrongCount;
+}
+
+function logAnswer(msg, correct) {
+  state.answerLog.push(msg);
+  const log = document.getElementById('t-log');
+  const div = document.createElement('div');
+  div.className = correct === true ? 'log-correct' : correct === false ? 'log-wrong' : '';
+  div.textContent = msg;
+  if (log.firstChild && log.firstChild.textContent === 'Activity log will appear here...') {
+    log.innerHTML = '';
+  }
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+function showXPBurst(msg) {
+  const el = document.getElementById('xp-burst');
+  el.textContent = msg;
+  el.className = 'xp-burst pop';
+  setTimeout(() => { el.classList.add('fade'); }, 700);
+  setTimeout(() => { el.className = 'xp-burst'; }, 1200);
+}
+
+function showModal(emoji, title, msg) {
+  document.getElementById('modal-emoji').textContent = emoji;
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-msg').textContent = msg;
+  document.getElementById('modal').classList.add('active');
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('active');
+}
+
+// ═══════════════════════════════════════════════════════
+// STRICT PRINT FUNCTION
+// ═══════════════════════════════════════════════════════
+function printSummary() {
+  // Populate the invisible print container with current data
+  document.getElementById('ps-xp').textContent = state.xp;
+  document.getElementById('ps-correct').textContent = state.correctCount;
+  document.getElementById('ps-attempts').textContent = state.wrongCount;
+  document.getElementById('ps-scenes').textContent = state.scenesDone.length + ' / ' + SCENES.length;
+  document.getElementById('ps-idioms').textContent = state.idiomsClicked.length > 0 ? state.idiomsClicked.length + ' viewed' : 'None';
+  document.getElementById('ps-log').innerHTML = state.answerLog.join('<br>');
+  
+  // Set the current date dynamically
+  const dateSpan = document.getElementById('print-date');
+  if(dateSpan) {
+    dateSpan.textContent = new Date().toLocaleDateString();
+  }
+  
+  // Trigger browser print
+  window.print();
+}
+
+// INIT
+renderScene();
+</script>
+</body>
+</html>

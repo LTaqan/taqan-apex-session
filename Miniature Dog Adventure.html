@@ -1,0 +1,1232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ayla | Ep 1: Miniature Dog Adventure</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  /* ── VARIABLES (Ayla's Cheerful Theme) ── */
+  :root {
+    --primary: #ff4785; /* Bright Pink */
+    --primary-lt: #ff7aa5;
+    --accent: #8b5cf6; /* Magic Purple */
+    --saffron: #facc15; /* Sunny Yellow */
+    --bg-main: #fff0f5; /* Lavender Blush */
+    --card-bg: #ffffff;
+    --card-border: #fbcfe8; /* Soft pink border */
+    --text: #334155;
+    --muted: #64748b;
+    --correct: #10b981;
+    --wrong: #ef4444;
+    --hint-color: #8b5cf6;
+    --radius: 16px;
+    --shadow: 0 8px 30px rgba(255, 71, 133, 0.15);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg-main);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── BACKGROUND PATTERN ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 15% 20%, rgba(255, 71, 133, 0.1) 0%, transparent 50%),
+      radial-gradient(ellipse at 85% 80%, rgba(139, 92, 246, 0.1) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(250, 204, 21, 0.15) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── LAYOUT ── */
+  #app {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 20px 16px 60px;
+  }
+
+  /* ── INTRO BANNER ── */
+  .intro-banner {
+    background: linear-gradient(135deg, rgba(255, 71, 133, 0.15), rgba(139, 92, 246, 0.1));
+    border: 3px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 22px 24px;
+    margin-bottom: 20px;
+    animation: fadeUp 0.5s ease;
+  }
+  .intro-banner .intro-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.4rem;
+    color: var(--primary);
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .intro-banner p { font-size: 1rem; line-height: 1.6; color: var(--text); font-weight: 700; }
+  .intro-banner strong { color: var(--accent); }
+
+  /* ── HEADER ── */
+  .ep-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--card-bg);
+    border: 3px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+    box-shadow: var(--shadow);
+  }
+  .ep-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.6rem;
+    color: var(--primary);
+    line-height: 1.2;
+  }
+  .ep-sub {
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin-top: 2px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .xp-badge {
+    background: var(--saffron);
+    border-radius: 50px;
+    padding: 8px 18px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.1rem;
+    color: #451a03;
+    white-space: nowrap;
+    box-shadow: 0 4px 12px rgba(250, 204, 21, 0.4);
+  }
+
+  /* ── SCENE PROGRESS DOTS ── */
+  .scene-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .scene-dot {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: 3px solid var(--card-border);
+    background: var(--card-bg);
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.8rem;
+    font-weight: 900;
+    color: var(--muted);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .scene-dot.active { border-color: var(--primary); background: var(--primary); color: #fff; transform: scale(1.1); box-shadow: 0 4px 10px rgba(255, 71, 133, 0.3);}
+  .scene-dot.done { border-color: var(--correct); background: var(--correct); color: #fff; }
+  .scene-dot.locked { opacity: 0.4; cursor: default; }
+
+  .nav-arrows {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+  }
+  .nav-btn {
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    border-radius: 10px;
+    color: var(--text);
+    font-size: 1rem;
+    padding: 6px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 800;
+  }
+  .nav-btn:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); background: #fdf2f8; }
+  .nav-btn:disabled { opacity: 0.3; cursor: default; }
+
+  /* ── SCENE CARD ── */
+  .scene-card {
+    background: var(--card-bg);
+    border: 3px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 32px 28px;
+    margin-bottom: 20px;
+    animation: fadeUp 0.3s ease;
+    box-shadow: var(--shadow);
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .scene-label {
+    font-size: 0.8rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .scene-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.1rem;
+    color: var(--text);
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+  .scene-body {
+    font-size: 1.15rem;
+    line-height: 1.7;
+    color: var(--text);
+    margin-bottom: 20px;
+    font-weight: 600;
+  }
+  .scene-body strong { color: var(--primary); font-weight: 800;}
+  .scene-body em { color: var(--accent); font-style: normal; font-weight: 800; }
+
+  /* ── EMOJI ILLUSTRATION ── */
+  .scene-illustration {
+    font-size: 4rem;
+    text-align: center;
+    margin-bottom: 20px;
+    line-height: 1;
+    filter: drop-shadow(0 4px 12px rgba(139, 92, 246, 0.25));
+  }
+
+  /* ── INLINE MAGIC WORDS ── */
+  .ipill {
+    display: inline-block;
+    background: rgba(139, 92, 246, 0.1);
+    border: 2px solid var(--accent);
+    color: var(--accent);
+    padding: 2px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 800;
+    font-size: 1.1rem;
+    transition: all 0.2s;
+  }
+  .ipill:hover {
+    background: var(--accent);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3);
+  }
+  .idiom-display {
+    display: none;
+    background: #f5f3ff;
+    border-left: 5px solid var(--accent);
+    padding: 16px 20px;
+    margin-top: 16px;
+    border-radius: 0 12px 12px 0;
+    font-size: 1.05rem;
+    color: var(--text);
+    font-weight: 700;
+    animation: fadeUp 0.3s ease;
+  }
+  .idiom-display.active { display: block; }
+  .idiom-display strong { color: var(--accent); font-size: 1.15rem;}
+
+  /* ── PHONICS/GRAMMAR SPOTLIGHT ── */
+  .grammar-box {
+    background: #fff1f2;
+    border: 2px dashed var(--primary);
+    border-radius: 12px;
+    padding: 18px 22px;
+    margin: 20px 0;
+  }
+  .grammar-box .g-label {
+    font-size: 0.85rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: var(--primary);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .grammar-box p { font-size: 1.05rem; line-height: 1.6; font-weight: 700; }
+  .grammar-box code {
+    background: rgba(255, 71, 133, 0.15);
+    border-radius: 6px;
+    padding: 3px 8px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    color: var(--primary);
+    font-size: 1.05rem;
+  }
+
+  /* ── HINT BANNER ── */
+  .hint-banner {
+    display: none;
+    background: #f5f3ff;
+    border: 2px solid var(--accent);
+    border-radius: 12px;
+    padding: 14px 20px;
+    font-size: 1rem;
+    color: var(--accent);
+    font-weight: 800;
+    margin-bottom: 16px;
+    animation: fadeUp 0.3s ease;
+  }
+  .hint-banner.active { display: block; }
+
+  /* ── QUESTIONS ── */
+  .question-block {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 2px dashed var(--card-border);
+  }
+  .q-label {
+    font-size: 0.8rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .q-text {
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin-bottom: 18px;
+    line-height: 1.4;
+    color: var(--text);
+  }
+
+  .choices { display: flex; flex-direction: column; gap: 12px; }
+  .choice-btn {
+    background: var(--bg-main);
+    border: 2px solid var(--card-border);
+    border-radius: 12px;
+    padding: 16px 20px;
+    text-align: left;
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .choice-btn .choice-letter {
+    width: 36px; height: 36px; min-width: 36px;
+    border-radius: 10px;
+    background: var(--card-border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem;
+    font-weight: 900;
+    color: var(--primary);
+    transition: all 0.2s;
+  }
+  .choice-btn:hover:not(:disabled) { border-color: var(--primary); transform: translateX(5px); background: #fff; box-shadow: 0 4px 10px rgba(255,71,133,0.1); }
+  .choice-btn:hover:not(:disabled) .choice-letter { background: var(--primary); color: #fff; }
+  .choice-btn.correct { border-color: var(--correct); background: #ecfdf5; }
+  .choice-btn.correct .choice-letter { background: var(--correct); color: #fff; }
+  .choice-btn.wrong { border-color: var(--wrong); background: #fef2f2; opacity: 0.7;}
+  .choice-btn.wrong .choice-letter { background: var(--wrong); color: #fff; }
+  .choice-btn:disabled { cursor: default; }
+
+  /* ── FEEDBACK ── */
+  .feedback {
+    display: none;
+    margin-top: 16px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 1.1rem;
+    animation: fadeUp 0.3s ease;
+  }
+  .feedback.correct { display: block; background: #ecfdf5; border: 2px solid var(--correct); color: #065f46; }
+  .feedback.wrong   { display: block; background: #fef2f2; border: 2px solid var(--wrong); color: #991b1b; }
+
+  /* ── TRY AGAIN / CONTINUE BTN ── */
+  .try-again-btn {
+    display: none;
+    margin-top: 16px;
+    background: #fef2f2;
+    color: var(--wrong);
+    border: 2px solid var(--wrong);
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 900;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .try-again-btn:hover { background: var(--wrong); color: #fff; }
+  .try-again-btn.visible { display: inline-block; }
+
+  .continue-btn {
+    display: none;
+    margin-top: 20px;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 14px 32px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 6px 16px rgba(255, 71, 133, 0.4);
+    width: 100%;
+  }
+  .continue-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(255, 71, 133, 0.5); }
+  .continue-btn.visible { display: block; }
+
+  /* ── XP BURST ── */
+  .xp-burst {
+    display: none;
+    position: fixed;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%) scale(0.5);
+    font-family: 'Fredoka One', cursive;
+    font-size: 4rem;
+    color: var(--saffron);
+    text-shadow: 0 0 30px rgba(250,204,21,0.8), 0 4px 0 rgba(0,0,0,0.2);
+    z-index: 9999;
+    pointer-events: none;
+    transition: all 0.4s cubic-bezier(0.175,0.885,0.32,1.275);
+    letter-spacing: 2px;
+  }
+  .xp-burst.pop { display: block; transform: translate(-50%,-50%) scale(1); }
+  .xp-burst.fade { opacity: 0; transform: translate(-50%,-70%) scale(1.2); }
+
+  /* ── LEVEL UP MODAL ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-box {
+    background: var(--card-bg);
+    border: 4px solid var(--primary);
+    border-radius: 24px;
+    padding: 40px 32px;
+    text-align: center;
+    max-width: 420px;
+    width: 90%;
+    animation: fadeUp 0.4s ease;
+    box-shadow: 0 0 60px rgba(255,71,133,0.3);
+  }
+  .modal-box .modal-emoji { font-size: 5rem; margin-bottom: 16px; animation: bounce 2s infinite;}
+  @keyframes bounce { 0%, 100% {transform:translateY(0)} 50% {transform:translateY(-15px)} }
+  .modal-box h2 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.4rem;
+    color: var(--primary);
+    letter-spacing: 1px;
+    margin-bottom: 16px;
+  }
+  .modal-box p { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 28px; line-height: 1.6; }
+  .modal-close {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 16px 40px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+    box-shadow: 0 4px 15px rgba(255,71,133,0.4);
+  }
+  .modal-close:hover { transform: scale(1.05); }
+
+  /* ── TEACHER DASHBOARD ── */
+  #teacher-panel {
+    background: #f8fafc;
+    border: 3px solid var(--muted);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-top: 40px;
+  }
+  .t-header {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.6rem;
+    color: var(--text);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .t-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  .t-stat {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    border: 2px solid #e2e8f0;
+    text-align: center;
+  }
+  .t-stat .t-val {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.2rem;
+    color: var(--primary);
+    line-height: 1;
+  }
+  .t-stat .t-key {
+    font-size: 0.8rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+  .t-log {
+    background: #fff;
+    border-radius: 12px;
+    padding: 16px;
+    border: 2px solid #e2e8f0;
+    max-height: 200px;
+    overflow-y: auto;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.8;
+    margin-bottom: 20px;
+  }
+  .t-log .log-correct { color: #059669; }
+  .t-log .log-wrong   { color: #dc2626; }
+
+  .t-hint-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .t-hint-btn {
+    background: #f3e8ff;
+    border: 2px solid var(--accent);
+    border-radius: 10px;
+    padding: 10px 18px;
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: var(--accent);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .t-hint-btn:hover { background: var(--accent); color:#fff; }
+
+  .t-idiom-log {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .t-idiom-log span { color: var(--accent); font-weight: 900; }
+
+  /* Top Mode Bar Buttons */
+  .top-btn {
+    background: var(--card-bg);
+    border: 2px solid var(--card-border);
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-weight: 800;
+    cursor: pointer;
+    color: var(--text);
+  }
+  .top-btn:hover { border-color: var(--primary); }
+  .top-btn.print-btn { background: #1e293b; color: #fff; border-color: #1e293b; }
+  .top-btn.print-btn:hover { background: #000; }
+  
+  .print-dash-btn {
+    background: var(--text);
+    border: none;
+    border-radius: 10px;
+    padding: 12px 24px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    color: #fff;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.2s;
+  }
+  .print-dash-btn:hover { background: #000; }
+
+  /* ── STRICT PRINT STYLES ── */
+  #print-summary { display: none; } /* Hidden by default in normal view */
+
+  @media print {
+    body { background: #fff !important; color: #000 !important; }
+    body::before { display: none !important; }
+    
+    /* HIDE ABSOLUTELY EVERYTHING EXCEPT THE PRINT SUMMARY */
+    #app > *:not(#print-summary) { display: none !important; }
+    .top-bar-container { display: none !important; } /* Hide any mode bars if placed outside app */
+    
+    /* Ensure Print Summary claims the full page cleanly */
+    #print-summary {
+      display: block !important;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 0 !important;
+      margin: 0 !important;
+      border: none !important;
+      background: #fff !important;
+      color: #000 !important;
+    }
+
+    #print-summary h2 { font-family: 'Fredoka One', cursive; font-size: 1.8rem; margin-bottom: 16px; color: #000; }
+    #print-summary table { width: 100%; border-collapse: collapse; font-size: 1.05rem; font-weight: 600; margin-bottom: 20px;}
+    #print-summary td, #print-summary th { border: 2px solid #ccc; padding: 12px 16px; text-align: left; color: #000;}
+    #print-summary th { background: #f5f5f5 !important; font-weight: 900; }
+    .no-print { display: none !important; }
+  }
+  
+  /* Normal view styling for the print summary box (when viewed on screen) */
+  .print-summary-box {
+    margin-top: 30px;
+    padding: 30px;
+    border: 2px solid #ccc;
+    border-radius: 12px;
+    background: #fff;
+    color: #000;
+  }
+</style>
+</head>
+<body>
+
+<!-- Top Navigation -->
+<div class="top-bar-container" style="position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(255,240,245,0.95);backdrop-filter:blur(10px);border-bottom:3px solid var(--primary);padding:10px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+  <div style="font-family:'Fredoka One', cursive; font-size:20px; color:var(--primary);">🐶 Ayla's Adventures</div>
+  <div style="display:flex; gap:8px;">
+    <button class="top-btn print-btn" onclick="printSummary()">🖨️ Print Summary PDF</button>
+  </div>
+</div>
+
+<div id="app" style="padding-top: 80px;">
+
+  <div class="intro-banner">
+    <div class="intro-title">🎉 Welcome Back, Ayla!</div>
+    <p>We are starting a brand new adventure: <strong>Phonics AND Grammar!</strong> You will help a magical miniature dog named Pip grow by decoding rules and learning B1 Grammar (like Present Perfect and First Conditionals). Click the purple <strong style="color:var(--accent)">Magic Words</strong> to reveal the secrets! Let's play! 🐶✨</p>
+  </div>
+
+  <div class="ep-header">
+    <div>
+      <div class="ep-title">🐶 Ep 1: Pip's Magic Rules</div>
+      <div class="ep-sub">AYLA · AGE 7 · B1 GRAMMAR & ADVANCED PHONICS</div>
+    </div>
+    <div class="xp-badge">⭐ XP: <span id="xp-display">0</span></div>
+  </div>
+
+  <div class="scene-nav" id="scene-nav">
+    <div class="nav-arrows">
+      <button class="nav-btn" id="prev-btn" onclick="goScene(-1)">◀ Back</button>
+      <button class="nav-btn" id="next-btn" onclick="goScene(1)">Next ▶</button>
+    </div>
+  </div>
+
+  <div class="hint-banner" id="hint-banner">💡 <span id="hint-text"></span></div>
+
+  <div id="scene-container"></div>
+
+  <div id="teacher-panel">
+    <div class="t-header">👩‍🏫 Teacher Dashboard</div>
+    <div class="t-grid">
+      <div class="t-stat"><div class="t-val" id="t-xp">0</div><div class="t-key">Total XP</div></div>
+      <div class="t-stat"><div class="t-val" id="t-correct">0</div><div class="t-key">Correct</div></div>
+      <div class="t-stat"><div class="t-val" id="t-wrong">0</div><div class="t-key">Errors</div></div>
+      <div class="t-stat"><div class="t-val" id="t-scene">1</div><div class="t-key">Scene / 9</div></div>
+    </div>
+    <div class="t-log" id="t-log">Activity log will appear here...</div>
+    <div style="font-size:0.8rem; font-weight:900; letter-spacing:1px; color:var(--muted); text-transform:uppercase; margin-bottom:10px;">✨ Fire a Live Hint</div>
+    <div class="t-hint-row">
+      <button class="t-hint-btn" onclick="fireHint('Phonics Hint: Look for two vowels together. The first one says its name!')">Vowel Team Hint</button>
+      <button class="t-hint-btn" onclick="fireHint('Grammar Hint: Present Perfect uses Have/Has + Verb 3 (like dug, found, or eaten).')">Present Perfect Hint</button>
+      <button class="t-hint-btn" onclick="fireHint('Phonics Hint: The Bossy R changes the vowel! IR, ER, and UR make the exact same sound.')">Bossy R Hint</button>
+      <button class="t-hint-btn" onclick="fireHint('Grammar Hint: First Conditional uses If + Present Simple, Will + Verb.')">Conditional Hint</button>
+      <button class="t-hint-btn" onclick="fireHint('Great reading, Ayla! You are so smart! 💖')">Encouragement</button>
+    </div>
+    <div class="t-idiom-log" id="t-idiom-log">Magic Words clicked: <span>none yet</span></div>
+    <button class="print-dash-btn" onclick="printSummary()">🖨️ Generate Print Summary PDF</button>
+  </div>
+
+  <!-- THIS WILL ONLY BE VISIBLE WHEN PRINTING -->
+  <div id="print-summary">
+    <div class="print-summary-box">
+      <h2>📋 Lesson Summary — Ayla | Grammar & Phonics Ep 1</h2>
+      <p style="margin-bottom: 15px; font-weight: 700; font-size: 1.1rem; color: #444;"><strong>Date: </strong><span id="print-date"></span></p>
+      <table>
+        <tr><th width="30%">Metric</th><th width="70%">Result</th></tr>
+        <tr><td>Total XP Earned</td><td id="ps-xp">—</td></tr>
+        <tr><td>Correct Answers</td><td id="ps-correct">—</td></tr>
+        <tr><td>Attempts Needed</td><td id="ps-attempts">—</td></tr>
+        <tr><td>Scenes Completed</td><td id="ps-scenes">—</td></tr>
+        <tr><td>Magic Words Clicked</td><td id="ps-idioms">—</td></tr>
+        <tr><td>Learning Focus</td><td>Phonics (Vowel Teams, Bossy R, Magic E, Ghost Letters) & Grammar (Present Perfect, 1st Conditional, Comparatives, Sequencing)</td></tr>
+      </table>
+      <h3 style="margin-top: 20px; font-family: 'Fredoka One', cursive; color: #333;">Teacher Activity Log:</h3>
+      <p id="ps-log" style="margin-top:12px; font-size:0.95rem; color:#444; font-weight: 600; line-height: 1.6;"></p>
+    </div>
+  </div>
+
+</div>
+
+<div class="xp-burst" id="xp-burst"></div>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <div class="modal-emoji" id="modal-emoji">🐶</div>
+    <h2 id="modal-title">LESSON COMPLETE!</h2>
+    <p id="modal-msg">Outstanding work, Ayla!</p>
+    <button class="modal-close" onclick="closeModal()">Next Adventure! ✨</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════
+let state = {
+  xp: 0,
+  currentScene: 0,
+  scenesDone: [],
+  correctCount: 0,
+  wrongCount: 0,
+  answerLog: [],
+  idiomsClicked: [],
+  questionStates: {},     
+  shuffledChoices: {}     
+};
+
+// ═══════════════════════════════════════════════════════
+// DICTIONARY FOR INLINE "MAGIC WORDS" (Phonics & Grammar)
+// ═══════════════════════════════════════════════════════
+const IDIOM_DEFS = {
+  'rain': '✨ <strong>Vowel Team: ai</strong><br>In the word "rain", the <strong>A</strong> and <strong>I</strong> walk together. The <strong>A</strong> says its name!',
+  'has_found': '✨ <strong>Present Perfect</strong><br>We use Have/Has + Verb 3 for an action in the past that has a result NOW. Pip found it, and now he holds it!',
+  'dirt': '✨ <strong>Bossy R: ir</strong><br>In "dirt", the bossy <strong>R</strong> controls the <strong>I</strong> to make an "ER" sound. It completely changes the vowel!',
+  'if': '✨ <strong>First Conditional</strong><br>We use "If" to talk about a real possibility. <em>If</em> this happens, <em>then</em> that will happen!',
+  'bone': '✨ <strong>Magic E</strong><br>The silent E jumps over one letter to make the O say its long name!',
+  'fastest': '✨ <strong>Superlatives</strong><br>We add "-est" to compare three or more things and mean "the most" out of everyone!',
+  'climb': '✨ <strong>Ghost Letter: mb</strong><br>In "climb", the <strong>B</strong> at the very end is a silent ghost! We only say "clime".',
+  'finally': '✨ <strong>Sequence Word</strong><br>"Finally" tells us that this is the very last step in a list of instructions!'
+};
+
+// ═══════════════════════════════════════════════════════
+// 9 SCENES DATA (Mixed Grammar & Phonics)
+// ═══════════════════════════════════════════════════════
+const SCENES = [
+  {
+    id: 0,
+    label: "Scene 1 · Phonics 📦",
+    title: "A Tiny Dog in the Rain",
+    illustration: "🌧️📦🐶",
+    body: `Ayla found a tiny box in her garden. Inside was a miniature dog named Pip! He was as small as a teacup.<br><br>
+Pip was shivering in the cold <span class="ipill" onclick="showIdiom('rain')">rain</span>. He looked up at Ayla and wanted to eat a warm piece of <strong>toast</strong> and sit on a dry green <strong>leaf</strong>.`,
+    grammar: {
+      label: "✨ Magic Phonics Rule: Vowel Teams",
+      text: `When two vowels go walking, the first one does the talking! (And says its long name).<br><br>
+      <code>ai</code> in r<strong>ai</strong>n says "A"<br>
+      <code>oa</code> in t<strong>oa</strong>st says "O"<br>
+      <code>ea</code> in l<strong>ea</strong>f says "E"`
+    },
+    question: {
+      text: "Pip wants to play on a 'boat'. Which word has the SAME Vowel Team sound as 'boat' and 'toast'?",
+      choices: [
+        { text: "coat", correct: true },
+        { text: "town", correct: false },
+        { text: "tool", correct: false },
+        { text: "top", correct: false }
+      ],
+      xp: 100,
+      correctMsg: "🌟 Brilliant! 'Coat', 'boat', and 'toast' all use the 'oa' vowel team where the O says its name!",
+      wrongMsg: "Oops! We need the 'oa' sound where the 'o' says its name. Listen closely to the words."
+    }
+  },
+  {
+    id: 1,
+    label: "Scene 2 · B1 Grammar 🪙",
+    title: "Pip's Discovery",
+    illustration: "🪙🐕✨",
+    body: `Pip jumped out of the box and dug a hole in the dirt. He <span class="ipill" onclick="showIdiom('has_found')">has found</span> a shiny, golden coin!<br><br>
+He gave a happy howl. Ayla looked at the mud everywhere. "Oh, Pip!" she said, "You <strong>have made</strong> a massive mess in the garden!"`,
+    grammar: {
+      label: "✨ Grammar Rule: Present Perfect",
+      text: `We use the Present Perfect (<strong>have/has + Verb 3</strong>) for an action that happened in the past but has a result <strong>RIGHT NOW</strong>.<br><br>
+      He <em>has found</em> a coin ➔ He holds it right now!<br>
+      You <em>have made</em> a mess ➔ The garden is muddy right now!`
+    },
+    question: {
+      text: "Which sentence correctly uses the Present Perfect to show a recent action?",
+      choices: [
+        { text: "Pip has dug a deep hole.", correct: true },
+        { text: "Pip has digged a deep hole.", correct: false },
+        { text: "Pip have dug a deep hole.", correct: false },
+        { text: "Pip is dug a deep hole.", correct: false }
+      ],
+      xp: 120,
+      correctMsg: "🎉 Perfect! 'Pip' is one dog (He), so we use 'has' + the V3 form 'dug'!",
+      wrongMsg: "Try again! We need 'has' for one dog, and the correct Verb 3 form of 'dig'."
+    }
+  },
+  {
+    id: 2,
+    label: "Scene 3 · Phonics 🌳",
+    title: "The Dirty Bird",
+    illustration: "🌳🐕🐾",
+    body: `Pip ran straight into the park. He chased a squirrel and rolled in the <span class="ipill" onclick="showIdiom('dirt')">dirt</span>.<br><br>
+When he came out, his white fur was completely <strong>murky</strong> and messy. Ayla laughed, "You look like a little dirty <strong>bird</strong> now!" Pip just smiled and chewed on a <strong>fern</strong> leaf.`,
+    grammar: {
+      label: "✨ Magic Phonics Rule: Bossy 'R' (R-Controlled)",
+      text: `The letter 'R' is very bossy! When it sits next to a vowel, it completely changes the vowel's sound.<br><br>
+      Did you know that <code>ir</code>, <code>er</code>, and <code>ur</code> usually make the EXACT same sound?<br>
+      d<strong>ir</strong>t = m<strong>ur</strong>ky = f<strong>er</strong>n = b<strong>ir</strong>d!`
+    },
+    question: {
+      text: "Which word has the exact same Bossy 'R' sound as 'dirt', 'murky', and 'bird'?",
+      choices: [
+        { text: "girl", correct: true },
+        { text: "dark", correct: false },
+        { text: "fork", correct: false },
+        { text: "star", correct: false }
+      ],
+      xp: 100,
+      correctMsg: "🐶 Perfect! 'Girl' uses the 'ir' bossy R, making the exact same sound as dirt and bird!",
+      wrongMsg: "Listen to the sound in 'dirt'. Which word makes that same 'er/ir/ur' sound?"
+    }
+  },
+  {
+    id: 3,
+    label: "Scene 4 · B1 Grammar 🪄",
+    title: "The Magic Leaf",
+    illustration: "🪄🌿🦋",
+    body: `Ayla wanted to clean Pip, so she opened her magic spell book. She read the glowing golden letters on the page:<br><br>
+"<span class="ipill" onclick="showIdiom('if')">If</span> Pip eats this magic leaf, he <strong>will grow</strong> beautiful butterfly wings!" Pip wagged his tail excitedly, ready to eat it.`,
+    grammar: {
+      label: "✨ Grammar Rule: First Conditional",
+      text: `We use the First Conditional to talk about <strong>real possibilities</strong> in the future.<br><br>
+      Structure: <code>If + Present Simple, Will + Verb</code><br>
+      <em>If he <strong>eats</strong> it, he <strong>will grow</strong> wings!</em>`
+    },
+    question: {
+      text: "Complete the First Conditional sentence: 'If Ayla opens the magic portal, Pip ______ inside.'",
+      choices: [
+        { text: "will jump", correct: true },
+        { text: "jumps", correct: false },
+        { text: "would jump", correct: false },
+        { text: "jumped", correct: false }
+      ],
+      xp: 130,
+      correctMsg: "🦋 Excellent! 'If she opens' (Present Simple) pairs perfectly with 'he will jump' (Will + Verb)!",
+      wrongMsg: "Look at the First Conditional rule. We need 'Will' to show what happens next!"
+    }
+  },
+  {
+    id: 4,
+    label: "Scene 5 · Phonics 🦴",
+    title: "The Portal Spell",
+    illustration: "🦴🌀💨",
+    body: `To activate the portal, Pip needed a magical <span class="ipill" onclick="showIdiom('bone')">bone</span>. But they only had a piece of wood shaped like a <strong>cube</strong>.<br><br>
+Ayla used her wand to <strong>make</strong> the wood transform. "Jump, Pip!" she said. Pip took a big <strong>bite</strong> of the magic bone, and a colorful tornado spun them around!`,
+    grammar: {
+      label: "✨ Magic Phonics Rule: Magic E (Vowel-Consonant-E)",
+      text: `The silent 'E' at the very end of a word is super magical!<br><br>
+      It jumps over ONE consonant to give all its power to the vowel. This makes the vowel say its long name!<br>
+      cub ➔ c<strong>u</strong>b<strong>e</strong><br>
+      bit ➔ b<strong>i</strong>t<strong>e</strong><br>
+      mak ➔ m<strong>a</strong>k<strong>e</strong>`
+    },
+    question: {
+      text: "If you add a Magic E to the end of the short word 'tap', what new magical word does it make?",
+      choices: [
+        { text: "tape", correct: true },
+        { text: "tapee", correct: false },
+        { text: "top", correct: false },
+        { text: "tapp", correct: false }
+      ],
+      xp: 140,
+      correctMsg: "🪄 Whoosh! 'Tap' becomes 'Tape'. The magic E makes the 'a' say its name!",
+      wrongMsg: "If you add an 'e' to the end of t-a-p, what word do you get? Think about how it changes the vowel sound."
+    }
+  },
+  {
+    id: 5,
+    label: "Scene 6 · B1 Grammar 💎",
+    title: "The Crystal City",
+    illustration: "💎🏃‍♂️🏰",
+    body: `Whoosh! They landed in a glowing city made of diamonds. Pip is smaller than a normal dog, but here, he felt like the <span class="ipill" onclick="showIdiom('fastest')">fastest</span> and strongest dog in the world!<br><br>
+He ran circles around a giant crystal statue. "This place is <strong>more beautiful</strong> than our garden!" shouted Ayla.`,
+    grammar: {
+      label: "✨ Grammar Rule: Comparatives & Superlatives",
+      text: `We use these to compare things!<br><br>
+      <strong>Comparatives (2 things):</strong> Add <code>-er</code> (smaller) or use <code>more</code> (more beautiful).<br>
+      <strong>Superlatives (3+ things):</strong> Add <code>-est</code> (the fastest) or use <code>the most</code> (the most beautiful).`
+    },
+    question: {
+      text: "Fill in the blank with the correct Comparative: 'The crystal city is ______ than Ayla's garden.'",
+      choices: [
+        { text: "more magical", correct: true },
+        { text: "magicker", correct: false },
+        { text: "most magical", correct: false },
+        { text: "the most magical", correct: false }
+      ],
+      xp: 130,
+      correctMsg: "💎 Brilliant! 'Magical' is a long word, so we use 'more magical' when comparing two places!",
+      wrongMsg: "We are comparing exactly TWO places (city vs garden). For long words, do we use 'more' or 'most'?"
+    }
+  },
+  {
+    id: 6,
+    label: "Scene 7 · Phonics 👻",
+    title: "Spooky Shadows",
+    illustration: "👻🪜🩹",
+    body: `Pip tried to <span class="ipill" onclick="showIdiom('climb')">climb</span> a crystal ladder to catch a flying gem, but he slipped and bumped his <strong>knee</strong>!<br><br>
+Ayla picked him up carefully. "Don't cry, Pip," she whispered. She decided to <strong>write</strong> a healing spell on a piece of paper. She turned the <strong>knob</strong> on a magical door to escape the shadows.`,
+    grammar: {
+      label: "✨ Magic Phonics Rule: Silent Letters (Ghosts!)",
+      text: `Sometimes English has invisible ghost letters! We write them, but we do NOT say them.<br><br>
+      <code>mb</code> at the end: the <strong>b</strong> is silent (cli<strong>m</strong>b, co<strong>m</strong>b).<br>
+      <code>kn</code> at the start: the <strong>k</strong> is silent (<strong>n</strong>ee, <strong>n</strong>ob).<br>
+      <code>wr</code> at the start: the <strong>w</strong> is silent (<strong>r</strong>ite, <strong>r</strong>ist).`
+    },
+    question: {
+      text: "In the word 'comb' (like a hair comb), which letter is the silent ghost?",
+      choices: [
+        { text: "The letter b", correct: true },
+        { text: "The letter c", correct: false },
+        { text: "The letter m", correct: false },
+        { text: "The letter o", correct: false }
+      ],
+      xp: 120,
+      correctMsg: "👻 Spooky and correct! The 'b' in 'comb' and 'climb' is completely silent.",
+      wrongMsg: "Think about the ghost rule for words ending in 'mb'. Which letter makes no sound?"
+    }
+  },
+  {
+    id: 7,
+    label: "Scene 8 · B1 Grammar 📜",
+    title: "The Journey Home",
+    illustration: "📜🌀🏠",
+    body: `To open the portal back to Türkiye, Ayla had to follow the instructions in her spell book in the perfect order.<br><br>
+"<strong>First</strong>, draw a star on the ground. <strong>Next</strong>, place the magic bone inside. <strong>Then</strong>, say the magic word out loud. <span class="ipill" onclick="showIdiom('finally')">Finally</span>, jump in!" she read.`,
+    grammar: {
+      label: "✨ Grammar Rule: Sequence Words",
+      text: `We use Sequence Words to organise events in a logical order so the story makes sense!<br><br>
+      <code>First</code> ➔ Starts the list.<br>
+      <code>Next / Then / After that</code> ➔ Shows the middle steps.<br>
+      <code>Finally / Lastly</code> ➔ Shows the very end of the list.`
+    },
+    question: {
+      text: "Which sequence word correctly fills the blank to show the LAST step? 'First we draw a star. ______, we jump in!'",
+      choices: [
+        { text: "Finally", correct: true },
+        { text: "Next", correct: false },
+        { text: "First", correct: false },
+        { text: "Then", correct: false }
+      ],
+      xp: 120,
+      correctMsg: "📜 Exactly! 'Finally' is the perfect word to show the very last step in a sequence.",
+      wrongMsg: "If jumping in is the very LAST step in the instructions, which word should we use?"
+    }
+  },
+  {
+    id: 8,
+    label: "Scene 9 · Final Challenge 🏆",
+    title: "Master of Magic",
+    illustration: "🏆👧🐶",
+    body: `*Poof!* Ayla and Pip landed safely in her bedroom. Pip was now glowing with magic! "You are the smartest dog in the world," said Ayla.<br><br>
+Now for the ultimate challenge! Let's see if you can combine your B1 Grammar and your Advanced Phonics!`,
+    grammar: {
+      label: "✨ The Ultimate Mixed Challenge",
+      text: `To win the game, you must find the sentence that has TWO things:<br>
+      1. <strong>A Present Perfect verb</strong> (has/have + V3)<br>
+      2. <strong>A Vowel Team word</strong> (two vowels walking together, like oa or ai)`
+    },
+    question: {
+      text: "Read carefully! Which sentence contains EXACTLY ONE Present Perfect verb AND ONE Vowel Team word?",
+      choices: [
+        { text: "Pip has found a shiny boat.", correct: true },
+        { text: "If Pip jumps, he will find a bone.", correct: false },
+        { text: "Pip is the fastest dog in the dark.", correct: false },
+        { text: "First, Pip climbed the big tree.", correct: false }
+      ],
+      xp: 200,
+      correctMsg: "🏆 MAGNIFICENT! 'Has found' is Present Perfect, and 'boat' has an 'oa' vowel team! You won the game!",
+      wrongMsg: "Check carefully! Look for 'has/have + V3' AND a word with two vowels side-by-side making one sound."
+    },
+    isLast: true
+  }
+];
+
+// ═══════════════════════════════════════════════════════
+// RENDER FUNCTIONS
+// ═══════════════════════════════════════════════════════
+
+function shuffleChoices(choices) {
+  const arr = choices.map((c, i) => ({ ...c, origIndex: i }));
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function renderSceneNav() {
+  const nav = document.getElementById('scene-nav');
+  const arrows = nav.querySelector('.nav-arrows');
+  nav.innerHTML = '';
+  SCENES.forEach((s, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'scene-dot' +
+      (i === state.currentScene ? ' active' : '') +
+      (state.scenesDone.includes(i) ? ' done' : '');
+    dot.textContent = i + 1;
+    dot.title = s.title;
+    dot.onclick = () => { state.currentScene = i; renderScene(); };
+    nav.appendChild(dot);
+  });
+  nav.appendChild(arrows);
+  document.getElementById('prev-btn').disabled = state.currentScene === 0;
+  document.getElementById('next-btn').disabled = state.currentScene === SCENES.length - 1;
+  document.getElementById('t-scene').textContent = state.currentScene + 1;
+}
+
+function renderScene() {
+  renderSceneNav();
+  const scene = SCENES[state.currentScene];
+  const qKey = `scene_${scene.id}`;
+
+  if (!state.shuffledChoices[qKey]) {
+    state.shuffledChoices[qKey] = shuffleChoices(scene.question.choices);
+  }
+  const shuffled = state.shuffledChoices[qKey];
+  const answered = state.questionStates[qKey] || null;
+  const letters = ['A','B','C','D'];
+
+  let choicesHTML = shuffled.map((c, idx) => {
+    let cls = '';
+    if (answered) {
+      if (c.correct) cls = 'correct';
+      else if (answered.pickedIndex === idx && !c.correct) cls = 'wrong';
+    }
+    return `<button class="choice-btn ${cls}" ${answered ? 'disabled' : ''}
+      onclick="checkAnswer(this, ${c.correct}, '${escapeStr(c.text)}', ${scene.question.xp}, ${idx}, ${scene.id})"
+      data-correct="${c.correct}">
+      <span class="choice-letter">${letters[idx]}</span>
+      ${escapeStr(c.text)}
+    </button>`;
+  }).join('');
+
+  let feedbackHTML = '';
+  let tryAgainHTML = '';
+  let continueHTML = '';
+
+  if (answered) {
+    if (answered.correct) {
+      feedbackHTML = `<div class="feedback correct">✅ ${escapeStr(scene.question.correctMsg)}</div>`;
+      continueHTML = `<button class="continue-btn visible" onclick="advanceScene()">Continue ▶</button>`;
+    } else {
+      feedbackHTML = `<div class="feedback wrong">❌ ${escapeStr(scene.question.wrongMsg)}</div>`;
+      tryAgainHTML = `<button class="try-again-btn visible" onclick="resetQuestion(${scene.id})">🔄 Try Again</button>`;
+    }
+  }
+
+  document.getElementById('scene-container').innerHTML = `
+    <div class="scene-card">
+      <div class="scene-label">${scene.label}</div>
+      <div class="scene-title">${scene.title}</div>
+      <div class="scene-illustration">${scene.illustration}</div>
+      <div class="scene-body">${scene.body}</div>
+      
+      <div id="idiom-display" class="idiom-display"></div>
+
+      ${scene.grammar ? `<div class="grammar-box"><div class="g-label">${scene.grammar.label}</div><p>${scene.grammar.text}</p></div>` : ''}
+      <div class="question-block">
+        <div class="q-label">🎯 Ayla's Challenge Question</div>
+        <div class="q-text">${scene.question.text}</div>
+        <div class="choices" id="choices-${scene.id}">${choicesHTML}</div>
+        ${feedbackHTML}
+        ${tryAgainHTML}
+        ${continueHTML}
+      </div>
+    </div>
+  `;
+
+  document.getElementById('hint-banner').classList.remove('active');
+}
+
+function escapeStr(s) {
+  return String(s).replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
+
+// ═══════════════════════════════════════════════════════
+// ANSWER LOGIC & INTERACTIVITY
+// ═══════════════════════════════════════════════════════
+function checkAnswer(btn, isCorrect, text, xpVal, pickedIndex, sceneId) {
+  const qKey = `scene_${sceneId}`;
+  if (state.questionStates[qKey]) return; 
+
+  state.questionStates[qKey] = { correct: isCorrect, pickedIndex };
+
+  if (isCorrect) {
+    state.correctCount++;
+    state.xp += xpVal;
+    logAnswer(`✅ Scene ${sceneId + 1}: "${text}" — +${xpVal} XP`, true);
+    if (!state.scenesDone.includes(state.currentScene)) {
+      state.scenesDone.push(state.currentScene);
+    }
+    showXPBurst(`+${xpVal} XP ⭐`);
+  } else {
+    state.wrongCount++;
+    logAnswer(`❌ Scene ${sceneId + 1}: Wrong — "${text}"`, false);
+  }
+
+  updateDashboard();
+  renderScene(); 
+}
+
+function resetQuestion(sceneId) {
+  const qKey = `scene_${sceneId}`;
+  delete state.questionStates[qKey];
+  renderScene();
+}
+
+function advanceScene() {
+  const scene = SCENES[state.currentScene];
+  if (scene.isLast) {
+    const totalPossible = SCENES.reduce((sum, s) => sum + s.question.xp, 0);
+    showModal('🐶', 'ADVENTURE COMPLETE!', `Ayla, you earned ${state.xp} XP out of ${totalPossible}! You mastered Phonics AND B1 Grammar! Pip is so proud of you! ✨`);
+    return;
+  }
+  if (state.currentScene < SCENES.length - 1) {
+    state.currentScene++;
+    renderScene();
+  }
+}
+
+function goScene(dir) {
+  const next = state.currentScene + dir;
+  if (next >= 0 && next < SCENES.length) {
+    state.currentScene = next;
+    renderScene();
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// INLINE MAGIC WORDS LOGIC
+// ═══════════════════════════════════════════════════════
+function showIdiom(key) {
+  const displayBox = document.getElementById('idiom-display');
+  if (displayBox && IDIOM_DEFS[key]) {
+    displayBox.innerHTML = IDIOM_DEFS[key];
+    displayBox.classList.add('active');
+  }
+  
+  if (!state.idiomsClicked.includes(key)) {
+    state.idiomsClicked.push(key);
+    updateIdiomLog();
+  }
+}
+
+function updateIdiomLog() {
+  const el = document.getElementById('t-idiom-log');
+  if (state.idiomsClicked.length === 0) {
+    el.innerHTML = 'Magic Words clicked: <span>none yet</span>';
+  } else {
+    el.innerHTML = `Magic Words clicked: <span>${state.idiomsClicked.join(', ')}</span>`;
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// HINTS, DASHBOARD & MODAL
+// ═══════════════════════════════════════════════════════
+function fireHint(msg) {
+  const banner = document.getElementById('hint-banner');
+  document.getElementById('hint-text').textContent = msg;
+  banner.classList.add('active');
+  logAnswer(`💡 Hint fired: "${msg}"`, null);
+}
+
+function updateDashboard() {
+  document.getElementById('xp-display').textContent = state.xp;
+  document.getElementById('t-xp').textContent = state.xp;
+  document.getElementById('t-correct').textContent = state.correctCount;
+  document.getElementById('t-wrong').textContent = state.wrongCount;
+}
+
+function logAnswer(msg, correct) {
+  state.answerLog.push(msg);
+  const log = document.getElementById('t-log');
+  const div = document.createElement('div');
+  div.className = correct === true ? 'log-correct' : correct === false ? 'log-wrong' : '';
+  div.textContent = msg;
+  if (log.firstChild && log.firstChild.textContent === 'Activity log will appear here...') {
+    log.innerHTML = '';
+  }
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+function showXPBurst(msg) {
+  const el = document.getElementById('xp-burst');
+  el.textContent = msg;
+  el.className = 'xp-burst pop';
+  setTimeout(() => { el.classList.add('fade'); }, 700);
+  setTimeout(() => { el.className = 'xp-burst'; }, 1200);
+}
+
+function showModal(emoji, title, msg) {
+  document.getElementById('modal-emoji').textContent = emoji;
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-msg').textContent = msg;
+  document.getElementById('modal').classList.add('active');
+}
+function closeModal() {
+  document.getElementById('modal').classList.remove('active');
+}
+
+// ═══════════════════════════════════════════════════════
+// STRICT PRINT FUNCTION
+// ═══════════════════════════════════════════════════════
+function printSummary() {
+  // Populate the invisible print container with current data
+  document.getElementById('ps-xp').textContent = state.xp;
+  document.getElementById('ps-correct').textContent = state.correctCount;
+  document.getElementById('ps-attempts').textContent = state.wrongCount;
+  document.getElementById('ps-scenes').textContent = state.scenesDone.length + ' / ' + SCENES.length;
+  document.getElementById('ps-idioms').textContent = state.idiomsClicked.length > 0 ? state.idiomsClicked.length + ' viewed' : 'None';
+  document.getElementById('ps-log').innerHTML = state.answerLog.join('<br>');
+  
+  // Set the current date dynamically
+  const dateSpan = document.getElementById('print-date');
+  if(dateSpan) {
+    dateSpan.textContent = new Date().toLocaleDateString();
+  }
+  
+  // Trigger browser print
+  window.print();
+}
+
+// INIT
+renderScene();
+</script>
+</body>
+</html>

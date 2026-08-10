@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/taqan-apex-design-system-6ab22ffd-b309-4ab8-bab9-6107d6c931b6/tokens/fonts.css">
+  <style>
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 12% 8%, rgba(124,58,237,0.16), rgba(124,58,237,0) 42%),
+        radial-gradient(circle at 88% 12%, rgba(20,184,166,0.18), rgba(20,184,166,0) 40%),
+        radial-gradient(circle at 78% 88%, rgba(217,38,140,0.14), rgba(217,38,140,0) 44%),
+        radial-gradient(circle at 8% 82%, rgba(249,115,22,0.14), rgba(249,115,22,0) 42%),
+        #FFFBF4;
+      font-family: "IBM Plex Sans", system-ui, sans-serif;
+      color: #1F1B2E;
+    }
+    a { color: #7C3AED; text-decoration: none; }
+    a:hover { color: #D9268C; text-decoration: underline; }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+    @keyframes modalPop { from { opacity: 0; transform: scale(.9) translateY(16px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    @keyframes confettiFall { 0% { transform: translateY(-40px) rotate(0deg); opacity: 0; } 12% { opacity: 1; } 100% { transform: translateY(460px) rotate(280deg); opacity: 0; } }
+    @keyframes trophyGlow { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.04); } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+  </style>
+</helmet>
+
+<template id="__bundler_thumbnail" data-bg-color="#FFFBF4">
+  <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1200" height="800" fill="#FFFBF4"></rect>
+    <circle cx="300" cy="250" r="150" fill="#7C3AED" opacity="0.85"></circle>
+    <circle cx="620" cy="250" r="150" fill="#14B8A6" opacity="0.85"></circle>
+    <circle cx="900" cy="250" r="150" fill="#D9268C" opacity="0.85"></circle>
+    <rect x="300" y="500" width="600" height="34" rx="17" fill="#F97316"></rect>
+    <rect x="380" y="580" width="440" height="24" rx="12" fill="#1F1B2E" opacity="0.25"></rect>
+  </svg>
+</template>
+
+<div style="max-width:1120px;margin:0 auto;padding:48px 26px 100px;">
+
+  <div style="display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-bottom:44px;">
+    <a href="#chapters" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#7C3AED;background:rgba(124,58,237,0.09);border:1px solid rgba(124,58,237,0.28);border-radius:999px;padding:8px 16px;">Chapters</a>
+    <a href="#back-of-book" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#0E9384;background:rgba(20,184,166,0.1);border:1px solid rgba(20,184,166,0.3);border-radius:999px;padding:8px 16px;">Back of the Book</a>
+    <a href="#the-trap" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#D9268C;background:rgba(217,38,140,0.09);border:1px solid rgba(217,38,140,0.28);border-radius:999px;padding:8px 16px;">The Yes/No Trap</a>
+    <a href="#graduation" style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:#EA580C;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);border-radius:999px;padding:8px 16px;">Graduation</a>
+  </div>
+
+  <div style="text-align:center;">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.3em;text-transform:uppercase;color:#8B5CF6;margin-bottom:16px;">A Storybook for Melek · Final B2 Lesson</div>
+    <h1 style="font-family:'Playfair Display SC',Georgia,serif;font-weight:900;font-size:clamp(38px,6.4vw,62px);line-height:1.04;background:linear-gradient(100deg,#7C3AED 0%,#D9268C 46%,#F97316 100%);-webkit-background-clip:text;background-clip:text;color:transparent;margin:0;">The Canvas and the Court</h1>
+    <p style="font-family:'IBM Plex Serif',Georgia,serif;font-size:19px;line-height:1.6;color:#4B4560;max-width:560px;margin:20px auto 0;">Four chapters, one school year. A quiet painter turns into a captain who argues line calls in English.</p>
+  </div>
+
+  <div style="display:flex;justify-content:center;align-items:center;gap:14px;margin:32px 0 42px;flex-wrap:wrap;">
+    <div style="width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display SC',Georgia,serif;font-size:19px;color:#FFFFFF;background:linear-gradient(150deg,#A78BFA,#7C3AED);box-shadow:0 10px 22px -12px rgba(124,58,237,0.7);">A2</div>
+    <span style="font-family:'IBM Plex Mono',monospace;color:#B9AFC9;">→</span>
+    <div style="width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display SC',Georgia,serif;font-size:19px;color:#FFFFFF;background:linear-gradient(150deg,#38BDF8,#0E9384);box-shadow:0 10px 22px -12px rgba(14,147,132,0.7);">B1</div>
+    <span style="font-family:'IBM Plex Mono',monospace;color:#B9AFC9;">→</span>
+    <div style="width:74px;height:74px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;font-family:'Playfair Display SC',Georgia,serif;font-size:24px;color:#FFFFFF;background:linear-gradient(150deg,#F97316,#D9268C);box-shadow:0 16px 30px -12px rgba(217,38,140,0.75);">B2</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:22px;margin-bottom:84px;">
+    <div style="position:relative;border-radius:22px;overflow:hidden;min-height:260px;box-shadow:0 22px 46px -26px rgba(31,27,46,0.5);border:1px solid rgba(217,38,140,0.22);">
+      <img src="uploads/pasted-1786369152341-0.png" alt="Gold trophy on a red starburst" style="width:100%;height:100%;min-height:260px;object-fit:cover;display:block;">
+      <div style="position:absolute;left:16px;bottom:16px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#FFFFFF;background:rgba(31,27,46,0.62);padding:8px 13px;border-radius:999px;">B2 achieved · June</div>
+    </div>
+    <div style="position:relative;border-radius:22px;overflow:hidden;min-height:260px;box-shadow:0 22px 46px -26px rgba(31,27,46,0.5);border:1px solid rgba(124,58,237,0.22);">
+      <img src="uploads/pasted-1786368726782-0.png" alt="Girls volleyball team celebrating with hands raised" style="width:100%;height:100%;min-height:260px;object-fit:cover;display:block;">
+      <div style="position:absolute;left:16px;bottom:16px;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#FFFFFF;background:rgba(31,27,46,0.62);padding:8px 13px;border-radius:999px;">Melek and Melissa · center court</div>
+    </div>
+  </div>
+
+  <div id="chapters" style="margin-bottom:96px;">
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:30px;">
+      <button onClick="{{ goCh1 }}" style="border-radius:999px;padding:11px 20px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;{{ tab1Style }}">I · Quiet Canvas</button>
+      <button onClick="{{ goCh2 }}" style="border-radius:999px;padding:11px 20px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;{{ tab2Style }}">II · First Serve</button>
+      <button onClick="{{ goCh3 }}" style="border-radius:999px;padding:11px 20px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;{{ tab3Style }}">III · Finding Her Voice</button>
+      <button onClick="{{ goCh4 }}" style="border-radius:999px;padding:11px 20px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;{{ tab4Style }}">IV · Center Court</button>
+    </div>
+
+    <sc-if value="{{ ch1Active }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;gap:34px;flex-wrap:wrap;align-items:stretch;background:#FFFFFF;border:1px solid #F0E6D8;border-left:5px solid #7C3AED;border-radius:22px;padding:26px;box-shadow:0 20px 44px -28px rgba(31,27,46,0.4);animation:fadeUp .5s cubic-bezier(.2,.7,.2,1);">
+        <div style="flex:1 1 300px;max-width:360px;position:relative;border-radius:16px;overflow:hidden;min-height:290px;background:linear-gradient(150deg,rgba(124,58,237,0.14),rgba(20,184,166,0.14));">
+          <img src="uploads/pasted-1786368737443-0.png" alt="Watercolor flowers painted on paper beside brushes" style="width:100%;height:100%;min-height:290px;object-fit:cover;display:block;">
+          <div style="position:absolute;left:14px;bottom:14px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;color:#FFFFFF;background:rgba(124,58,237,0.82);padding:7px 12px;border-radius:999px;">Melek's paint table</div>
+        </div>
+        <div style="flex:1 1 360px;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.24em;text-transform:uppercase;color:#7C3AED;">Chapter I · A2</div>
+          <h2 style="font-family:'Playfair Display SC',Georgia,serif;font-weight:700;font-size:clamp(25px,3.3vw,34px);color:#1F1B2E;margin:10px 0 16px;">The Quiet Canvas</h2>
+          <p style="font-family:'IBM Plex Serif',Georgia,serif;font-size:16.5px;line-height:1.75;color:#4B4560;margin:0 0 14px;">Melek sits at the back of the art room, brush in hand. She mixes purple and green until the color feels right.</p>
+          <p style="font-family:'IBM Plex Serif',Georgia,serif;font-size:16.5px;line-height:1.75;color:#4B4560;margin:0;">She does not raise her hand in English class. Words feel slower than paint. But her sketchbook is full: courts, nets, a girl mid-jump. She has not shown anyone yet.</p>
+          <sc-if value="{{ showVocabTags }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:20px;">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:7px 13px;border-radius:999px;color:#6D28D9;background:rgba(124,58,237,0.11);border:1px solid rgba(124,58,237,0.26);">watercolor</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:7px 13px;border-radius:999px;color:#0E9384;background:rgba(20,184,166,0.12);border:1px solid rgba(20,184,166,0.28);">sketchbook</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:7px 13px;border-radius:999px;color:#B4257A;background:rgba(217,38,140,0.1);border:1px solid rgba(217,38,140,0.26);">quiet</span>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ ch2Active }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;gap:34px;flex-wrap:wrap;align-items:stretch;background:#FFFFFF;border:1px solid #F0E6D8;border-left:5px solid #0EA5E9;border-radius:22px;padding:26px;box-shadow:0 20px 44px -28px rgba(31,27,46,0.4);animation:fadeUp .5s cubic-bezier(.2,.7,.2,1);">
+        <div style="flex:1 1 300px;max-width:360px;position:relative;border-radius:16px;overflow:hidden;min-height:290px;">
+          <img src="uploads/pasted-1786368726782-0.png" alt="Volleyball team huddled with hands raised" style="width:100%;height:100%;min-height:290px;object-fit:cover;object-position:20% 40%;display:block;">
+          <div style="position:absolute;inset:0;background:linear-gradient(160deg,rgba(14,165,233,0.4),rgba(20,184,166,0.22));mix-blend-mode:screen;"></div>
+          <div style="position:absolute;left:14px;bottom:14px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;color:#FFFFFF;background:rgba(2,132,199,0.85);padding:7px 12px;border-radius:999px;">First practice, first serve</div>
+        </div>
+        <div style="flex:1 1 360px;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.24em;text-transform:uppercase;color:#0284C7;">Chapter II · A2 to B1</div>
+          <h2 style="font-family:'Playfair Display SC',Georgia,serif;font-weight:700;font-size:clamp(25px,3.3vw,34px);color:#1F1B2E;margin:10px 0 16px;">First Serve</h2>
+          <p style="font-family:'IBM Plex Serif',Georgia,serif;font-size:16.5px;line-height:1.75;color:#4B4560;margin:0 0 14px;">Melek joins the volleyball team because her cousin asked twice. She learns the words for the game before she trusts her own accent: serve, rotate, out of bounds.</p>
+          <p style="font-family:'IBM Plex Serif',Georgia,serif;font-size:16.5px;line-height:1.75;color:#4B4560;margin:0;">Her first serve hits the net. She says "sorry" in English without thinking. Nobody laughs. She tries again.</p>
+          <sc-if value="{{ showVocabTags }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:20px;">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:7px 13px;border-radius:999px;color:#0284C7;background:rgba(14,165,233,0.12);border:1px solid rgba(14,165,233,0.3);">volleyball</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:7px 13px;border-radius:999px;color:#0E9384;background:rgba(20,184,166,0.12);border:1px solid rgba(20,184,166,0.28);">practice</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:7px 13px;border-radius:999px;color:#6D28D9;background:rgba(124,58,237,0.11);border:1px solid rgba(124,58,237,0.26);">nerves</span>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ ch3Active }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;gap:34px;flex-wrap:wrap;align-items:stretch;background:#FFFFFF;border:1px solid #F0E6D8;border-left:5px solid #F97316;border-radius:22px;padding:26px;box-shadow:0 20px 44px -28px rgba(31,27,46,0.4);animation:fadeUp .5s cubic-bezier(.2,.7,.2,1);">
+        <div style="flex:1 1 300px;max-width:360px;position:relative;border-radius:16px;overflow:hidden;min-height:290px;">
+          <img src="uploads/pasted-1786368726782-0.png" alt="Volleyball players calling a play together" style="width:100%;height:100%;min-height:290px;object-fit:cover;object-position:75% 45%;display:block;">
+          <div style="position:absolute;inset:0;background:linear-gradient(160deg,rgba(249,115,22,0.38),rgba(217,38,140,0.24));mix-blend-mode:screen;"></div>
+          <div style="position:absolute;left:14px;bottom:14px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;color:#FFFFFF;background:rgba(234,88,12,0.88);padding:7px 12px;border-radius:999px;">Melek calls the play</div>
+        </div>
+        <div style="flex:1 1 360px;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.24em;text-transform:uppercase;color:#EA580C;">Chapter III · B1 to B2</div>
+          <h2 style="font-family:'Playfair Display SC',Georgia,serif;font-weight:700;font-size:clamp(25px,3.3vw,34px);color:#1F1B2E;margin:10px 0 16px;">Finding Her Voice</h2>
+          <p style="font-family:'IBM Plex Serif',Georgia,serif;font-size:16.5px;line-height:1.75;color:#4B4560;margin:0 0 14px;">By February, Melek calls the plays. Melissa passes, Melek sets, someone else spikes. Between points they talk about weekend plans and a painting Melek is finishing.</p>
+          <p style="font-family:'IBM Plex Serif',Georgia,serif;font-size:16.5px;line-height:1.75;color:#4B4560;margin:0;">Her sentences get longer. She corrects herself less. She corrects Melissa's Turkish instead.</p>
+          <sc-if value="{{ showVocabTags }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:20px;">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:7px 13px;border-radius:999px;color:#EA580C;background:rgba(249,115,22,0.12);border:1px solid rgba(249,115,22,0.3);">teamwork</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:7px 13px;border-radius:999px;color:#B4257A;background:rgba(217,38,140,0.1);border:1px solid rgba(217,38,140,0.26);">confidence</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:7px 13px;border-radius:999px;color:#4D7C0F;background:rgba(132,204,22,0.16);border:1px solid rgba(132,204,22,0.36);">friendship</span>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ ch4Active }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;gap:34px;flex-wrap:wrap;align-items:stretch;background:#FFFFFF;border:1px solid #F0E6D8;border-left:5px solid #D9268C;border-radius:22px;padding:26px;box-shadow:0 20px 44px -28px rgba(31,27,46,0.4);animation:fadeUp .5s cubic-bezier(.2,.7,.2,1);">
+        <div style="flex:1 1 300px;max-width:360px;display:flex;flex-direction:column;gap:12px;">
+          <div style="position:relative;border-radius:16px;overflow:hidden;flex:1 1 auto;min-height:180px;">
+            <img src="uploads/pasted-1786368726782-0.png" alt="Volleyball team celebrating a win" style="width:100%;height:100%;min-height:180px;object-fit:cover;display:block;">
+            <div style="position:absolute;left:14px;bottom:14px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;color:#FFFFFF;background:rgba(217,38,140,0.86);padding:7px 12px;border-radius:999px;">Captains for the day</div>
+          </div>
+          <div style="border-radius:16px;overflow:hidden;height:110px;">
+            <img src="uploads/pasted-1786369152341-0.png" alt="Gold trophy" style="width:100%;height:110px;object-fit:cover;display:block;">
+          </div>
+        </div>
+        <div style="flex:1 1 360px;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.24em;text-transform:uppercase;color:#D9268C;">Chapter IV · B2</div>
+          <h2 style="font-family:'Playfair Display SC',Georgia,serif;font-weight:700;font-size:clamp(25px,3.3vw,34px);color:#1F1B2E;margin:10px 0 16px;">Center Court</h2>
+          <p style="font-family:'IBM Plex Serif',Georgia,serif;font-size:16.5px;line-height:1.75;color:#4B4560;margin:0 0 14px;">Melek stands at center court, Melissa beside her, both team captains for the day. She argues a bad call in full sentences.</p>
+          <p style="font-family:'IBM Plex Serif',Georgia,serif;font-size:16.5px;line-height:1.75;color:#4B4560;margin:0;">After the match she shows her sketchbook to the whole team: a court and a canvas, painted as one picture. Nobody is surprised anymore.</p>
+          <sc-if value="{{ showVocabTags }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;gap:9px;flex-wrap:wrap;margin-top:20px;">
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;padding:7px 13px;border-radius:999px;color:#FFFFFF;background:linear-gradient(150deg,#F97316,#D9268C);">captain</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:7px 13px;border-radius:999px;color:#6D28D9;background:rgba(124,58,237,0.11);border:1px solid rgba(124,58,237,0.26);">art show</span>
+              <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;padding:7px 13px;border-radius:999px;color:#0E9384;background:rgba(20,184,166,0.12);border:1px solid rgba(20,184,166,0.28);">B2</span>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+
+  <div id="back-of-book" style="margin-bottom:96px;">
+    <div style="text-align:center;margin-bottom:32px;">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.24em;text-transform:uppercase;color:#0E9384;">Game Station</div>
+      <h2 style="font-family:'Playfair Display SC',Georgia,serif;font-weight:700;font-size:clamp(25px,3.3vw,32px);margin:10px 0;background:linear-gradient(100deg,#0E9384,#7C3AED);-webkit-background-clip:text;background-clip:text;color:transparent;">Back of the Book</h2>
+      <p style="font-family:'IBM Plex Serif',Georgia,serif;font-size:16px;color:#4B4560;max-width:480px;margin:0 auto;">Six conversation prompts, face down. Tap a card to reveal it, tap again to flip it back.</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:18px;">
+      <sc-for list="{{ backCards }}" as="card" hint-placeholder-count="6">
+        <div onClick="{{ card.toggle }}" style="position:relative;height:168px;border-radius:18px;cursor:pointer;">
+          <div style="position:absolute;inset:0;border-radius:18px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;box-shadow:0 18px 38px -24px rgba(31,27,46,0.55);transition:opacity .35s cubic-bezier(.2,.7,.2,1);{{ card.frontStyle }}">
+            <div style="font-family:'Playfair Display SC',Georgia,serif;font-size:30px;color:#FFFFFF;">{{ card.num }}</div>
+            <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.9);">Tap to reveal</div>
+          </div>
+          <div style="position:absolute;inset:0;border-radius:18px;background:#FFFFFF;border:1px solid #F0E6D8;display:flex;align-items:center;justify-content:center;padding:20px;text-align:center;box-shadow:0 18px 38px -24px rgba(31,27,46,0.4);transition:opacity .35s cubic-bezier(.2,.7,.2,1);{{ card.backStyle }}">
+            <div style="font-family:'IBM Plex Serif',Georgia,serif;font-size:15px;color:#1F1B2E;line-height:1.55;">{{ card.prompt }}</div>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div id="the-trap" style="margin-bottom:96px;display:flex;justify-content:center;">
+    <div style="max-width:560px;width:100%;background:#FFFFFF;border:1px solid #F0E6D8;border-top:6px solid #D9268C;border-radius:22px;padding:34px;box-shadow:0 24px 50px -28px rgba(31,27,46,0.45);text-align:center;">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.24em;text-transform:uppercase;color:#D9268C;">The Yes / No Trap</div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:#9A93AC;margin-top:10px;">Question {{ trapNum }} of {{ trapTotal }}</div>
+      <p style="font-family:'IBM Plex Serif',Georgia,serif;font-size:23px;color:#1F1B2E;margin:18px 0 28px;line-height:1.4;">{{ trapQ }}</p>
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:20px;">
+        <button onClick="{{ answerYes }}" style="min-width:138px;min-height:52px;padding:0 32px;border:none;border-radius:999px;background:linear-gradient(150deg,#14B8A6,#84CC16);color:#12331F;font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;box-shadow:0 14px 28px -14px rgba(20,184,166,0.8);transition:transform .2s cubic-bezier(.2,.7,.2,1);" style-hover="transform:translateY(-2px);" style-active="transform:translateY(1px);">Yes</button>
+        <button onClick="{{ answerNo }}" style="min-width:138px;min-height:52px;padding:0 32px;border:none;border-radius:999px;background:linear-gradient(150deg,#8B5CF6,#D9268C);color:#FFFFFF;font-family:'IBM Plex Mono',monospace;font-size:16px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;box-shadow:0 14px 28px -14px rgba(139,92,246,0.8);transition:transform .2s cubic-bezier(.2,.7,.2,1);" style-hover="transform:translateY(-2px);" style-active="transform:translateY(1px);">No</button>
+      </div>
+      <sc-if value="{{ hasFeedback }}" hint-placeholder-val="{{ false }}">
+        <div style="font-family:'IBM Plex Sans',sans-serif;font-size:14.5px;line-height:1.55;padding:14px 16px;border-radius:14px;margin-bottom:20px;{{ feedbackStyle }}">{{ feedbackText }}</div>
+      </sc-if>
+      <div style="display:flex;align-items:center;justify-content:center;gap:26px;flex-wrap:wrap;border-top:1px solid #F3EADC;padding-top:24px;">
+        <div style="display:flex;align-items:baseline;gap:10px;">
+          <div style="font-family:'Playfair Display SC',Georgia,serif;font-size:44px;line-height:1;background:linear-gradient(150deg,#7C3AED,#D9268C);-webkit-background-clip:text;background-clip:text;color:transparent;">{{ score }}</div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#9A93AC;">correct</div>
+        </div>
+        <div style="display:flex;gap:10px;">
+          <button onClick="{{ nextTrapQ }}" style="background:rgba(124,58,237,0.1);border:1px solid rgba(124,58,237,0.3);color:#6D28D9;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;min-height:44px;padding:0 18px;border-radius:999px;cursor:pointer;">Next →</button>
+          <button onClick="{{ resetTrapGame }}" style="background:none;border:1px solid #E4D9C8;color:#9A93AC;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;min-height:44px;padding:0 18px;border-radius:999px;cursor:pointer;">Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="graduation" style="display:flex;flex-direction:column;align-items:center;gap:16px;">
+    <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.24em;text-transform:uppercase;color:#EA580C;">Final Step</div>
+    <div onClick="{{ openTrophy }}" style="cursor:pointer;padding:22px;border-radius:22px;background:#FFFFFF;border:1px solid #F0E6D8;box-shadow:0 22px 46px -26px rgba(31,27,46,0.45);display:flex;flex-direction:column;align-items:center;gap:18px;">
+      <div style="width:150px;height:150px;background:linear-gradient(150deg,#FFFFFF,#FFF7E8);border-radius:12px;display:grid;grid-template-columns:repeat(9,1fr);grid-template-rows:repeat(9,1fr);padding:10px;box-sizing:border-box;gap:2px;border:1px solid #F0E6D8;">
+        <sc-for list="{{ qrCells }}" as="cell" hint-placeholder-count="81">
+          <div style="{{ cell.style }}"></div>
+        </sc-for>
+      </div>
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:#FFFFFF;background:linear-gradient(100deg,#7C3AED,#D9268C);padding:12px 22px;border-radius:999px;">Tap to Reveal Graduation</div>
+    </div>
+  </div>
+
+  <div style="margin-top:90px;height:3px;border-radius:999px;background:linear-gradient(90deg,rgba(124,58,237,0) 0%,#7C3AED 22%,#0E9384 48%,#F97316 74%,rgba(217,38,140,0) 100%);"></div>
+  <p style="text-align:center;font-family:'IBM Plex Serif',Georgia,serif;font-style:italic;font-size:17px;color:#4B4560;margin-top:26px;">A quiet artist becomes a confident captain: same girl, more words.</p>
+
+  <sc-if value="{{ showTrophy }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;background:rgba(31,27,46,0.72);display:flex;align-items:flex-start;justify-content:center;z-index:50;padding:20px;overflow-y:auto;" onClick="{{ closeTrophy }}">
+      <div style="box-sizing:border-box;background:#FFFBF4;border-radius:26px;box-shadow:0 40px 80px -30px rgba(31,27,46,0.7);max-width:460px;width:100%;margin:auto;max-height:calc(100vh - 40px);overflow:hidden;text-align:center;position:relative;display:flex;flex-direction:column;animation:modalPop .4s cubic-bezier(.2,.7,.2,1);" onClick="{{ stopClick }}">
+        <sc-if value="{{ enableConfetti }}" hint-placeholder-val="{{ true }}">
+          <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;border-radius:26px;z-index:2;">
+          <div style="position:absolute;top:0;left:8%;width:9px;height:9px;border-radius:2px;background:#7C3AED;animation:confettiFall 2.4s ease-in .1s infinite;z-index:2;"></div>
+          <div style="position:absolute;top:0;left:24%;width:7px;height:7px;border-radius:50%;background:#14B8A6;animation:confettiFall 2.1s ease-in .5s infinite;z-index:2;"></div>
+          <div style="position:absolute;top:0;left:41%;width:9px;height:9px;border-radius:2px;background:#F97316;animation:confettiFall 2.6s ease-in .3s infinite;z-index:2;"></div>
+          <div style="position:absolute;top:0;left:58%;width:7px;height:7px;border-radius:50%;background:#D9268C;animation:confettiFall 2.2s ease-in .7s infinite;z-index:2;"></div>
+          <div style="position:absolute;top:0;left:74%;width:9px;height:9px;border-radius:2px;background:#84CC16;animation:confettiFall 2.5s ease-in .2s infinite;z-index:2;"></div>
+          <div style="position:absolute;top:0;left:89%;width:7px;height:7px;border-radius:50%;background:#38BDF8;animation:confettiFall 2.3s ease-in .6s infinite;z-index:2;"></div>
+          </div>
+        </sc-if>
+        <div style="overflow-y:auto;overflow-x:hidden;">
+        <img src="uploads/pasted-1786369152341-0.png" alt="Gold victory trophy" style="width:100%;height:min(230px,28vh);object-fit:cover;display:block;border-radius:26px 26px 0 0;animation:trophyGlow 3s ease-in-out infinite;">
+        <div style="padding:26px 34px 38px;">
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.24em;text-transform:uppercase;color:#EA580C;">Graduation Unlocked</div>
+          <h2 style="font-family:'Playfair Display SC',Georgia,serif;font-weight:900;font-size:31px;margin:12px 0;background:linear-gradient(100deg,#7C3AED,#D9268C,#F97316);-webkit-background-clip:text;background-clip:text;color:transparent;">B2: Center Court</h2>
+          <p style="font-family:'IBM Plex Serif',Georgia,serif;font-size:16px;color:#4B4560;line-height:1.6;margin:0 0 24px;">From a quiet sketchbook to a confident team captain, in English.</p>
+          <div style="display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin-bottom:26px;">
+            <div style="flex:1 1 120px;background:linear-gradient(150deg,#7C3AED,#8B5CF6);border-radius:16px;padding:16px 12px;color:#FFFFFF;">
+              <div style="font-family:'Playfair Display SC',Georgia,serif;font-size:30px;line-height:1;">B2</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.16em;text-transform:uppercase;margin-top:8px;opacity:.9;">Final level</div>
+            </div>
+            <div style="flex:1 1 120px;background:linear-gradient(150deg,#14B8A6,#84CC16);border-radius:16px;padding:16px 12px;color:#12331F;">
+              <div style="font-family:'Playfair Display SC',Georgia,serif;font-size:30px;line-height:1;">4</div>
+              <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:0.16em;text-transform:uppercase;margin-top:8px;">Chapters</div>
+            </div>
+          </div>
+          <button onClick="{{ closeTrophy }}" style="background:linear-gradient(100deg,#7C3AED,#D9268C);border:none;color:#FFFFFF;font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:0.16em;text-transform:uppercase;min-height:48px;padding:0 32px;border-radius:999px;cursor:pointer;">Close</button>
+        </div>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{
+  &quot;enableConfetti&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Graduation&quot;},
+  &quot;showVocabTags&quot;: {&quot;editor&quot;: &quot;boolean&quot;, &quot;default&quot;: true, &quot;tsType&quot;: &quot;boolean&quot;, &quot;section&quot;: &quot;Chapters&quot;}
+}">
+const BACK_CARDS = [
+  { prompt: "If Melek's sketchbook could talk, what would it say about her first year on the team?" },
+  { prompt: "Describe a time you felt nervous to speak English, like Melek's first serve." },
+  { prompt: "Melek \"corrects herself less\" now. What helped her feel more confident?" },
+  { prompt: "Compare shy Melek in Chapter I to confident Melek in Chapter IV. Use three adjectives for each." },
+  { prompt: "What advice would Melek give a new B2 student who still feels shy?" },
+  { prompt: "If you painted your own English journey, what would be in the picture?" },
+];
+
+const CARD_FRONTS = [
+  "linear-gradient(150deg,#8B5CF6,#7C3AED)",
+  "linear-gradient(150deg,#38BDF8,#0E9384)",
+  "linear-gradient(150deg,#F97316,#D9268C)",
+  "linear-gradient(150deg,#14B8A6,#84CC16)",
+  "linear-gradient(150deg,#D9268C,#7C3AED)",
+  "linear-gradient(150deg,#FBBF24,#F97316)",
+];
+
+const TRAP_QUESTIONS = [
+  { q: "Doesn't Melek love painting?", correct: "Yes", explain: "Yes, she does. A negative question about something true still gets a Yes." },
+  { q: "Melek isn't nervous before a match anymore, is she?", correct: "No", explain: "No, she isn't. The tag question agrees with the negative." },
+  { q: "Hasn't Melek's English improved a lot this year?", correct: "Yes", explain: "Yes, it has. Don't let the \"hasn't\" fool you." },
+  { q: "Melissa doesn't help Melek with English, does she?", correct: "Yes", explain: "Yes, she does. The statement is false, so the answer flips to Yes." },
+  { q: "Wasn't Melek's first serve perfect?", correct: "No", explain: "No, it wasn't. It hit the net." },
+  { q: "Can't Melek speak confidently now?", correct: "Yes", explain: "Yes, she can. Trust the meaning, not the \"n't\"." },
+];
+
+const QR_SIZE = 9;
+const QR_PATTERN = [];
+for (let r = 0; r < QR_SIZE; r++) {
+  for (let c = 0; c < QR_SIZE; c++) {
+    const inFinder = (r < 3 && c < 3) || (r < 3 && c > 5) || (r > 5 && c < 3);
+    const on = inFinder ? true : (((r * 13 + c * 7 + r * c * 3) % 5) < 2);
+    QR_PATTERN.push({ on, hue: (r + c) % 3 });
+  }
+}
+
+const QR_COLORS = ["#1F1B2E", "#7C3AED", "#D9268C"];
+
+class Component extends DCLogic {
+  state = {
+    activeChapter: 0,
+    revealed: [false, false, false, false, false, false],
+    trapIdx: 0,
+    score: 0,
+    attempts: 0,
+    feedback: null,
+    showTrophy: false,
+  };
+
+  goToChapter(n) { this.setState({ activeChapter: n }); }
+
+  toggleCard(i) {
+    this.setState((s) => {
+      const revealed = s.revealed.slice();
+      revealed[i] = !revealed[i];
+      return { revealed };
+    });
+  }
+
+  answerTrap(ans) {
+    const q = TRAP_QUESTIONS[this.state.trapIdx];
+    const ok = ans === q.correct;
+    this.setState((s) => ({
+      score: s.score + (ok ? 1 : 0),
+      attempts: s.attempts + 1,
+      feedback: { ok, text: (ok ? "Correct. " : "Caught in the trap. ") + q.explain },
+    }));
+  }
+
+  nextTrap() {
+    this.setState((s) => ({ trapIdx: (s.trapIdx + 1) % TRAP_QUESTIONS.length, feedback: null }));
+  }
+
+  resetTrap() { this.setState({ score: 0, attempts: 0, trapIdx: 0, feedback: null }); }
+
+  openTrophy() { this.setState({ showTrophy: true }); }
+  closeTrophy() { this.setState({ showTrophy: false }); }
+
+  renderVals() {
+    const s = this.state;
+    const TAB_COLORS = [
+      ["#7C3AED", "rgba(124,58,237,0.12)"],
+      ["#0284C7", "rgba(14,165,233,0.12)"],
+      ["#EA580C", "rgba(249,115,22,0.12)"],
+      ["#D9268C", "rgba(217,38,140,0.12)"],
+    ];
+    const tabStyle = (i) => (s.activeChapter === i
+      ? "background:" + TAB_COLORS[i][0] + ";border:1px solid " + TAB_COLORS[i][0] + ";color:#FFFFFF;font-weight:600;"
+      : "background:" + TAB_COLORS[i][1] + ";border:1px solid rgba(31,27,46,0.1);color:#6B6480;font-weight:400;");
+    const q = TRAP_QUESTIONS[s.trapIdx];
+
+    return {
+      showVocabTags: this.props.showVocabTags ?? true,
+      enableConfetti: this.props.enableConfetti ?? true,
+
+      ch1Active: s.activeChapter === 0,
+      ch2Active: s.activeChapter === 1,
+      ch3Active: s.activeChapter === 2,
+      ch4Active: s.activeChapter === 3,
+      tab1Style: tabStyle(0),
+      tab2Style: tabStyle(1),
+      tab3Style: tabStyle(2),
+      tab4Style: tabStyle(3),
+      goCh1: () => this.goToChapter(0),
+      goCh2: () => this.goToChapter(1),
+      goCh3: () => this.goToChapter(2),
+      goCh4: () => this.goToChapter(3),
+
+      backCards: BACK_CARDS.map((c, i) => ({
+        prompt: c.prompt,
+        num: String(i + 1).padStart(2, "0"),
+        frontStyle: "background:" + CARD_FRONTS[i] + ";opacity:" + (s.revealed[i] ? 0 : 1) + ";pointer-events:" + (s.revealed[i] ? "none" : "auto") + ";",
+        backStyle: "opacity:" + (s.revealed[i] ? 1 : 0) + ";pointer-events:" + (s.revealed[i] ? "auto" : "none") + ";",
+        toggle: () => this.toggleCard(i),
+      })),
+
+      trapQ: q.q,
+      trapNum: s.trapIdx + 1,
+      trapTotal: TRAP_QUESTIONS.length,
+      score: s.score,
+      hasFeedback: !!s.feedback,
+      feedbackText: s.feedback ? s.feedback.text : "",
+      feedbackStyle: s.feedback
+        ? (s.feedback.ok
+          ? "color:#12331F;background:rgba(132,204,22,0.2);border:1px solid rgba(20,184,166,0.4);"
+          : "color:#7A1F55;background:rgba(217,38,140,0.12);border:1px solid rgba(217,38,140,0.34);")
+        : "",
+      answerYes: () => this.answerTrap("Yes"),
+      answerNo: () => this.answerTrap("No"),
+      nextTrapQ: () => this.nextTrap(),
+      resetTrapGame: () => this.resetTrap(),
+
+      qrCells: QR_PATTERN.map((cell) => ({
+        style: cell.on ? "background:" + QR_COLORS[cell.hue] + ";border-radius:2px;" : "background:transparent;",
+      })),
+
+      showTrophy: s.showTrophy,
+      openTrophy: () => this.openTrophy(),
+      closeTrophy: () => this.closeTrophy(),
+      stopClick: (e) => e.stopPropagation(),
+    };
+  }
+}
+
+</script>
+</body>
+</html>

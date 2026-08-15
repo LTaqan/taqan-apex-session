@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<title>SINE | 1000 XP Ultimate Card</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Oswald:wght@400;700&family=Nunito:wght@700;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<style>
+  :root {
+    --bg-dark: #0f172a;
+    --gold-light: #fef08a;
+    --gold-base: #facc15;
+    --gold-dark: #a16207;
+    --card-bg: linear-gradient(135deg, #1e293b, #0f172a);
+    --turkey-red: #e30a17;
+    --card-w: 340px;
+    --card-h: 480px;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { min-height: 100%; }
+
+  body {
+    background-color: var(--bg-dark);
+    background-image: radial-gradient(circle at 50% 40%, rgba(250, 204, 21, 0.16), transparent 60%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    padding: clamp(20px, 5vw, 44px) 14px;
+    font-family: 'Nunito', system-ui, sans-serif;
+    perspective: 1000px;
+    color: #fff;
+    overflow-x: hidden;
+  }
+
+  .page-wrap {
+    width: min(100%, 560px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .celebration-title {
+    font-family: 'Bangers', Impact, sans-serif;
+    font-size: clamp(2rem, 9vw, 3.5rem);
+    line-height: 1;
+    color: var(--gold-base);
+    text-shadow: 0 4px 15px rgba(250, 204, 21, 0.4);
+    margin: 0 0 clamp(18px, 5vw, 30px);
+    letter-spacing: clamp(1px, 0.4vw, 2px);
+    text-align: center;
+  }
+
+  .card-stage {
+    width: min(100%, var(--card-w));
+    aspect-ratio: 17 / 24;
+    position: relative;
+  }
+
+  .card-container {
+    width: 100%;
+    height: 100%;
+    transition: transform 0.1s ease;
+    transform-style: preserve-3d;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  .fut-card {
+    width: 100%;
+    height: 100%;
+    background: var(--card-bg);
+    border-radius: 20px;
+    position: relative;
+    box-shadow:
+      0 20px 50px rgba(0,0,0,0.8),
+      inset 0 0 0 4px var(--gold-dark),
+      inset 0 0 20px rgba(250, 204, 21, 0.5);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    isolation: isolate;
+  }
+
+  .fut-card::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 80% 19%, rgba(227,10,23,0.16), transparent 26%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .fut-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      45deg,
+      transparent 30%,
+      rgba(255,255,255,0.3) 45%,
+      rgba(255,255,255,0.6) 50%,
+      rgba(255,255,255,0.3) 55%,
+      transparent 70%
+    );
+    transform: rotate(45deg);
+    animation: foilShine 4s infinite linear;
+    pointer-events: none;
+    z-index: 10;
+  }
+
+  .fut-card.foil-paused::before { animation-play-state: paused; }
+
+  @keyframes foilShine {
+    0% { transform: translateY(-100%) translateX(-100%) rotate(45deg); }
+    100% { transform: translateY(100%) translateX(100%) rotate(45deg); }
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: 100%;
+    padding: 20px 25px 0;
+    z-index: 2;
+    position: relative;
+  }
+
+  .rating-box { text-align: left; }
+
+  .rating {
+    font-family: 'Oswald', Arial, sans-serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--gold-light);
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  }
+
+  .position {
+    display: inline-block;
+    font-family: 'Oswald', Arial, sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--gold-base);
+    border-bottom: 2px solid var(--gold-base);
+    padding-bottom: 2px;
+  }
+
+  .club-badges {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 54px;
+    min-height: 54px;
+    font-size: 2.35rem;
+    line-height: 1;
+    filter: drop-shadow(0 0 9px rgba(227,10,23,0.55));
+  }
+
+  .portrait {
+    width: 200px;
+    height: 190px;
+    margin-top: -33px;
+    background: radial-gradient(circle, rgba(120,72,48,0.42) 0%, rgba(250,204,21,0.08) 45%, transparent 72%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 6.25rem;
+    line-height: 1;
+    z-index: 1;
+    position: relative;
+    filter: drop-shadow(0 10px 10px rgba(0,0,0,0.5));
+    user-select: none;
+  }
+
+  .player-name {
+    font-family: 'Bangers', Impact, sans-serif;
+    font-size: 2.5rem;
+    line-height: 1;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: -2px;
+    text-shadow: 2px 2px 0 #000;
+    z-index: 2;
+    border-bottom: 1px solid rgba(250,204,21,0.4);
+    padding-bottom: 7px;
+    width: 80%;
+    text-align: center;
+  }
+
+  .stats-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    column-gap: 24px;
+    row-gap: 8px;
+    margin-top: 13px;
+    z-index: 2;
+    padding: 0 28px;
+    width: 100%;
+  }
+
+  .stat {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    align-items: baseline;
+    gap: 7px;
+    min-width: 0;
+  }
+
+  .stat-num {
+    font-family: 'Oswald', Arial, sans-serif;
+    font-size: 1.34rem;
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--gold-light);
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat-name {
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-size: 0.92rem;
+    font-weight: 900;
+    line-height: 1.15;
+    color: #fff;
+    white-space: nowrap;
+  }
+
+  .card-footer {
+    position: absolute;
+    left: 18px;
+    right: 18px;
+    bottom: 12px;
+    font-family: 'Oswald', Arial, sans-serif;
+    font-size: 0.92rem;
+    line-height: 1;
+    color: var(--gold-dark);
+    letter-spacing: 2.4px;
+    text-transform: uppercase;
+    text-align: center;
+    z-index: 2;
+  }
+
+  .controls {
+    margin-top: clamp(24px, 6vw, 40px);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    width: min(100%, 520px);
+  }
+
+  .btn {
+    background: var(--gold-base);
+    color: #000;
+    border: 0;
+    padding: 12px 18px;
+    border-radius: 9px;
+    font-family: 'Nunito', system-ui, sans-serif;
+    font-weight: 900;
+    font-size: 0.95rem;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(250,204,21,0.28);
+    transition: transform 0.2s, background 0.2s;
+    min-height: 44px;
+  }
+
+  .btn:hover { background: #fff; transform: translateY(-2px); }
+  .btn:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+
+  .download-note {
+    margin: 12px 0 0;
+    max-width: 430px;
+    text-align: center;
+    color: #cbd5e1;
+    font-size: 0.78rem;
+    line-height: 1.45;
+  }
+
+  @media (max-width: 390px) {
+    body { padding-left: 10px; padding-right: 10px; }
+    .card-stage { width: min(100%, 326px); }
+    .card-top { padding: 18px 22px 0; }
+    .stats-grid { padding: 0 24px; column-gap: 18px; }
+    .stat { grid-template-columns: 34px 1fr; gap: 6px; }
+    .stat-name { font-size: 0.86rem; }
+    .controls { flex-direction: column; align-items: stretch; width: min(100%, 326px); }
+    .btn { width: 100%; }
+  }
+
+  @media (hover: none), (pointer: coarse) {
+    .card-container { cursor: default; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-container { transition: none; }
+    .fut-card::before { animation: none; opacity: 0.22; }
+  }
+
+  @media print {
+    @page { size: auto; margin: 10mm; }
+    body { background: #fff; padding: 0; min-height: auto; }
+    .celebration-title, .controls, .download-note { display: none !important; }
+    .card-stage { width: 90mm; margin: 0 auto; }
+    .fut-card { box-shadow: inset 0 0 0 4px var(--gold-dark); print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    .fut-card::before { display: none; }
+  }
+</style>
+</head>
+<body>
+  <main class="page-wrap">
+    <div class="celebration-title">🎉 1000 XP CHAMPION 🎉</div>
+
+    <div class="card-stage" id="captureArea">
+      <div class="card-container" id="card" aria-label="Sine 1000 XP trading card">
+        <div class="fut-card" id="futCard">
+          <div class="card-top">
+            <div class="rating-box">
+              <div class="rating">99</div>
+              <div class="position">B1</div>
+            </div>
+            <div class="club-badges" aria-label="Turkish flag">🇹🇷</div>
+          </div>
+
+          <div class="portrait" role="img" aria-label="Girl with brown hair">👧🏽</div>
+
+          <div class="player-name">SINE</div>
+
+          <div class="stats-grid" aria-label="Language learning stats">
+            <div class="stat"><span class="stat-num">100</span><span class="stat-name">VOCAL</span></div>
+            <div class="stat"><span class="stat-num">98</span><span class="stat-name">GRAMMAR</span></div>
+            <div class="stat"><span class="stat-num">100</span><span class="stat-name">READING</span></div>
+            <div class="stat"><span class="stat-num">100</span><span class="stat-name">LISTEN</span></div>
+            <div class="stat"><span class="stat-num">99</span><span class="stat-name">CONVO</span></div>
+            <div class="stat"><span class="stat-num">100</span><span class="stat-name">LOGIC</span></div>
+          </div>
+
+          <div class="card-footer">Team Collectable</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls" aria-label="Card controls">
+      <button class="btn" type="button" onclick="toggleFoil()">✨ Toggle Foil</button>
+      <button class="btn" type="button" onclick="downloadCard()">⬇️ Download PNG</button>
+      <button class="btn" type="button" onclick="window.print()">🖨️ Print / Save PDF</button>
+    </div>
+    <p class="download-note">For the cleanest image, use “Download PNG.” On phones or tablets, the saved file will appear in the browser’s normal downloads location.</p>
+  </main>
+
+<script>
+  const card = document.getElementById('card');
+  const futCard = document.getElementById('futCard');
+  const canHover = window.matchMedia('(hover: hover) and (pointer: fine)');
+
+  function resetCardTilt() {
+    card.style.transform = 'rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+  }
+
+  card.addEventListener('mousemove', (e) => {
+    if (!canHover.matches) return;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    const rotateX = ((y - centerY) / centerY) * -10;
+    const rotateY = ((x - centerX) / centerX) * 10;
+    card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.025, 1.025, 1.025)`;
+  });
+
+  card.addEventListener('mouseleave', resetCardTilt);
+
+  function toggleFoil() {
+    futCard.classList.toggle('foil-paused');
+  }
+
+  async function downloadCard() {
+    resetCardTilt();
+    const wasPaused = futCard.classList.contains('foil-paused');
+    futCard.classList.add('foil-paused');
+
+    if (typeof html2canvas !== 'function') {
+      alert('The image-export library did not load. Please use Print / Save PDF or take a screenshot.');
+      if (!wasPaused) futCard.classList.remove('foil-paused');
+      return;
+    }
+
+    try {
+      const canvas = await html2canvas(document.getElementById('captureArea'), {
+        backgroundColor: null,
+        scale: Math.min(3, Math.max(2, window.devicePixelRatio || 1)),
+        useCORS: true,
+        logging: false
+      });
+      const link = document.createElement('a');
+      link.download = 'Sine_1000_XP_Trading_Card.png';
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch (error) {
+      alert('PNG export was blocked by this browser. Please use Print / Save PDF instead.');
+      console.error(error);
+    } finally {
+      if (!wasPaused) futCard.classList.remove('foil-paused');
+    }
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>The Topkapı Cipher — Mystery &amp; Python | Yusuf's Lesson</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --bg2: #f5f4f0;
+    --bg3: #eeedea;
+    --text: #1a1a18;
+    --text2: #5a5a56;
+    --text3: #8a8a84;
+    --border: rgba(0,0,0,0.12);
+    --border2: rgba(0,0,0,0.22);
+    --info-bg: #e6f1fb;
+    --info-text: #185fa5;
+    --info-border: rgba(24,95,165,0.3);
+    --success-bg: #eaf3de;
+    --success-text: #3b6d11;
+    --success-border: rgba(59,109,17,0.3);
+    --danger-bg: #fcebeb;
+    --danger-text: #a32d2d;
+    --danger-border: rgba(163,45,45,0.3);
+    --warning-bg: #faeeda;
+    --warning-text: #854f0b;
+    --warning-border: rgba(133,79,11,0.3);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --font: 'Nunito', sans-serif;
+    --font-serif: 'Cinzel', serif;
+    --font-mono: 'Courier New', Courier, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1e1e1c;
+      --bg2: #272725;
+      --bg3: #303030;
+      --text: #e8e6de;
+      --text2: #a0a098;
+      --text3: #6a6a62;
+      --border: rgba(255,255,255,0.1);
+      --border2: rgba(255,255,255,0.2);
+      --info-bg: #0c2a47;
+      --info-text: #85b7eb;
+      --info-border: rgba(56,138,221,0.3);
+      --success-bg: #1a2e0c;
+      --success-text: #97c459;
+      --success-border: rgba(99,153,34,0.3);
+      --danger-bg: #2e1212;
+      --danger-text: #f09595;
+      --danger-border: rgba(226,75,74,0.3);
+      --warning-bg: #2a1e08;
+      --warning-text: #ef9f27;
+      --warning-border: rgba(186,117,23,0.3);
+    }
+  }
+
+  body {
+    font-family: var(--font);
+    background: var(--bg3);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 20px 16px 40px;
+  }
+
+  #app {
+    max-width: 680px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  /* SCENE SYSTEM */
+  .scene { display: none; flex-direction: column; gap: 14px; animation: fadeIn .4s ease; }
+  .scene.active { display: flex; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* BANNER */
+  .lesson-banner {
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .banner-icon {
+    width: 46px; height: 46px;
+    background: var(--info-bg);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; flex-shrink: 0;
+  }
+  .banner-title { font-family: var(--font-serif); font-size: 16px; color: var(--text); line-height: 1.3; }
+  .banner-sub { font-size: 12px; color: var(--text2); margin-top: 3px; }
+
+  /* PROGRESS */
+  .progress-wrap {
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 10px 16px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .progress-label { font-size: 12px; color: var(--text2); white-space: nowrap; }
+  .progress-bar { flex: 1; height: 6px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--info-text); border-radius: 3px; transition: width .5s ease; }
+  .xp-badge { font-size: 13px; font-weight: 700; color: var(--warning-text); white-space: nowrap; }
+
+  /* STORY CARD */
+  .story-card {
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  }
+  .story-scene-tag {
+    font-size: 11px; font-weight: 700; letter-spacing: .09em;
+    color: var(--info-text); text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .story-text { font-size: 15px; line-height: 1.8; color: var(--text); }
+  .story-text strong { font-weight: 700; color: var(--info-text); }
+  .story-text em { color: var(--warning-text); font-style: normal; font-weight: 600; }
+  .story-illus {
+    background: var(--bg2);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    font-size: 13px; color: var(--text2);
+    margin-top: 12px;
+    border-left: 3px solid var(--info-border);
+  }
+
+  /* CHOICES */
+  .choices { display: flex; flex-direction: column; gap: 8px; }
+  .choice-btn {
+    background: var(--bg);
+    border: 0.5px solid var(--border2);
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    font-family: var(--font);
+    font-size: 14px; color: var(--text);
+    text-align: left; cursor: pointer;
+    transition: background .15s, border-color .15s, transform .1s;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .choice-btn:hover { background: var(--bg2); border-color: var(--border2); }
+  .choice-btn:active { transform: scale(0.98); }
+  .choice-btn .choice-letter {
+    width: 24px; height: 24px; border-radius: 50%;
+    background: var(--info-bg); color: var(--info-text);
+    font-size: 12px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .choice-btn.correct { border-color: var(--success-border); background: var(--success-bg); }
+  .choice-btn.wrong { border-color: var(--danger-border); background: var(--danger-bg); }
+
+  /* FEEDBACK */
+  .feedback-box {
+    border-radius: var(--radius-md);
+    padding: 12px 16px;
+    font-size: 14px; line-height: 1.6;
+    border: 0.5px solid;
+    display: none;
+  }
+  .feedback-box.success { background: var(--success-bg); border-color: var(--success-border); color: var(--success-text); }
+  .feedback-box.error { background: var(--danger-bg); border-color: var(--danger-border); color: var(--danger-text); }
+  .feedback-box.info { background: var(--info-bg); border-color: var(--info-border); color: var(--info-text); }
+  .feedback-box.show { display: block; animation: fadeIn .3s ease; }
+
+  /* CODE BLOCK */
+  .section-heading {
+    font-size: 11px; font-weight: 700; letter-spacing: .07em;
+    color: var(--text2); text-transform: uppercase;
+    padding-bottom: 8px;
+    border-bottom: 0.5px solid var(--border);
+    margin-bottom: 12px;
+  }
+  .code-block {
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 14px 16px;
+    font-family: var(--font-mono);
+    font-size: 13px; line-height: 1.8;
+    color: var(--text);
+    white-space: pre; overflow-x: auto;
+  }
+  .ck { color: var(--info-text); font-weight: 700; }
+  .cs { color: var(--success-text); }
+  .cc { color: var(--text2); font-style: italic; }
+  .cn { color: var(--warning-text); }
+
+  /* CODE INPUT */
+  .quiz-section-tag {
+    font-size: 11px; font-weight: 700; letter-spacing: .08em;
+    color: var(--warning-text); text-transform: uppercase;
+    margin-bottom: 6px; margin-top: 14px;
+  }
+  .quiz-q { font-size: 15px; font-weight: 600; line-height: 1.5; margin-bottom: 12px; }
+  .code-input-wrap { display: flex; flex-direction: column; gap: 8px; }
+  .code-input-label { font-size: 13px; color: var(--text2); }
+  .code-input {
+    font-family: var(--font-mono); font-size: 13px;
+    padding: 10px 12px;
+    border: 0.5px solid var(--border2);
+    border-radius: var(--radius-md);
+    background: var(--bg);
+    color: var(--text);
+    width: 100%; outline: none;
+    transition: border-color .15s;
+  }
+  .code-input:focus { border-color: var(--info-text); box-shadow: 0 0 0 3px var(--info-bg); }
+
+  /* BUTTONS */
+  .btn-primary {
+    background: var(--info-bg);
+    border: 0.5px solid var(--info-border);
+    border-radius: var(--radius-md);
+    padding: 10px 20px;
+    font-family: var(--font); font-size: 14px; font-weight: 700;
+    color: var(--info-text);
+    cursor: pointer;
+    transition: opacity .15s, transform .1s;
+    align-self: flex-start;
+  }
+  .btn-primary:hover { opacity: .85; }
+  .btn-primary:active { transform: scale(0.98); }
+
+  .btn-next {
+    background: var(--bg);
+    border: 0.5px solid var(--border2);
+    border-radius: var(--radius-md);
+    padding: 10px 20px;
+    font-family: var(--font); font-size: 14px; font-weight: 700;
+    color: var(--text);
+    cursor: pointer;
+    transition: background .15s, transform .1s;
+    display: none;
+  }
+  .btn-next:hover { background: var(--bg2); }
+  .btn-next:active { transform: scale(0.98); }
+  .btn-next.show { display: inline-block; }
+
+  /* IDIOM PILL */
+  .idiom-pill {
+    display: inline-block;
+    background: var(--warning-bg);
+    border: 0.5px solid var(--warning-border);
+    color: var(--warning-text);
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: 13px; font-weight: 700;
+    cursor: pointer;
+    transition: opacity .15s;
+  }
+  .idiom-pill:hover { opacity: .75; }
+
+  /* REWARD */
+  .reward-panel {
+    background: var(--bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 28px 24px;
+    text-align: center;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.07);
+  }
+  .reward-star { font-size: 44px; margin-bottom: 10px; }
+  .reward-title { font-family: var(--font-serif); font-size: 20px; margin-bottom: 8px; color: var(--text); }
+  .reward-xp { font-size: 26px; font-weight: 700; color: var(--warning-text); margin: 12px 0; }
+  .reward-sub { font-size: 14px; color: var(--text2); line-height: 1.7; }
+  .reward-sub strong { color: var(--text); font-weight: 700; }
+  .reward-sub em { color: var(--warning-text); font-style: normal; font-weight: 600; }
+
+  .nav-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+
+  code { font-family: var(--font-mono); font-size: 13px; background: var(--bg2); padding: 1px 5px; border-radius: 4px; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- BANNER -->
+  <div class="lesson-banner">
+    <div class="banner-icon">🔍</div>
+    <div>
+      <div class="banner-title">The Topkapı Cipher — Mystery &amp; Python</div>
+      <div class="banner-sub">B2 ESL · Python Basics · 15–20 min · Detective Yusuf</div>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <span class="progress-label" id="prog-label">Scene 1 of 5</span>
+    <div class="progress-bar"><div class="progress-fill" id="prog-fill" style="width:20%"></div></div>
+    <span class="xp-badge" id="xp-display">0 XP</span>
+  </div>
+
+  <!-- ══════════════════════════════════
+       SCENE 1 — INTRO
+  ════════════════════════════════════ -->
+  <div class="scene active" id="scene-1">
+    <div class="story-card">
+      <div class="story-scene-tag">Scene 1 — The Briefing</div>
+      <div class="story-text">
+        Good morning, Detective <strong>Yusuf</strong>!<br><br>
+        It is 6:47 AM. A thick Istanbul fog rolls over the Bosphorus as your phone buzzes. It's Director Kemal from the Ministry of Antiquities.<br><br>
+        <em>"Yusuf — we have a situation. Someone has stolen the legendary Topkapı Cipher Disc from the palace. The thief left behind a digital trail — a Python list full of clues. We need your brain AND your code skills. Can you handle it?"</em><br><br>
+        The case file on your desk reads: <strong>CASE #0049 — THE TOPKAPI CIPHER.</strong><br>
+        The palace opens in 3 hours. You have until then to crack the code.
+      </div>
+      <div class="story-illus">
+        🏛️ <strong>Setting:</strong> Topkapı Palace, Istanbul. Built in 1459 by Sultan Mehmet II — home to Ottoman treasures, and today, one very missing Cipher Disc.
+      </div>
+    </div>
+
+    <div class="story-card">
+      <div class="quiz-section-tag">Quick Vocabulary Check</div>
+      <div class="quiz-q">Director Kemal says <em>"we have a situation."</em> What does this idiom mean?</div>
+      <div class="choices" id="q1-choices">
+        <button class="choice-btn" onclick="checkQ1(this,'A')"><span class="choice-letter">A</span> Everything is fine and under control.</button>
+        <button class="choice-btn" onclick="checkQ1(this,'B')"><span class="choice-letter">B</span> There is a serious problem that needs attention.</button>
+        <button class="choice-btn" onclick="checkQ1(this,'C')"><span class="choice-letter">C</span> We are having a party at the palace.</button>
+      </div>
+      <div class="feedback-box" id="q1-feedback"></div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-next" id="btn-next-1" onclick="goScene(2)">Continue the investigation →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       SCENE 2 — THE CLUE LIST
+  ════════════════════════════════════ -->
+  <div class="scene" id="scene-2">
+    <div class="story-card">
+      <div class="story-scene-tag">Scene 2 — The Digital Clue</div>
+      <div class="story-text">
+        You rush to the palace's security office. On the screen is a Python list the thief left behind — some kind of coded message.<br><br>
+        <em>"They hid the room number inside the list,"</em> whispers your assistant Selin. <em>"But they also added fake items to throw us <span class="idiom-pill" onclick="showIdiom('off-track')">off the track</span>. The real clue is always the LAST item."</em><br><br>
+        You crack your knuckles. Time to use Python.
+      </div>
+    </div>
+
+    <div class="story-card">
+      <div class="section-heading">The Thief's Python List</div>
+      <div class="code-block"><span class="cc"># The thief's clue list</span>
+clues = [<span class="cs">"Red Herring"</span>, <span class="cs">"False Trail"</span>, <span class="cs">"Room_14B"</span>]
+
+<span class="cc"># How do we get the LAST item?</span>
+<span class="ck">print</span>(clues[<span class="cn">???</span>])</div>
+
+      <div class="quiz-section-tag">Python Challenge 1 of 3</div>
+      <div class="quiz-q">What index number gives you the LAST item in a Python list of 3 items?</div>
+
+      <div class="choices" id="q2-choices">
+        <button class="choice-btn" onclick="checkQ2(this,'A')"><span class="choice-letter">A</span> clues[3] — lists start at 1, so the last is 3</button>
+        <button class="choice-btn" onclick="checkQ2(this,'B')"><span class="choice-letter">B</span> clues[2] — lists start at 0, so the last of 3 items is index 2</button>
+        <button class="choice-btn" onclick="checkQ2(this,'C')"><span class="choice-letter">C</span> clues[-1] — Python's shortcut for the last item</button>
+      </div>
+      <div class="feedback-box" id="q2-feedback"></div>
+    </div>
+
+    <div class="feedback-box info" id="idiom-box" style="display:none">
+      <strong>Idiom — "off the track":</strong> When you are <em>off the track</em>, you are following the wrong path or wrong idea. The thief wanted to confuse the detectives — to send them <em>off the track!</em>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-next" id="btn-next-2" onclick="goScene(3)">Access Room 14B →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       SCENE 3 — THE LOCKED DOOR
+  ════════════════════════════════════ -->
+  <div class="scene" id="scene-3">
+    <div class="story-card">
+      <div class="story-scene-tag">Scene 3 — The Locked Room</div>
+      <div class="story-text">
+        Room 14B. The door is locked with a digital keypad.<br>
+        Beside it, a screen shows a Python list of suspects — but one has already been <span class="idiom-pill" onclick="showIdiom('cleared')">cleared</span> by security cameras.<br><br>
+        <em>"We need to <strong>remove</strong> the cleared suspect from the list,"</em> Selin says. <em>"Otherwise the lock won't accept the code. The cleared suspect is at index 1."</em><br><br>
+        You remember from your Python sessions: <strong>.pop()</strong> removes an item by index.
+      </div>
+    </div>
+
+    <div class="story-card">
+      <div class="section-heading">The Suspect List</div>
+      <div class="code-block">suspects = [<span class="cs">"Ali"</span>, <span class="cs">"Burcu"</span>, <span class="cs">"Mert"</span>]
+
+<span class="cc"># Burcu is at index 1 — cameras show she is innocent</span>
+<span class="cc"># Remove her from the list</span>
+
+suspects.<span class="ck">pop</span>(<span class="cn">1</span>)
+<span class="ck">print</span>(suspects)</div>
+
+      <div class="quiz-section-tag">Python Challenge 2 of 3</div>
+      <div class="quiz-q">After running <code>suspects.pop(1)</code>, what does the list contain?</div>
+
+      <div class="choices" id="q3-choices">
+        <button class="choice-btn" onclick="checkQ3(this,'A')"><span class="choice-letter">A</span> ["Ali", "Burcu", "Mert"] — nothing changed</button>
+        <button class="choice-btn" onclick="checkQ3(this,'B')"><span class="choice-letter">B</span> ["Ali", "Mert"] — Burcu (index 1) was removed</button>
+        <button class="choice-btn" onclick="checkQ3(this,'C')"><span class="choice-letter">C</span> ["Burcu"] — only the removed item stays</button>
+      </div>
+      <div class="feedback-box" id="q3-feedback"></div>
+    </div>
+
+    <div class="feedback-box info" id="cleared-box" style="display:none">
+      <strong>Idiom — "cleared":</strong> In detective language, when a suspect is <em>cleared</em>, it means they are proven innocent. Like clearing fog from a window — suddenly everything becomes transparent.
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-next" id="btn-next-3" onclick="goScene(4)">Enter the vault →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       SCENE 4 — THE VAULT
+  ════════════════════════════════════ -->
+  <div class="scene" id="scene-4">
+    <div class="story-card">
+      <div class="story-scene-tag">Scene 4 — Inside the Vault</div>
+      <div class="story-text">
+        The door swings open. Inside: an empty display stand — the Cipher Disc is gone.<br>
+        But on the floor you find a note with a new suspect's name: <strong>"Zeynep"</strong>.<br><br>
+        <em>"Add her to the evidence list!"</em> Selin says urgently.<br><br>
+        You need <strong>.append()</strong> — Python's way of adding a new item to a list.
+      </div>
+    </div>
+
+    <div class="story-card">
+      <div class="section-heading">The Evidence List</div>
+      <div class="code-block">evidence = [<span class="cs">"Fingerprint_A"</span>, <span class="cs">"Keycard_77"</span>]
+
+<span class="cc"># Add the new suspect note</span>
+evidence.<span class="ck">append</span>(<span class="cs">"Zeynep"</span>)
+
+<span class="ck">print</span>(evidence)</div>
+
+      <div class="quiz-section-tag">Python Challenge 3 of 3</div>
+      <div class="quiz-q">What will <code>print(evidence)</code> show after the .append?</div>
+
+      <div class="code-input-wrap" style="margin-top:6px">
+        <div class="code-input-label">Type the output below — exactly as Python would print it:</div>
+        <input class="code-input" id="append-input" placeholder='["Fingerprint_A", "Keycard_77", "Zeynep"]' onkeydown="if(event.key==='Enter')checkAppend()"/>
+        <button class="btn-primary" onclick="checkAppend()">Run code</button>
+      </div>
+      <div class="feedback-box" id="q4-feedback"></div>
+    </div>
+
+    <div class="nav-row">
+      <button class="btn-next" id="btn-next-4" onclick="goScene(5)">Reveal the culprit →</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       SCENE 5 — FINALE
+  ════════════════════════════════════ -->
+  <div class="scene" id="scene-5">
+    <div class="story-card">
+      <div class="story-scene-tag">Scene 5 — Case Closed</div>
+      <div class="story-text">
+        Your Python skills have cracked the code. The evidence list leads you to the palace kitchen — and there is <strong>Zeynep</strong>, the new sous-chef, with the Cipher Disc hidden inside a baklava tin.<br><br>
+        <em>"I just wanted to photograph it for my history blog!"</em> she protests.<br><br>
+        Director Kemal calls: <em>"Yusuf, you are <span class="idiom-pill" onclick="showIdiom('top-notch')">top-notch</span>. The disc is back where it belongs. The case is <span class="idiom-pill" onclick="showIdiom('wrapped-up')">wrapped up</span>."</em><br><br>
+        The Topkapı Cipher Disc is safe. Istanbul sleeps peacefully. 🌙
+      </div>
+    </div>
+
+    <div class="reward-panel">
+      <div class="reward-star">🏅</div>
+      <div class="reward-title">Case Closed — Well Done, Detective!</div>
+      <div class="reward-xp" id="final-xp">0 XP Earned</div>
+      <div class="reward-sub">
+        Today you used <strong>list indexing</strong>, <strong>.pop()</strong>, and <strong>.append()</strong> to solve a real mystery.<br><br>
+        You also learned 5 idioms:<br>
+        <em>we have a situation · off the track · cleared · top-notch · wrapped up</em><br><br>
+        <strong>Homework:</strong> Write 3 sentences using any 2 of today's idioms — about any mystery story you like!
+      </div>
+    </div>
+
+    <div class="feedback-box info show" id="final-idiom-box">
+      <strong>Top-notch</strong> = excellent, the very best quality.<br>
+      <strong>Wrapped up</strong> = finished, completed successfully. The case is done!
+    </div>
+  </div>
+
+</div>
+
+<script>
+  var xp = 0;
+  var attempts = { q1: 0, q2: 0, q3: 0, q4: 0 };
+
+  function addXP(pts) {
+    xp += pts;
+    document.getElementById('xp-display').textContent = xp + ' XP';
+  }
+
+  function goScene(n) {
+    document.querySelectorAll('.scene').forEach(function(s) { s.classList.remove('active'); });
+    document.getElementById('scene-' + n).classList.add('active');
+    var fills = [0, 20, 40, 60, 80, 100];
+    document.getElementById('prog-fill').style.width = fills[n] + '%';
+    document.getElementById('prog-label').textContent = 'Scene ' + n + ' of 5';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (n === 5) {
+      document.getElementById('final-xp').textContent = xp + ' XP Earned';
+    }
+  }
+
+  function showIdiom(id) {
+    var map = { 'off-track': 'idiom-box', 'cleared': 'cleared-box' };
+    var boxId = map[id];
+    if (boxId) {
+      var box = document.getElementById(boxId);
+      box.style.display = 'block';
+      box.classList.add('show');
+    }
+  }
+
+  function checkQ1(btn, ans) {
+    attempts.q1++;
+    var feedback = document.getElementById('q1-feedback');
+    var buttons = document.querySelectorAll('#q1-choices .choice-btn');
+    buttons.forEach(function(b) { b.onclick = null; b.style.opacity = '0.6'; });
+    if (ans === 'B') {
+      btn.classList.add('correct'); btn.style.opacity = '1';
+      var pts = attempts.q1 === 1 ? 20 : 10;
+      addXP(pts);
+      feedback.className = 'feedback-box success show';
+      feedback.innerHTML = '<strong>Brilliant!</strong> ✓ "We have a situation" means there is a serious problem. In English, this phrase is often used when someone wants to sound calm — but the problem is actually quite urgent. +' + pts + ' XP!';
+      document.getElementById('btn-next-1').classList.add('show');
+    } else {
+      btn.classList.add('wrong'); btn.style.opacity = '1';
+      feedback.className = 'feedback-box error show';
+      if (ans === 'A') {
+        feedback.innerHTML = '<strong>Not quite.</strong> "We have a situation" actually signals the opposite — a serious problem, said in a calm but urgent way. Try again!';
+      } else {
+        feedback.innerHTML = '<strong>Ha! Nice try</strong> — but the Cipher Disc is missing, not the baklava. Think about the urgency in the director\'s voice. Try again!';
+      }
+      buttons.forEach(function(b) { b.style.opacity = '1'; });
+      var idx = ['A','B','C'].indexOf(ans);
+      document.querySelectorAll('#q1-choices .choice-btn')[idx].onclick = null;
+    }
+  }
+
+  function checkQ2(btn, ans) {
+    attempts.q2++;
+    var feedback = document.getElementById('q2-feedback');
+    var buttons = document.querySelectorAll('#q2-choices .choice-btn');
+    if (ans === 'B' || ans === 'C') {
+      buttons.forEach(function(b) { b.onclick = null; b.style.opacity = '0.6'; });
+      var pts = attempts.q2 === 1 ? 25 : 12;
+      addXP(pts);
+      btn.classList.add('correct'); btn.style.opacity = '1';
+      feedback.className = 'feedback-box success show';
+      if (ans === 'B') {
+        feedback.innerHTML = '<strong>Correct!</strong> ✓ <code>clues[2]</code> gives "Room_14B". Python lists count from 0 — so 3 items have indexes 0, 1, 2. You also could have used <code>clues[-1]</code> (answer C is valid Python too!). +' + pts + ' XP!';
+      } else {
+        feedback.innerHTML = '<strong>Smart!</strong> ✓ <code>clues[-1]</code> is Python\'s slick shortcut for the last item — like a detective\'s backdoor. <code>clues[2]</code> also works. Both are correct! +' + pts + ' XP!';
+      }
+      document.getElementById('btn-next-2').classList.add('show');
+    } else {
+      btn.classList.add('wrong'); btn.style.opacity = '0.7'; btn.onclick = null;
+      feedback.className = 'feedback-box error show';
+      feedback.innerHTML = '<strong>Not quite!</strong> Remember: Python lists start counting at <strong>0</strong>, not 1. So a list with 3 items has indexes 0, 1, and 2 — not 1, 2, 3. Try again!';
+    }
+  }
+
+  function checkQ3(btn, ans) {
+    attempts.q3++;
+    var feedback = document.getElementById('q3-feedback');
+    var buttons = document.querySelectorAll('#q3-choices .choice-btn');
+    buttons.forEach(function(b) { b.onclick = null; b.style.opacity = '0.6'; });
+    if (ans === 'B') {
+      btn.classList.add('correct'); btn.style.opacity = '1';
+      var pts = attempts.q3 === 1 ? 25 : 12;
+      addXP(pts);
+      feedback.className = 'feedback-box success show';
+      feedback.innerHTML = '<strong>Perfect!</strong> ✓ <code>.pop(1)</code> removes the item at index 1 — that\'s "Burcu". The remaining list is <code>["Ali", "Mert"]</code>. Burcu is cleared! +' + pts + ' XP!';
+      document.getElementById('btn-next-3').classList.add('show');
+    } else {
+      btn.classList.add('wrong'); btn.style.opacity = '1';
+      feedback.className = 'feedback-box error show';
+      if (ans === 'A') {
+        feedback.innerHTML = '<strong>Careful!</strong> <code>.pop()</code> definitely changes the list — it removes an item. Think: which item is at index 1?';
+      } else {
+        feedback.innerHTML = '<strong>Not quite!</strong> <code>.pop()</code> removes from the list — the removed item disappears, the rest stay. Try again!';
+      }
+      buttons.forEach(function(b) { b.style.opacity = '1'; });
+      var idx = ['A','B','C'].indexOf(ans);
+      document.querySelectorAll('#q3-choices .choice-btn')[idx].onclick = null;
+    }
+  }
+
+  function checkAppend() {
+    attempts.q4++;
+    var val = document.getElementById('append-input').value.trim();
+    var feedback = document.getElementById('q4-feedback');
+    var ok = (val.includes('Fingerprint_A') && val.includes('Keycard_77') && val.includes('Zeynep'));
+    if (ok) {
+      var pts = attempts.q4 === 1 ? 30 : 15;
+      addXP(pts);
+      feedback.className = 'feedback-box success show';
+      feedback.innerHTML = '<strong>Excellent work!</strong> ✓ <code>.append("Zeynep")</code> adds Zeynep to the END of the list. The output is <code>["Fingerprint_A", "Keycard_77", "Zeynep"]</code>. +' + pts + ' XP!';
+      document.getElementById('btn-next-4').classList.add('show');
+    } else {
+      feedback.className = 'feedback-box error show';
+      if (!val.includes('Zeynep')) {
+        feedback.innerHTML = '<strong>Almost!</strong> Did you remember to add "Zeynep"? <code>.append()</code> adds the new item at the very end of the list.';
+      } else if (!val.includes('Fingerprint_A') || !val.includes('Keycard_77')) {
+        feedback.innerHTML = '<strong>Careful!</strong> <code>.append()</code> does NOT remove the old items — it just adds to the end. The full list should have all 3 items.';
+      } else {
+        feedback.innerHTML = '<strong>Very close!</strong> Check the format: Python prints lists with square brackets [ ] and items separated by commas and spaces.';
+      }
+    }
+  }
+</script>
+</body>
+</html>
